@@ -376,8 +376,8 @@ body {
 
 .score-chip {
   display: flex;
-  align-items: center;
-  gap: 8px;
+  flex-direction: column;
+  align-items: stretch;
   background: var(--court-2);
   border: 2px solid var(--line);
   border-radius: 4px;
@@ -386,6 +386,7 @@ body {
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
+  min-width: 90px;
 }
 
 .score-chip.is-me {
@@ -399,6 +400,55 @@ body {
 .score-chip.has-answered {
   border-color: var(--green);
   box-shadow: 0 0 8px rgba(31, 170, 89, 0.45);
+}
+
+.score-chip.has-skipped {
+  border-color: var(--ink-dim);
+  opacity: 0.6;
+}
+
+.thermo {
+  width: 100%;
+  height: 3px;
+  background: var(--line);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-top: 4px;
+}
+
+.thermo-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--ink-dim);
+  transition: width 600ms ease;
+}
+
+.thermo-fill[data-tier="Z"]     { background: #6b7cad; }
+.thermo-fill[data-tier="Y"]     { background: var(--gold); }
+.thermo-fill[data-tier="X"]     { background: #e06b2a; }
+.thermo-fill[data-tier="ELITE"] { background: var(--green); }
+
+.thermo-label {
+  font-family: var(--display);
+  font-size: 9px;
+  letter-spacing: 1.5px;
+  color: var(--ink-dim);
+  margin-top: 2px;
+}
+
+.btn-skip {
+  margin-top: 4px;
+  font-size: 14px;
+  padding: 10px 14px;
+  box-shadow: none;
+  color: var(--ink-dim);
+}
+
+.score-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
 }
 
 .score-chip-pts {

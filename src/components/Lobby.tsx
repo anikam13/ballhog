@@ -19,7 +19,9 @@ export default function Lobby({ state, meId, onLeave }: Props) {
       <section className="code-card">
         <span className="code-card-label">ROOM CODE</span>
         <span className="code-card-code">{state.code}</span>
-        <span className="code-card-hint">pass it to your squad — 2 to 5 players</span>
+        <span className="code-card-hint">
+          {connected.length === 1 ? "SOLO MODE — or pass the code to your squad" : "pass it to your squad — up to 5 players"}
+        </span>
       </section>
 
       <ul className="roster">
@@ -49,21 +51,15 @@ export default function Lobby({ state, meId, onLeave }: Props) {
           {me.ready ? "UNREADY" : "READY UP"}
         </button>
 
-        {isHost ? (
-          <button
-            className="btn btn-go"
-            disabled={!everyoneReady}
-            onClick={() => socket.emit("startGame")}
-          >
-            {everyoneReady
-              ? "TIP-OFF"
-              : connected.length < MIN_PLAYERS
-                ? "NEED MORE PLAYERS"
-                : "WAITING ON READIES"}
-          </button>
-        ) : (
-          <p className="lobby-wait">waiting for the host to tip off…</p>
-        )}
+        <button
+          className="btn btn-go"
+          disabled={!everyoneReady}
+          onClick={() => socket.emit("startGame")}
+        >
+          {everyoneReady
+            ? connected.length === 1 ? "GO SOLO" : "TIP-OFF"
+            : "WAITING ON READIES"}
+        </button>
 
         <button className="btn btn-ghost btn-small" onClick={onLeave}>
           LEAVE ROOM

@@ -105,6 +105,11 @@ io.on("connection", (socket) => {
     if (s) game.submitAnswer(s.code, s.playerId, pickedId, elapsedMs);
   });
 
+  socket.on("skipRound", () => {
+    const s = sessions.get(socket.id);
+    if (s) game.skipRound(s.code, s.playerId);
+  });
+
   socket.on("rematch", () => {
     const s = sessions.get(socket.id);
     if (!s) return;

@@ -90,6 +90,7 @@ export default function GameView({ state, meId }: Props) {
   }, [revealed, phase]);
 
   const answered = myPick !== null || state.answeredIds.includes(meId);
+  const skipped = state.skippedIds.includes(meId);
 
   const onPick = (p: SearchablePlayer) => {
     if (answered) return;
@@ -170,14 +171,31 @@ export default function GameView({ state, meId }: Props) {
               <p className="locked-wait">
                 waiting on{" "}
                 {state.players
-                  .filter((p) => p.connected && !state.answeredIds.includes(p.id))
+                  .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
+                  .map((p) => p.nickname)
+                  .join(", ") || "the buzzer"}
+                …
+              </p>
+            </div>
+          ) : skipped ? (
+            <div className="locked">
+              <p className="locked-title">SKIPPED</p>
+              <p className="locked-wait">
+                waiting on{" "}
+                {state.players
+                  .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
                   .map((p) => p.nickname)
                   .join(", ") || "the buzzer"}
                 …
               </p>
             </div>
           ) : (
-            <PlayerSearch disabled={!revealed} onPick={onPick} />
+            <>
+              <PlayerSearch disabled={!revealed} onPick={onPick} />
+              <button className="btn btn-ghost btn-skip" onClick={() => socket.emit("skipRound")}>
+                SKIP
+              </button>
+            </>
           )}
         </section>
       )}

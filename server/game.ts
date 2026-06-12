@@ -21,6 +21,7 @@ interface ServerPlayer {
   id: string;
   nickname: string;
   score: number;
+  knowledgeScore: number;
   ready: boolean;
   connected: boolean;
   socketId: string | null;
@@ -45,6 +46,7 @@ interface Room {
   roundNumber: number;
   revealAt: number | null;
   answers: Map<string, Answer>;
+  skips: Set<string>;
   lastResult: RoundResultInfo | null;
   gameWinnerId: string | null;
   timer: NodeJS.Timeout | null; // at most one pending transition per room
@@ -91,6 +93,7 @@ export class GameManager {
       roundNumber: 0,
       revealAt: null,
       answers: new Map(),
+      skips: new Set(),
       lastResult: null,
       gameWinnerId: null,
       timer: null,
@@ -130,6 +133,7 @@ export class GameManager {
       id: playerId,
       nickname: nickname.trim().slice(0, 16) || "BALLER",
       score: 0,
+      knowledgeScore: 0,
       ready: false,
       connected: true,
       socketId,
@@ -191,12 +195,11 @@ export class GameManager {
     this.push(room);
   }
 
-  startGame(code: string, playerId: string) {
+  startGame(code: string, _playerId: string) {
     const room = this.rooms.get(code);
     if (!room || room.phase !== "lobby") return;
-    if (playerId !== room.hostId) throw new Error("Only the host can tip off.");
     const connected = [...room.players.values()].filter((p) => p.connected);
-    if (connected.length < MIN_PLAYERS) throw new Error("Need at least 2 players.");
+    if (connected.length < MIN_PLAYERS) throw new Error("Need at least 1 player.");
     if (!connected.every((p) => p.ready)) throw new Error("Everyone must ready up first.");
     this.startRound(room);
   }
@@ -207,6 +210,7 @@ export class GameManager {
     if (playerId !== room.hostId) throw new Error("Only the host can start a rematch.");
     for (const p of room.players.values()) {
       p.score = 0;
+      p.knowledgeScore = 0;
       p.ready = false;
     }
     room.phase = "lobby";
@@ -229,6 +233,7 @@ export class GameManager {
     room.roundNumber += 1;
     room.revealAt = Date.now() + COUNTDOWN_MS;
     room.answers.clear();
+    room.skips.clear();
     room.phase = "countdown";
     this.push(room);
 
@@ -281,10 +286,21 @@ export class GameManager {
     this.push(room);
   }
 
+  skipRound(code: string, playerId: string) {
+    const room = this.rooms.get(code);
+    const player = room?.players.get(playerId);
+    if (!room || !player || !room.currentClue) return;
+    if (room.phase !== "guessing" && room.phase !== "countdown") return;
+    if (room.answers.has(playerId) || room.skips.has(playerId)) return;
+    room.skips.add(playerId);
+    this.maybeFinalizeEarly(room);
+    this.push(room);
+  }
+
   private maybeFinalizeEarly(room: Room) {
     if (room.phase !== "guessing" && room.phase !== "countdown") return;
     const connected = [...room.players.values()].filter((p) => p.connected);
-    if (connected.length > 0 && connected.every((p) => room.answers.has(p.id))) {
+    if (connected.length > 0 && connected.every((p) => room.answers.has(p.id) || room.skips.has(p.id))) {
       this.finalizeRound(room);
     }
   }
@@ -301,7 +317,10 @@ export class GameManager {
 
     if (winner) {
       const p = room.players.get(winner.playerId);
-      if (p) p.score += 1;
+      if (p) {
+        p.score += 1;
+        p.knowledgeScore += clue.difficulty;
+      }
     }
 
     room.lastResult = {
@@ -387,6 +406,7 @@ export class GameManager {
         id: p.id,
         nickname: p.nickname,
         score: p.score,
+        knowledgeScore: p.knowledgeScore,
         ready: p.ready,
         connected: p.connected,
       })),
@@ -402,6 +422,7 @@ export class GameManager {
       lastResult: room.lastResult,
       gameWinnerId: room.gameWinnerId,
       answeredIds: [...room.answers.keys()],
+      skippedIds: [...room.skips],
       cluePoolRecycled: room.cluePoolRecycled,
     };
   }

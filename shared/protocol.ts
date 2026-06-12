@@ -3,7 +3,7 @@
 // clients before the round result — the clue is broadcast as number+color only.
 
 export const TARGET_SCORE = 5;
-export const MIN_PLAYERS = 2;
+export const MIN_PLAYERS = 1;
 export const MAX_PLAYERS = 5;
 
 /** ms between "round starting" broadcast and the synchronized reveal (3-2-1). */
@@ -21,6 +21,16 @@ export interface PlayerInfo {
   score: number;
   ready: boolean;
   connected: boolean;
+  knowledgeScore: number;
+}
+
+export type KnowledgeTier = "CASUAL" | "Z" | "Y" | "X" | "ELITE";
+export function knowledgeTier(score: number): KnowledgeTier {
+  if (score >= 700) return "ELITE";
+  if (score >= 450) return "X";
+  if (score >= 250) return "Y";
+  if (score >= 100) return "Z";
+  return "CASUAL";
 }
 
 /**
@@ -70,6 +80,8 @@ export interface RoomState {
   gameWinnerId: string | null;
   /** Who has locked an answer this round (ids only, no correctness). */
   answeredIds: string[];
+  /** Who has skipped this round. */
+  skippedIds: string[];
   /** True once the unique-clue pool was exhausted and reshuffled. */
   cluePoolRecycled: boolean;
   /** Test-only: current clue id, present only when BALLHOG_EXPOSE_ANSWER=1. */
@@ -96,6 +108,7 @@ export interface ClientToServerEvents {
   toggleReady: () => void;
   startGame: () => void;
   submitAnswer: (p: { pickedId: string; elapsedMs: number }) => void;
+  skipRound: () => void;
   rematch: () => void;
   leave: () => void;
   timesync: (clientTime: number, ack: (serverTime: number) => void) => void;

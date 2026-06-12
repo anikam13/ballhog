@@ -10,12 +10,20 @@ import type { SearchablePlayer } from "../shared/protocol";
 export interface CluePlayer {
   id: string;
   name: string;
+  difficulty: number; // 0-100; higher = harder; never sent to clients pre-reveal
   /** Real data: a verified headshot exists at public/headshots/{id}.jpg. */
   hasImage?: boolean;
   /** Placeholder data: silhouette dressing. */
   jersey?: number;
   color?: string;
   colorName?: string;
+}
+
+function computeDifficulty(c: { firstYear: number; lastYear: number; source: string }): number {
+  const era = Math.max(0, (2020 - c.firstYear) / 30) * 60;
+  const recency = Math.max(0, (2020 - c.lastYear) / 10) * 25;
+  const src = c.source === "proxy" ? 15 : 0;
+  return Math.round(Math.min(100, era + recency + src));
 }
 
 // mulberry32 — tiny seeded PRNG, good enough for deterministic placeholder data
@@ -90,12 +98,14 @@ function generate() {
     const j = Math.floor(rand() * (i + 1));
     [indices[i], indices[j]] = [indices[j], indices[i]];
   }
-  const clues: CluePlayer[] = indices.slice(0, CLUE_COUNT).map((idx, i) => {
+  const clues: CluePlayer[] = indices.slice(0, CLUE_COUNT).map((idx) => {
     const color = COLORS[Math.floor(rand() * COLORS.length)];
+    // Placeholder clues have no real era data — assign mid-range difficulty.
     return {
       id: pool[idx].id,
       name: pool[idx].name,
-      jersey: Math.floor(rand() * 56), // 0–55, classic NBA number range
+      difficulty: Math.round(rand() * 60 + 20),
+      jersey: Math.floor(rand() * 56),
       color: color.hex,
       colorName: color.name,
     };
@@ -112,12 +122,12 @@ function loadReal(): { pool: SearchablePlayer[]; clues: CluePlayer[] } | null {
     const pool: SearchablePlayer[] = JSON.parse(
       fs.readFileSync(path.join(ROOT, "data", "searchable_players.json"), "utf8")
     );
-    const raw: { id: string; name: string }[] = JSON.parse(
+    const raw: { id: string; name: string; source: string; firstYear: number; lastYear: number }[] = JSON.parse(
       fs.readFileSync(path.join(ROOT, "data", "clue_players.json"), "utf8")
     );
     const clues: CluePlayer[] = raw
       .filter((c) => fs.existsSync(path.join(HEADSHOT_DIR, `${c.id}.jpg`)))
-      .map((c) => ({ id: c.id, name: c.name, hasImage: true }));
+      .map((c) => ({ id: c.id, name: c.name, hasImage: true, difficulty: computeDifficulty(c) }));
     if (pool.length < 100 || clues.length < 10) return null;
     return { pool, clues };
   } catch {
