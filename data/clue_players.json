@@ -1,0 +1,1066 @@
+[
+ {
+  "id": "reedpa01",
+  "name": "Paul Reed",
+  "source": "2k",
+  "firstYear": 2021,
+  "lastYear": 2026
+ },
+ {
+  "id": "highsha01",
+  "name": "Haywood Highsmith",
+  "source": "2k",
+  "firstYear": 2019,
+  "lastYear": 2026
+ },
+ {
+  "id": "whiteda01",
+  "name": "Dariq Whitehead",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2026
+ },
+ {
+  "id": "mclaujo01",
+  "name": "Jordan McLaughlin",
+  "source": "2k",
+  "firstYear": 2020,
+  "lastYear": 2026
+ },
+ {
+  "id": "gillan01",
+  "name": "Anthony Gill",
+  "source": "2k",
+  "firstYear": 2021,
+  "lastYear": 2026
+ },
+ {
+  "id": "huertke01",
+  "name": "Kevin Huerter",
+  "source": "2k",
+  "firstYear": 2019,
+  "lastYear": 2026
+ },
+ {
+  "id": "niangge01",
+  "name": "Georges Niang",
+  "source": "2k",
+  "firstYear": 2017,
+  "lastYear": 2025
+ },
+ {
+  "id": "bambamo01",
+  "name": "Mo Bamba",
+  "source": "2k",
+  "firstYear": 2019,
+  "lastYear": 2026
+ },
+ {
+  "id": "aldamsa01",
+  "name": "Santi Aldama",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2026
+ },
+ {
+  "id": "moorewe01",
+  "name": "Wendell Moore Jr.",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "willipa01",
+  "name": "Patrick Williams",
+  "source": "2k",
+  "firstYear": 2021,
+  "lastYear": 2026
+ },
+ {
+  "id": "richajo01",
+  "name": "Josh Richardson",
+  "source": "2k",
+  "firstYear": 2016,
+  "lastYear": 2025
+ },
+ {
+  "id": "willike04",
+  "name": "Kenrich Williams",
+  "source": "2k",
+  "firstYear": 2019,
+  "lastYear": 2026
+ },
+ {
+  "id": "klebima01",
+  "name": "Maxi Kleber",
+  "source": "2k",
+  "firstYear": 2018,
+  "lastYear": 2026
+ },
+ {
+  "id": "johnsja01",
+  "name": "James Johnson",
+  "source": "2k",
+  "firstYear": 2010,
+  "lastYear": 2025
+ },
+ {
+  "id": "leverca01",
+  "name": "Caris LeVert",
+  "source": "2k",
+  "firstYear": 2017,
+  "lastYear": 2026
+ },
+ {
+  "id": "pickeja02",
+  "name": "Jalen Pickett",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2026
+ },
+ {
+  "id": "trentga02",
+  "name": "Gary Trent Jr.",
+  "source": "2k",
+  "firstYear": 2019,
+  "lastYear": 2026
+ },
+ {
+  "id": "bantoda01",
+  "name": "Dalano Banton",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2026
+ },
+ {
+  "id": "jacksan01",
+  "name": "Andre Jackson Jr.",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2026
+ },
+ {
+  "id": "minotjo01",
+  "name": "Josh Minott",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "hoodsja01",
+  "name": "Jalen Hood-Schifino",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2025
+ },
+ {
+  "id": "buzelma01",
+  "name": "Matas Buzelis",
+  "source": "2k",
+  "firstYear": 2025,
+  "lastYear": 2026
+ },
+ {
+  "id": "pritcpa01",
+  "name": "Payton Pritchard",
+  "source": "2k",
+  "firstYear": 2021,
+  "lastYear": 2026
+ },
+ {
+  "id": "watsope01",
+  "name": "Peyton Watson",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "woodch01",
+  "name": "Christian Wood",
+  "source": "2k",
+  "firstYear": 2016,
+  "lastYear": 2024
+ },
+ {
+  "id": "alvarjo01",
+  "name": "Jose Alvarado",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2026
+ },
+ {
+  "id": "baldwpa01",
+  "name": "Patrick Baldwin Jr.",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "richani01",
+  "name": "Nick Richards",
+  "source": "2k",
+  "firstYear": 2021,
+  "lastYear": 2026
+ },
+ {
+  "id": "smithja05",
+  "name": "Jabari Smith Jr.",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "butleja02",
+  "name": "Jared Butler",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2025
+ },
+ {
+  "id": "manntr01",
+  "name": "Tre Mann",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2026
+ },
+ {
+  "id": "dilliro01",
+  "name": "Rob Dillingham",
+  "source": "2k",
+  "firstYear": 2025,
+  "lastYear": 2026
+ },
+ {
+  "id": "mathube01",
+  "name": "Bennedict Mathurin",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "thorjt01",
+  "name": "JT Thor",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2025
+ },
+ {
+  "id": "smithdr01",
+  "name": "Dru Smith",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "houstca01",
+  "name": "Caleb Houstan",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "hendrta01",
+  "name": "Taylor Hendricks",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2026
+ },
+ {
+  "id": "harrito02",
+  "name": "Tobias Harris",
+  "source": "2k",
+  "firstYear": 2012,
+  "lastYear": 2026
+ },
+ {
+  "id": "umudest01",
+  "name": "Stanley Umude",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "millele01",
+  "name": "Leonard Miller",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2026
+ },
+ {
+  "id": "peterdr01",
+  "name": "Drew Peterson",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2026
+ },
+ {
+  "id": "missiyv01",
+  "name": "Yves Missi",
+  "source": "2k",
+  "firstYear": 2025,
+  "lastYear": 2026
+ },
+ {
+  "id": "smithja04",
+  "name": "Jalen Smith",
+  "source": "2k",
+  "firstYear": 2021,
+  "lastYear": 2026
+ },
+ {
+  "id": "miltosh01",
+  "name": "Shake Milton",
+  "source": "2k",
+  "firstYear": 2019,
+  "lastYear": 2025
+ },
+ {
+  "id": "princta02",
+  "name": "Taurean Prince",
+  "source": "2k",
+  "firstYear": 2017,
+  "lastYear": 2026
+ },
+ {
+  "id": "reathdu01",
+  "name": "Duop Reath",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2026
+ },
+ {
+  "id": "pasecan01",
+  "name": "Anžejs Pasečņiks",
+  "source": "2k",
+  "firstYear": 2020,
+  "lastYear": 2021
+ },
+ {
+  "id": "bostobr01",
+  "name": "Brandon Boston Jr.",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2025
+ },
+ {
+  "id": "cainja01",
+  "name": "Jamal Cain",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "blackan01",
+  "name": "Anthony Black",
+  "source": "2k",
+  "firstYear": 2024,
+  "lastYear": 2026
+ },
+ {
+  "id": "murrake02",
+  "name": "Keegan Murray",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "rhodeja01",
+  "name": "Jared Rhoden",
+  "source": "2k",
+  "firstYear": 2023,
+  "lastYear": 2025
+ },
+ {
+  "id": "grimequ01",
+  "name": "Quentin Grimes",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2026
+ },
+ {
+  "id": "chrisjo01",
+  "name": "Josh Christopher",
+  "source": "2k",
+  "firstYear": 2022,
+  "lastYear": 2025
+ },
+ {
+  "id": "murratr01",
+  "name": "Tracy Murray",
+  "source": "proxy",
+  "firstYear": 1993,
+  "lastYear": 2004
+ },
+ {
+  "id": "mooremi01",
+  "name": "Mikki Moore",
+  "source": "proxy",
+  "firstYear": 1999,
+  "lastYear": 2012
+ },
+ {
+  "id": "roberal01",
+  "name": "Alvin Robertson",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1996
+ },
+ {
+  "id": "boguemu01",
+  "name": "Muggsy Bogues",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 2001
+ },
+ {
+  "id": "willibu01",
+  "name": "Buck Williams",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1998
+ },
+ {
+  "id": "davisda01",
+  "name": "Dale Davis",
+  "source": "proxy",
+  "firstYear": 1992,
+  "lastYear": 2007
+ },
+ {
+  "id": "kerseje01",
+  "name": "Jerome Kersey",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 2001
+ },
+ {
+  "id": "harrial01",
+  "name": "Al Harrington",
+  "source": "proxy",
+  "firstYear": 1999,
+  "lastYear": 2014
+ },
+ {
+  "id": "grayeje01",
+  "name": "Jeff Grayer",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1998
+ },
+ {
+  "id": "turneje01",
+  "name": "Jeff Turner",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1996
+ },
+ {
+  "id": "jacksbo01",
+  "name": "Bobby Jackson",
+  "source": "proxy",
+  "firstYear": 1998,
+  "lastYear": 2009
+ },
+ {
+  "id": "geigema01",
+  "name": "Matt Geiger",
+  "source": "proxy",
+  "firstYear": 1993,
+  "lastYear": 2002
+ },
+ {
+  "id": "garlawi01",
+  "name": "Winston Garland",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1995
+ },
+ {
+  "id": "besttr01",
+  "name": "Travis Best",
+  "source": "proxy",
+  "firstYear": 1996,
+  "lastYear": 2005
+ },
+ {
+  "id": "tisdawa01",
+  "name": "Wayman Tisdale",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1997
+ },
+ {
+  "id": "williwa02",
+  "name": "Walt Williams",
+  "source": "proxy",
+  "firstYear": 1993,
+  "lastYear": 2003
+ },
+ {
+  "id": "kittlke01",
+  "name": "Kerry Kittles",
+  "source": "proxy",
+  "firstYear": 1997,
+  "lastYear": 2005
+ },
+ {
+  "id": "pricema01",
+  "name": "Mark Price",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1998
+ },
+ {
+  "id": "smitsri01",
+  "name": "Rik Smits",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 2000
+ },
+ {
+  "id": "minorgr01",
+  "name": "Greg Minor",
+  "source": "proxy",
+  "firstYear": 1995,
+  "lastYear": 1999
+ },
+ {
+  "id": "humphja01",
+  "name": "Jay Humphries",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1995
+ },
+ {
+  "id": "foxri01",
+  "name": "Rick Fox",
+  "source": "proxy",
+  "firstYear": 1992,
+  "lastYear": 2004
+ },
+ {
+  "id": "mcmilna01",
+  "name": "Nate McMillan",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1998
+ },
+ {
+  "id": "mccloge01",
+  "name": "George McCloud",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 2002
+ },
+ {
+  "id": "smithke01",
+  "name": "Kenny Smith",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1997
+ },
+ {
+  "id": "laettch01",
+  "name": "Christian Laettner",
+  "source": "proxy",
+  "firstYear": 1993,
+  "lastYear": 2005
+ },
+ {
+  "id": "majerda01",
+  "name": "Dan Majerle",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 2002
+ },
+ {
+  "id": "jacksji01",
+  "name": "Jim Jackson",
+  "source": "proxy",
+  "firstYear": 1993,
+  "lastYear": 2006
+ },
+ {
+  "id": "piercri01",
+  "name": "Ricky Pierce",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1998
+ },
+ {
+  "id": "chambto01",
+  "name": "Tom Chambers",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1998
+ },
+ {
+  "id": "aguirma01",
+  "name": "Mark Aguirre",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 1994
+ },
+ {
+  "id": "corbity01",
+  "name": "Tyrone Corbin",
+  "source": "proxy",
+  "firstYear": 1990,
+  "lastYear": 2001
+ },
+ {
+  "id": "billuch01",
+  "name": "Chauncey Billups",
+  "source": "proxy",
+  "firstYear": 1998,
+  "lastYear": 2014
+ },
+ {
+  "id": "bynuman01",
+  "name": "Andrew Bynum",
+  "source": "proxy",
+  "firstYear": 2006,
+  "lastYear": 2014
+ },
+ {
+  "id": "maggeco01",
+  "name": "Corey Maggette",
+  "source": "proxy",
+  "firstYear": 2000,
+  "lastYear": 2013
+ },
+ {
+  "id": "westde01",
+  "name": "Delonte West",
+  "source": "proxy",
+  "firstYear": 2005,
+  "lastYear": 2012
+ },
+ {
+  "id": "watsocj01",
+  "name": "C.J. Watson",
+  "source": "proxy",
+  "firstYear": 2008,
+  "lastYear": 2017
+ },
+ {
+  "id": "hayesja01",
+  "name": "Jarvis Hayes",
+  "source": "proxy",
+  "firstYear": 2004,
+  "lastYear": 2010
+ },
+ {
+  "id": "greenge01",
+  "name": "Gerald Green",
+  "source": "proxy",
+  "firstYear": 2006,
+  "lastYear": 2019
+ },
+ {
+  "id": "thomake01",
+  "name": "Kenny Thomas",
+  "source": "proxy",
+  "firstYear": 2000,
+  "lastYear": 2010
+ },
+ {
+  "id": "chandwi01",
+  "name": "Wilson Chandler",
+  "source": "proxy",
+  "firstYear": 2008,
+  "lastYear": 2020
+ },
+ {
+  "id": "gordobe01",
+  "name": "Ben Gordon",
+  "source": "proxy",
+  "firstYear": 2005,
+  "lastYear": 2015
+ },
+ {
+  "id": "milicda01",
+  "name": "Darko Miličić",
+  "source": "proxy",
+  "firstYear": 2004,
+  "lastYear": 2013
+ },
+ {
+  "id": "davisgl01",
+  "name": "Glen Davis",
+  "source": "proxy",
+  "firstYear": 2008,
+  "lastYear": 2015
+ },
+ {
+  "id": "redicjj01",
+  "name": "JJ Redick",
+  "source": "proxy",
+  "firstYear": 2007,
+  "lastYear": 2021
+ },
+ {
+  "id": "martike01",
+  "name": "Kenyon Martin",
+  "source": "proxy",
+  "firstYear": 2001,
+  "lastYear": 2015
+ },
+ {
+  "id": "youngth01",
+  "name": "Thaddeus Young",
+  "source": "proxy",
+  "firstYear": 2008,
+  "lastYear": 2024
+ },
+ {
+  "id": "duhonch01",
+  "name": "Chris Duhon",
+  "source": "proxy",
+  "firstYear": 2005,
+  "lastYear": 2013
+ },
+ {
+  "id": "howarjo01",
+  "name": "Josh Howard",
+  "source": "proxy",
+  "firstYear": 2004,
+  "lastYear": 2013
+ },
+ {
+  "id": "westda01",
+  "name": "David West",
+  "source": "proxy",
+  "firstYear": 2004,
+  "lastYear": 2018
+ },
+ {
+  "id": "tuckepj01",
+  "name": "P.J. Tucker",
+  "source": "proxy",
+  "firstYear": 2007,
+  "lastYear": 2025
+ },
+ {
+  "id": "anderry01",
+  "name": "Ryan Anderson",
+  "source": "proxy",
+  "firstYear": 2009,
+  "lastYear": 2020
+ },
+ {
+  "id": "tollian01",
+  "name": "Anthony Tolliver",
+  "source": "proxy",
+  "firstYear": 2009,
+  "lastYear": 2021
+ },
+ {
+  "id": "jianlyi01",
+  "name": "Yi Jianlian",
+  "source": "proxy",
+  "firstYear": 2008,
+  "lastYear": 2012
+ },
+ {
+  "id": "diawbo01",
+  "name": "Boris Diaw",
+  "source": "proxy",
+  "firstYear": 2004,
+  "lastYear": 2017
+ },
+ {
+  "id": "murphtr01",
+  "name": "Troy Murphy",
+  "source": "proxy",
+  "firstYear": 2002,
+  "lastYear": 2013
+ },
+ {
+  "id": "claxtsp01",
+  "name": "Speedy Claxton",
+  "source": "proxy",
+  "firstYear": 2002,
+  "lastYear": 2009
+ },
+ {
+  "id": "blatcan01",
+  "name": "Andray Blatche",
+  "source": "proxy",
+  "firstYear": 2006,
+  "lastYear": 2014
+ },
+ {
+  "id": "artesro01",
+  "name": "Metta World Peace",
+  "source": "proxy",
+  "firstYear": 2000,
+  "lastYear": 2017
+ },
+ {
+  "id": "farmajo01",
+  "name": "Jordan Farmar",
+  "source": "proxy",
+  "firstYear": 2007,
+  "lastYear": 2017
+ },
+ {
+  "id": "pachuza01",
+  "name": "Zaza Pachulia",
+  "source": "proxy",
+  "firstYear": 2004,
+  "lastYear": 2019
+ },
+ {
+  "id": "fryech01",
+  "name": "Channing Frye",
+  "source": "proxy",
+  "firstYear": 2006,
+  "lastYear": 2019
+ },
+ {
+  "id": "simmojo02",
+  "name": "Jonathon Simmons",
+  "source": "proxy",
+  "firstYear": 2016,
+  "lastYear": 2019
+ },
+ {
+  "id": "mudiaem01",
+  "name": "Emmanuel Mudiay",
+  "source": "proxy",
+  "firstYear": 2016,
+  "lastYear": 2022
+ },
+ {
+  "id": "poeltja01",
+  "name": "Jakob Poeltl",
+  "source": "proxy",
+  "firstYear": 2017,
+  "lastYear": 2026
+ },
+ {
+  "id": "bullore01",
+  "name": "Reggie Bullock",
+  "source": "proxy",
+  "firstYear": 2014,
+  "lastYear": 2024
+ },
+ {
+  "id": "turnemy01",
+  "name": "Myles Turner",
+  "source": "proxy",
+  "firstYear": 2016,
+  "lastYear": 2026
+ },
+ {
+  "id": "dinwisp01",
+  "name": "Spencer Dinwiddie",
+  "source": "proxy",
+  "firstYear": 2015,
+  "lastYear": 2025
+ },
+ {
+  "id": "houseda01",
+  "name": "Danuel House Jr.",
+  "source": "proxy",
+  "firstYear": 2017,
+  "lastYear": 2024
+ },
+ {
+  "id": "payneca01",
+  "name": "Cameron Payne",
+  "source": "proxy",
+  "firstYear": 2016,
+  "lastYear": 2026
+ },
+ {
+  "id": "collida01",
+  "name": "Darren Collison",
+  "source": "proxy",
+  "firstYear": 2010,
+  "lastYear": 2022
+ },
+ {
+  "id": "casspom01",
+  "name": "Omri Casspi",
+  "source": "proxy",
+  "firstYear": 2010,
+  "lastYear": 2019
+ },
+ {
+  "id": "kennalu01",
+  "name": "Luke Kennard",
+  "source": "proxy",
+  "firstYear": 2018,
+  "lastYear": 2026
+ },
+ {
+  "id": "willide02",
+  "name": "Derrick Williams",
+  "source": "proxy",
+  "firstYear": 2012,
+  "lastYear": 2018
+ },
+ {
+  "id": "anderky01",
+  "name": "Kyle Anderson",
+  "source": "proxy",
+  "firstYear": 2015,
+  "lastYear": 2026
+ },
+ {
+  "id": "mccontj01",
+  "name": "T.J. McConnell",
+  "source": "proxy",
+  "firstYear": 2016,
+  "lastYear": 2026
+ },
+ {
+  "id": "morrimo01",
+  "name": "Monte Morris",
+  "source": "proxy",
+  "firstYear": 2018,
+  "lastYear": 2026
+ },
+ {
+  "id": "cartewe01",
+  "name": "Wendell Carter Jr.",
+  "source": "proxy",
+  "firstYear": 2019,
+  "lastYear": 2026
+ },
+ {
+  "id": "ennisja01",
+  "name": "James Ennis III",
+  "source": "proxy",
+  "firstYear": 2015,
+  "lastYear": 2022
+ },
+ {
+  "id": "nurkiju01",
+  "name": "Jusuf Nurkić",
+  "source": "proxy",
+  "firstYear": 2015,
+  "lastYear": 2026
+ },
+ {
+  "id": "johnsty01",
+  "name": "Tyler Johnson",
+  "source": "proxy",
+  "firstYear": 2015,
+  "lastYear": 2022
+ },
+ {
+  "id": "evansty01",
+  "name": "Tyreke Evans",
+  "source": "proxy",
+  "firstYear": 2010,
+  "lastYear": 2019
+ },
+ {
+  "id": "ibakase01",
+  "name": "Serge Ibaka",
+  "source": "proxy",
+  "firstYear": 2010,
+  "lastYear": 2023
+ },
+ {
+  "id": "kiddgmi01",
+  "name": "Michael Kidd-Gilchrist",
+  "source": "proxy",
+  "firstYear": 2013,
+  "lastYear": 2020
+ },
+ {
+  "id": "burketr01",
+  "name": "Trey Burke",
+  "source": "proxy",
+  "firstYear": 2014,
+  "lastYear": 2022
+ },
+ {
+  "id": "winslju01",
+  "name": "Justise Winslow",
+  "source": "proxy",
+  "firstYear": 2016,
+  "lastYear": 2023
+ },
+ {
+  "id": "gallola01",
+  "name": "Langston Galloway",
+  "source": "proxy",
+  "firstYear": 2015,
+  "lastYear": 2022
+ },
+ {
+  "id": "nesmiaa01",
+  "name": "Aaron Nesmith",
+  "source": "proxy",
+  "firstYear": 2021,
+  "lastYear": 2026
+ },
+ {
+  "id": "okorois01",
+  "name": "Isaac Okoro",
+  "source": "proxy",
+  "firstYear": 2021,
+  "lastYear": 2026
+ },
+ {
+  "id": "murphtr02",
+  "name": "Trey Murphy III",
+  "source": "proxy",
+  "firstYear": 2022,
+  "lastYear": 2026
+ },
+ {
+  "id": "daniedy01",
+  "name": "Dyson Daniels",
+  "source": "proxy",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "mathega01",
+  "name": "Garrison Mathews",
+  "source": "proxy",
+  "firstYear": 2020,
+  "lastYear": 2026
+ },
+ {
+  "id": "landajo01",
+  "name": "Jock Landale",
+  "source": "proxy",
+  "firstYear": 2022,
+  "lastYear": 2026
+ },
+ {
+  "id": "mitchda01",
+  "name": "Davion Mitchell",
+  "source": "proxy",
+  "firstYear": 2022,
+  "lastYear": 2026
+ },
+ {
+  "id": "durenja01",
+  "name": "Jalen Duren",
+  "source": "proxy",
+  "firstYear": 2023,
+  "lastYear": 2026
+ },
+ {
+  "id": "willigr01",
+  "name": "Grant Williams",
+  "source": "proxy",
+  "firstYear": 2020,
+  "lastYear": 2026
+ },
+ {
+  "id": "quickim01",
+  "name": "Immanuel Quickley",
+  "source": "proxy",
+  "firstYear": 2021,
+  "lastYear": 2026
+ }
+]
