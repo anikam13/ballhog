@@ -24,6 +24,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^8.2.2",
+    "sharp": "^0.35.1",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3",
     "vite": "^5.3.4"
