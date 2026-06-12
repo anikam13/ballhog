@@ -1,4 +1,5 @@
 import type { RoomState } from "../../shared/protocol";
+import { SOLO_ROUNDS, knowledgeTier } from "../../shared/protocol";
 import { socket } from "../socket";
 import Scoreboard from "./Scoreboard";
 
@@ -9,9 +10,30 @@ interface Props {
 }
 
 export default function WinScreen({ state, meId, onLeave }: Props) {
+  const isSolo = state.players.length === 1;
   const champ = state.players.find((p) => p.id === state.gameWinnerId);
   const isHost = state.hostId === meId;
   const iWon = state.gameWinnerId === meId;
+
+  if (isSolo && champ) {
+    const finalTier = knowledgeTier(champ.knowledgeScore);
+    return (
+      <main className="win">
+        <p className="win-kicker">TRIAL COMPLETE · {SOLO_ROUNDS} ROUNDS</p>
+        <h1 className="win-name">{finalTier}</h1>
+        <p className="win-sub">YOUR KNOWLEDGE RATING</p>
+        <Scoreboard state={state} meId={meId} />
+        <div className="win-actions">
+          <button className="btn btn-go" onClick={() => socket.emit("rematch")}>
+            RUN IT BACK
+          </button>
+          <button className="btn btn-ghost btn-small" onClick={onLeave}>
+            LEAVE
+          </button>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="win">

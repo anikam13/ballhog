@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CluePublic, RoomState, SearchablePlayer } from "../../shared/protocol";
-import { ROUND_MS } from "../../shared/protocol";
+import { ROUND_MS, SOLO_ROUNDS, knowledgeTier } from "../../shared/protocol";
 import { serverNow, socket } from "../socket";
 import PlayerSearch from "./PlayerSearch";
 import Scoreboard from "./Scoreboard";
@@ -102,33 +102,49 @@ export default function GameView({ state, meId }: Props) {
   // ---- result --------------------------------------------------------------
   if (phase === "result" && lastResult) {
     const iWon = lastResult.winnerId === meId;
+    const isSolo = state.players.length === 1;
+    const diffTier = knowledgeTier(500 + (lastResult.difficulty - 50) * 4); // map 0-100 diff → tier label
     return (
       <main className="game">
         <Scoreboard state={state} meId={meId} />
-        <section className={`result ${lastResult.winnerId ? "" : "result-airball"}`}>
+        <section className={`result ${lastResult.winnerId && !isSolo ? "" : "result-airball"}`}>
           <p className="result-callout">
-            {lastResult.winnerId
-              ? iWon
-                ? "BUCKET! YOU BURIED IT"
-                : `${lastResult.winnerNickname} BURIES IT`
-              : "AIRBALL — NOBODY GOT IT"}
-            {lastResult.winnerElapsedMs != null && (
+            {isSolo
+              ? lastResult.winnerId
+                ? "BUCKET!"
+                : "SKIPPED / MISSED"
+              : lastResult.winnerId
+                ? iWon
+                  ? "BUCKET! YOU BURIED IT"
+                  : `${lastResult.winnerNickname} BURIES IT`
+                : "AIRBALL — NOBODY GOT IT"}
+            {!isSolo && lastResult.winnerElapsedMs != null && (
               <span className="result-ms"> {lastResult.winnerElapsedMs}ms</span>
             )}
           </p>
           <ClueCard clue={lastResult.clue} imageUrl={lastResult.revealedImageUrl} revealed />
           <p className="result-name">{lastResult.clueName}</p>
-          <ul className="result-answers">
-            {lastResult.answers.map((a) => (
-              <li key={a.playerId} className={a.correct ? "ok" : "miss"}>
-                <span className="result-answer-mark">{a.correct ? "●" : "✕"}</span>
-                <span className="result-answer-nick">{a.nickname}</span>
-                <span className="result-answer-pick">{a.pickedName}</span>
-                <span className="result-answer-ms">{a.elapsedMs}ms</span>
-              </li>
-            ))}
-            {lastResult.answers.length === 0 && <li className="miss">no answers came in</li>}
-          </ul>
+          <span className="difficulty-badge" data-tier={diffTier}>
+            DIFFICULTY {lastResult.difficulty} · {diffTier}
+          </span>
+          {!isSolo && (
+            <ul className="result-answers">
+              {lastResult.answers.map((a) => (
+                <li key={a.playerId} className={a.correct ? "ok" : "miss"}>
+                  <span className="result-answer-mark">{a.correct ? "●" : "✕"}</span>
+                  <span className="result-answer-nick">{a.nickname}</span>
+                  <span className="result-answer-pick">{a.pickedName}</span>
+                  <span className="result-answer-ms">{a.elapsedMs}ms</span>
+                </li>
+              ))}
+              {lastResult.answers.length === 0 && <li className="miss">no answers came in</li>}
+            </ul>
+          )}
+          {isSolo && (
+            <p className="solo-round-counter">
+              ROUND {lastResult.roundNumber} OF {SOLO_ROUNDS}
+            </p>
+          )}
           <div className="next-bar" key={lastResult.roundNumber} />
         </section>
       </main>

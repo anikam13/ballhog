@@ -4,10 +4,12 @@
 
 import {
   COUNTDOWN_MS,
+  KNOWLEDGE_START,
   MAX_PLAYERS,
   MIN_PLAYERS,
   RESULT_MS,
   ROUND_MS,
+  SOLO_ROUNDS,
   TARGET_SCORE,
   type Phase,
   type RoomState,
@@ -133,7 +135,7 @@ export class GameManager {
       id: playerId,
       nickname: nickname.trim().slice(0, 16) || "BALLER",
       score: 0,
-      knowledgeScore: 0,
+      knowledgeScore: KNOWLEDGE_START,
       ready: false,
       connected: true,
       socketId,
@@ -210,7 +212,7 @@ export class GameManager {
     if (playerId !== room.hostId) throw new Error("Only the host can start a rematch.");
     for (const p of room.players.values()) {
       p.score = 0;
-      p.knowledgeScore = 0;
+      p.knowledgeScore = KNOWLEDGE_START;
       p.ready = false;
     }
     room.phase = "lobby";
@@ -315,20 +317,34 @@ export class GameManager {
       .sort((a, b) => a.elapsedMs - b.elapsedMs || a.receivedAt - b.receivedAt);
     const winner = correct[0] ?? null;
 
+    // Update knowledge scores for all players bidirectionally.
+    const gain = Math.max(20, Math.round(clue.difficulty * 0.6));
+    const penaltyForDiff = (d: number) => Math.max(15, Math.round((100 - d) * 0.5));
+    for (const [pid, answer] of room.answers) {
+      const p = room.players.get(pid);
+      if (!p) continue;
+      if (answer.correct) {
+        p.knowledgeScore = Math.min(1000, p.knowledgeScore + gain);
+      } else {
+        p.knowledgeScore = Math.max(0, p.knowledgeScore - penaltyForDiff(clue.difficulty));
+      }
+    }
+    for (const pid of room.skips) {
+      const p = room.players.get(pid);
+      if (p) p.knowledgeScore = Math.max(0, p.knowledgeScore - 10);
+    }
+
     if (winner) {
       const p = room.players.get(winner.playerId);
-      if (p) {
-        p.score += 1;
-        p.knowledgeScore += clue.difficulty;
-      }
+      if (p) p.score += 1;
     }
 
     room.lastResult = {
       roundNumber: room.roundNumber,
       clueId: clue.id,
       clueName: clue.name,
+      difficulty: clue.difficulty,
       clue: this.cluePublic(room, clue),
-      // post-reveal it's fine for the URL to identify the player
       revealedImageUrl: clue.hasImage ? `/headshots/${clue.id}.jpg` : undefined,
       winnerId: winner?.playerId ?? null,
       winnerNickname: winner ? room.players.get(winner.playerId)?.nickname ?? null : null,
@@ -346,10 +362,12 @@ export class GameManager {
     room.currentClue = null;
     room.revealAt = null;
 
-    const champion = [...room.players.values()].find((p) => p.score >= TARGET_SCORE);
-    if (champion) {
+    const isSolo = room.players.size === 1;
+    const soloFinished = isSolo && room.roundNumber >= SOLO_ROUNDS;
+    const champion = !isSolo && [...room.players.values()].find((p) => p.score >= TARGET_SCORE);
+    if (soloFinished || champion) {
       room.phase = "gameover";
-      room.gameWinnerId = champion.id;
+      room.gameWinnerId = champion ? champion.id : [...room.players.keys()][0];
       if (room.timer) clearTimeout(room.timer);
       room.timer = null;
       this.push(room);

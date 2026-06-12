@@ -370,8 +370,8 @@ body {
   margin: 14px 0 0;
   padding: 0;
   display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .score-chip {
@@ -381,12 +381,11 @@ body {
   background: var(--court-2);
   border: 2px solid var(--line);
   border-radius: 4px;
-  padding: 6px 9px;
+  padding: 7px 10px;
   font-size: 12px;
   font-weight: 800;
   letter-spacing: 0.4px;
   text-transform: uppercase;
-  min-width: 90px;
 }
 
 .score-chip.is-me {
@@ -409,31 +408,24 @@ body {
 
 .thermo {
   width: 100%;
-  height: 3px;
+  height: 5px;
   background: var(--line);
-  border-radius: 2px;
+  border-radius: 3px;
   overflow: hidden;
-  margin-top: 4px;
+  margin-top: 5px;
 }
 
 .thermo-fill {
   height: 100%;
-  border-radius: 2px;
-  background: var(--ink-dim);
+  border-radius: 3px;
   transition: width 600ms ease;
 }
 
-.thermo-fill[data-tier="Z"]     { background: #6b7cad; }
-.thermo-fill[data-tier="Y"]     { background: var(--gold); }
-.thermo-fill[data-tier="X"]     { background: #e06b2a; }
-.thermo-fill[data-tier="ELITE"] { background: var(--green); }
-
 .thermo-label {
   font-family: var(--display);
-  font-size: 9px;
-  letter-spacing: 1.5px;
-  color: var(--ink-dim);
-  margin-top: 2px;
+  font-size: 10px;
+  letter-spacing: 2px;
+  margin-top: 3px;
 }
 
 .btn-skip {
@@ -779,6 +771,31 @@ body {
   color: var(--gold);
 }
 
+.difficulty-badge {
+  display: inline-block;
+  font-family: var(--display);
+  font-size: 11px;
+  letter-spacing: 1.5px;
+  padding: 4px 10px;
+  border-radius: 3px;
+  background: var(--court-2);
+  border: 1px solid var(--line);
+  color: var(--ink-dim);
+}
+
+.difficulty-badge[data-tier="SAVANT"] { border-color: #1faa59; color: #1faa59; }
+.difficulty-badge[data-tier="ELITE"] { border-color: #e06b2a; color: #e06b2a; }
+.difficulty-badge[data-tier="HOOPER"] { border-color: #fdb927; color: #fdb927; }
+.difficulty-badge[data-tier="HIGHLIGHTS ONLY"] { border-color: #6b7cad; color: #6b7cad; }
+
+.solo-round-counter {
+  font-family: var(--display);
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: var(--ink-dim);
+  margin: 0;
+}
+
 .next-bar {
   height: 5px;
   background: var(--red);
@@ -833,7 +850,8 @@ body {
 }
 
 .win .scoreboard {
-  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 .win-actions {

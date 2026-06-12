@@ -1,12 +1,20 @@
 import { knowledgeTier } from "../../shared/protocol";
 import type { RoomState } from "../../shared/protocol";
 
-const ELITE_SCORE = 700;
+const MAX_SCORE = 1000;
 
 interface Props {
   state: RoomState;
   meId: string;
 }
+
+const TIER_COLOR: Record<string, string> = {
+  CASUAL: "#4a4550",
+  "HIGHLIGHTS ONLY": "#6b7cad",
+  HOOPER: "#fdb927",
+  ELITE: "#e06b2a",
+  SAVANT: "#1faa59",
+};
 
 export default function Scoreboard({ state, meId }: Props) {
   const guessing = state.phase === "guessing" || state.phase === "countdown";
@@ -16,7 +24,8 @@ export default function Scoreboard({ state, meId }: Props) {
         const answered = guessing && state.answeredIds.includes(p.id);
         const skipped = guessing && state.skippedIds.includes(p.id);
         const tier = knowledgeTier(p.knowledgeScore);
-        const tierPct = Math.min(100, (p.knowledgeScore / ELITE_SCORE) * 100);
+        const tierPct = Math.min(100, (p.knowledgeScore / MAX_SCORE) * 100);
+        const tierColor = TIER_COLOR[tier];
         return (
           <li
             key={p.id}
@@ -27,9 +36,12 @@ export default function Scoreboard({ state, meId }: Props) {
               <span className="score-chip-pts">{p.score}</span>
             </div>
             <div className="thermo">
-              <div className="thermo-fill" style={{ width: `${tierPct}%` }} data-tier={tier} />
+              <div
+                className="thermo-fill"
+                style={{ width: `${Math.max(tierPct, 4)}%`, background: tierColor }}
+              />
             </div>
-            <span className="thermo-label">{tier}</span>
+            <span className="thermo-label" style={{ color: tierColor }}>{tier}</span>
           </li>
         );
       })}

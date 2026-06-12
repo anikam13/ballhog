@@ -4,6 +4,10 @@
 
 export const TARGET_SCORE = 5;
 export const MIN_PLAYERS = 1;
+/** Number of rounds in a solo game before the rating is shown. */
+export const SOLO_ROUNDS = 5;
+/** Starting knowledge score — middle of the 0–1000 range (HOOPER tier). */
+export const KNOWLEDGE_START = 500;
 export const MAX_PLAYERS = 5;
 
 /** ms between "round starting" broadcast and the synchronized reveal (3-2-1). */
@@ -24,12 +28,12 @@ export interface PlayerInfo {
   knowledgeScore: number;
 }
 
-export type KnowledgeTier = "CASUAL" | "Z" | "Y" | "X" | "ELITE";
+export type KnowledgeTier = "SAVANT" | "ELITE" | "HOOPER" | "HIGHLIGHTS ONLY" | "CASUAL";
 export function knowledgeTier(score: number): KnowledgeTier {
-  if (score >= 700) return "ELITE";
-  if (score >= 450) return "X";
-  if (score >= 250) return "Y";
-  if (score >= 100) return "Z";
+  if (score >= 800) return "SAVANT";
+  if (score >= 600) return "ELITE";
+  if (score >= 400) return "HOOPER";
+  if (score >= 200) return "HIGHLIGHTS ONLY";
   return "CASUAL";
 }
 
@@ -57,6 +61,8 @@ export interface RoundResultInfo {
   roundNumber: number;
   clueId: string;
   clueName: string;
+  /** Difficulty of this clue player (0–100). Safe to reveal post-round. */
+  difficulty: number;
   clue: CluePublic;
   /** Revealed headshot (id-keyed is fine post-reveal); absent in placeholder mode. */
   revealedImageUrl?: string;
