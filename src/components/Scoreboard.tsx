@@ -9,11 +9,11 @@ interface Props {
 }
 
 const TIER_COLOR: Record<string, string> = {
-  CASUAL: "#4a4550",
-  "HIGHLIGHTS ONLY": "#6b7cad",
-  HOOPER: "#fdb927",
-  ELITE: "#e06b2a",
-  SAVANT: "#1faa59",
+  CASUAL:            "#9A8C72",
+  "HIGHLIGHTS ONLY": "#C07840",
+  HOOPER:            "#E8591A",
+  ELITE:             "#1A1208",
+  SAVANT:            "#2E7D3E",
 };
 
 export default function Scoreboard({ state, meId }: Props) {

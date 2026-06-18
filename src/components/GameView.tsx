@@ -103,35 +103,41 @@ export default function GameView({ state, meId }: Props) {
   if (phase === "result" && lastResult) {
     const iWon = lastResult.winnerId === meId;
     const isSolo = state.players.length === 1;
-    const diffTier = knowledgeTier(500 + (lastResult.difficulty - 50) * 4); // map 0-100 diff → tier label
+    const correct = !!lastResult.winnerId;
     return (
       <main className="game">
         <Scoreboard state={state} meId={meId} />
-        <section className={`result ${lastResult.winnerId && !isSolo ? "" : "result-airball"}`}>
-          <p className="result-callout">
-            {isSolo
-              ? lastResult.winnerId
-                ? "BUCKET!"
-                : "SKIPPED / MISSED"
-              : lastResult.winnerId
-                ? iWon
-                  ? "BUCKET! YOU BURIED IT"
-                  : `${lastResult.winnerNickname} BURIES IT`
-                : "AIRBALL — NOBODY GOT IT"}
-            {!isSolo && lastResult.winnerElapsedMs != null && (
-              <span className="result-ms"> {lastResult.winnerElapsedMs}ms</span>
-            )}
-          </p>
-          <ClueCard clue={lastResult.clue} imageUrl={lastResult.revealedImageUrl} revealed />
-          <p className="result-name">{lastResult.clueName}</p>
-          <span className="difficulty-badge" data-tier={diffTier}>
-            DIFFICULTY {lastResult.difficulty} · {diffTier}
-          </span>
+        <section className="result">
+          <div className={`result-banner ${correct ? "result-banner-correct" : "result-banner-missed"}`}>
+            <div>
+              <p className="result-callout">
+                {isSolo
+                  ? correct ? "Bucket!" : "Skipped / Missed"
+                  : correct
+                    ? iWon ? "Bucket! You buried it" : `${lastResult.winnerNickname} buries it`
+                    : "Airball. Nobody got it"}
+              </p>
+              <p className="result-subhead">
+                {isSolo
+                  ? correct ? `Got it${lastResult.winnerElapsedMs != null ? ` · ${lastResult.winnerElapsedMs}ms` : ""}` : "No bucket"
+                  : correct && lastResult.winnerElapsedMs != null
+                    ? <span className="result-ms">{lastResult.winnerElapsedMs}ms</span>
+                    : ""}
+              </p>
+            </div>
+          </div>
+          <div className="result-player-card">
+            <ClueCard clue={lastResult.clue} imageUrl={lastResult.revealedImageUrl} revealed />
+            <div className="result-player-info">
+              <p className="result-name">{lastResult.clueName}</p>
+              <p className="result-meta">DIFFICULTY {lastResult.difficulty}</p>
+            </div>
+          </div>
           {!isSolo && (
             <ul className="result-answers">
               {lastResult.answers.map((a) => (
                 <li key={a.playerId} className={a.correct ? "ok" : "miss"}>
-                  <span className="result-answer-mark">{a.correct ? "●" : "✕"}</span>
+                  <span className="result-answer-mark">{a.correct ? "✓" : "✗"}</span>
                   <span className="result-answer-nick">{a.nickname}</span>
                   <span className="result-answer-pick">{a.pickedName}</span>
                   <span className="result-answer-ms">{a.elapsedMs}ms</span>
@@ -156,19 +162,6 @@ export default function GameView({ state, meId }: Props) {
     <main className="game">
       <Scoreboard state={state} meId={meId} />
 
-      <div className="game-meta">
-        <span className="round-label">ROUND {state.roundNumber}</span>
-        {revealed && (
-          <span className={`shot-clock ${shotClock < 5000 ? "is-low" : ""}`}>
-            {(shotClock / 1000).toFixed(1)}
-          </span>
-        )}
-      </div>
-
-      {state.cluePoolRecycled && state.roundNumber > 0 && !revealed && (
-        <p className="recycle-note">fresh clues exhausted — running it back with repeats</p>
-      )}
-
       {!revealed ? (
         <section className="countdown">
           <span className="countdown-num" key={countdownNum ?? 0}>
@@ -177,43 +170,56 @@ export default function GameView({ state, meId }: Props) {
           <p className="countdown-hint">EYES UP. HANDS READY.</p>
         </section>
       ) : (
-        <section className="play">
-          {clue && <ClueCard clue={clue} />}
+        <div className="game-body">
+          <div className="game-meta">
+            <span className="round-label">ROUND {state.roundNumber}</span>
+            <span className={`shot-clock ${shotClock < 5000 ? "is-low" : ""}`}>
+              {(shotClock / 1000).toFixed(1)}
+            </span>
+          </div>
 
-          {answered ? (
-            <div className="locked">
-              <p className="locked-title">LOCKED IN</p>
-              {myPick && <p className="locked-pick">{myPick.name}</p>}
-              <p className="locked-wait">
-                waiting on{" "}
-                {state.players
-                  .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
-                  .map((p) => p.nickname)
-                  .join(", ") || "the buzzer"}
-                …
-              </p>
-            </div>
-          ) : skipped ? (
-            <div className="locked">
-              <p className="locked-title">SKIPPED</p>
-              <p className="locked-wait">
-                waiting on{" "}
-                {state.players
-                  .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
-                  .map((p) => p.nickname)
-                  .join(", ") || "the buzzer"}
-                …
-              </p>
-            </div>
-          ) : (
-            <>
-              <PlayerSearch disabled={!revealed} onPick={onPick} />
-              <button className="btn btn-ghost btn-skip" onClick={() => socket.emit("skipRound")}>
-                SKIP
-              </button>
-            </>
+          {state.cluePoolRecycled && state.roundNumber > 0 && (
+            <p className="recycle-note">fresh clues exhausted, running it back with repeats</p>
           )}
-        </section>
+
+          <section className="play">
+            {clue && <ClueCard clue={clue} />}
+
+            {answered ? (
+              <div className="locked">
+                <p className="locked-title">LOCKED IN</p>
+                {myPick && <p className="locked-pick">{myPick.name}</p>}
+                <p className="locked-wait">
+                  waiting on{" "}
+                  {state.players
+                    .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
+                    .map((p) => p.nickname)
+                    .join(", ") || "the buzzer"}
+                  …
+                </p>
+              </div>
+            ) : skipped ? (
+              <div className="locked">
+                <p className="locked-title">SKIPPED</p>
+                <p className="locked-wait">
+                  waiting on{" "}
+                  {state.players
+                    .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
+                    .map((p) => p.nickname)
+                    .join(", ") || "the buzzer"}
+                  …
+                </p>
+              </div>
+            ) : (
+              <>
+                <PlayerSearch disabled={!revealed} onPick={onPick} />
+                <button className="btn btn-ghost btn-skip" onClick={() => socket.emit("skipRound")}>
+                  SKIP →
+                </button>
+              </>
+            )}
+          </section>
+        </div>
       )}
     </main>
   );

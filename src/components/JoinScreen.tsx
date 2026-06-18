@@ -50,12 +50,15 @@ export default function JoinScreen({ playerId, onEntered, onError }: Props) {
         <h1 className="join-title">
           BALL<span className="logo-accent">HOG</span>
         </h1>
-        <p className="join-tag">NAME THE HOOPER. FASTEST CORRECT BUCKET WINS. FIRST TO 5.</p>
+        <div className="join-tag-bar">
+          <div className="join-tag-accent" />
+          <p className="join-tag">Name the hooper. Fastest correct bucket wins. First to 5.</p>
+        </div>
       </div>
 
       {invited && (
         <div className="invite-banner">
-          YOU'RE INVITED TO ROOM <strong>{invitedCode}</strong> — drop a name and join
+          YOU'RE INVITED TO ROOM <strong>{invitedCode}</strong>. Drop a name and join.
         </div>
       )}
 
@@ -124,10 +127,10 @@ export default function JoinScreen({ playerId, onEntered, onError }: Props) {
           <ol className="howto-steps">
             <li>
               <strong>A face drops.</strong> Every player sees the same NBA player at the same
-              instant — 20 seconds on the shot clock.
+              instant. 20 seconds on the shot clock.
             </li>
             <li>
-              <strong>Name him.</strong> Type fast — first correct answer takes the round. Wrong
+              <strong>Name him.</strong> Type fast. First correct answer takes the round. Wrong
               guesses lock you out. Not sure? Skip it.
             </li>
             <li>
@@ -142,9 +145,9 @@ export default function JoinScreen({ playerId, onEntered, onError }: Props) {
       </section>
 
       <footer className="join-footer">
-        <span>3,000+ hoopers · 1990–2026 eras</span>
+        <span>3,000+ hoopers · 1990–2026</span>
         <span className="join-footer-dot">·</span>
-        <span>no login, no app, just hoops</span>
+        <span>no login. no app. just hoops.</span>
       </footer>
     </main>
   );

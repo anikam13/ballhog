@@ -158,9 +158,10 @@ export class GameManager {
     if (!player) return;
     player.connected = false;
     player.socketId = null;
-    // In the lobby a vanished player would block ready-up gating forever, so
-    // drop them; mid-game we keep them (score intact) so they can reconnect.
-    if (room.phase === "lobby") room.players.delete(playerId);
+    // Keep the seat even in the lobby — a backgrounded tab (e.g. the host
+    // switching apps to send the invite link) must not destroy the room.
+    // Ready gating only counts connected players, and the empty-room sweep
+    // reclaims abandoned rooms after EMPTY_ROOM_TTL_MS.
     this.afterDeparture(room, playerId);
   }
 
@@ -203,6 +204,11 @@ export class GameManager {
     const connected = [...room.players.values()].filter((p) => p.connected);
     if (connected.length < MIN_PLAYERS) throw new Error("Need at least 1 player.");
     if (!connected.every((p) => p.ready)) throw new Error("Everyone must ready up first.");
+    // Drop lobby ghosts at tip-off so they don't skew solo detection or hang
+    // around the scoreboard all game.
+    for (const p of [...room.players.values()]) {
+      if (!p.connected) room.players.delete(p.id);
+    }
     this.startRound(room);
   }
 

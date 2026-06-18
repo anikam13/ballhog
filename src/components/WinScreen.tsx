@@ -18,6 +18,14 @@ export default function WinScreen({ state, meId, onLeave }: Props) {
   const iWon = state.gameWinnerId === meId;
   const [shareLabel, setShareLabel] = useState("SHARE MY RATING");
 
+  const TIER_DESC: Record<string, string> = {
+    CASUAL:            "Didn't make the roster.",
+    "HIGHLIGHTS ONLY": "Still in the league, barely.",
+    HOOPER:            "Gets minutes when needed.",
+    ELITE:             "Solid off the bench.",
+    SAVANT:            "A starter on any team.",
+  };
+
   if (isSolo && champ) {
     const finalTier = knowledgeTier(champ.knowledgeScore);
     const shareRating = async () => {
@@ -33,9 +41,12 @@ export default function WinScreen({ state, meId, onLeave }: Props) {
     };
     return (
       <main className="win">
-        <p className="win-kicker">TRIAL COMPLETE · {SOLO_ROUNDS} ROUNDS</p>
-        <h1 className="win-name">{finalTier}</h1>
-        <p className="win-sub">YOUR KNOWLEDGE RATING · {champ.knowledgeScore}/1000</p>
+        <div className="win-rank-card">
+          <p className="win-kicker">FINAL RATING · {SOLO_ROUNDS} ROUNDS</p>
+          <h1 className="win-name">{finalTier}</h1>
+          <p className="win-desc">{TIER_DESC[finalTier] ?? ""}</p>
+          <p className="win-sub">{champ.knowledgeScore} / 1000</p>
+        </div>
         <Scoreboard state={state} meId={meId} />
         <div className="win-actions">
           <button className="btn btn-go" onClick={() => socket.emit("rematch")}>
@@ -54,12 +65,14 @@ export default function WinScreen({ state, meId, onLeave }: Props) {
 
   return (
     <main className="win">
-      <p className="win-kicker">{iWon ? "GAME. YOU'RE HIM." : "BALLGAME."}</p>
-      <h1 className="win-name">{champ?.nickname ?? "???"}</h1>
-      <p className="win-sub">
-        TAKES IT {champ?.score ?? 0}–
-        {Math.max(0, ...state.players.filter((p) => p.id !== state.gameWinnerId).map((p) => p.score))}
-      </p>
+      <div className="win-rank-card">
+        <p className="win-kicker">{iWon ? "GAME. YOU'RE HIM." : "BALLGAME."}</p>
+        <h1 className="win-name">{champ?.nickname ?? "???"}</h1>
+        <p className="win-sub">
+          TAKES IT {champ?.score ?? 0}–
+          {Math.max(0, ...state.players.filter((p) => p.id !== state.gameWinnerId).map((p) => p.score))}
+        </p>
+      </div>
 
       <Scoreboard state={state} meId={meId} />
 

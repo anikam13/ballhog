@@ -11,7 +11,7 @@
       name="description"
       content="Fast-paced NBA player guessing game. See the face, name the hooper, fastest correct answer scores. Play with up to 5 friends or go solo to earn your knowledge rating."
     />
-    <meta name="theme-color" content="#0b0b0d" />
+    <meta name="theme-color" content="#1A1208" />
 
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -39,11 +39,32 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@400;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
   </head>
   <body>
+    <!-- SVG filters for grungy text effects -->
+    <svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true">
+      <defs>
+        <!-- Grain erosion: light speckles on text like worn screen-print -->
+        <filter id="grain-erode" x="-2%" y="-2%" width="104%" height="104%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.68 0.68" numOctaves="4" seed="7" result="noise"/>
+          <feColorMatrix type="matrix"
+            values="0 0 0 0 0
+                    0 0 0 0 0
+                    0 0 0 0 0
+                    1.4 0 0 0 -0.18"
+            in="noise" result="grainAlpha"/>
+          <feComposite in="SourceGraphic" in2="grainAlpha" operator="in"/>
+        </filter>
+        <!-- Edge roughness: subtle displacement for organic letter edges -->
+        <filter id="rough-edge" x="-4%" y="-4%" width="108%" height="108%">
+          <feTurbulence type="turbulence" baseFrequency="0.035 0.025" numOctaves="3" seed="11" result="warp"/>
+          <feDisplacementMap in="SourceGraphic" in2="warp" scale="4" xChannelSelector="R" yChannelSelector="G"/>
+        </filter>
+      </defs>
+    </svg>
     <div id="root"></div>
     <noscript>
       <p style="font-family: sans-serif; text-align: center; padding: 40px 20px; color: #f4f1ea">

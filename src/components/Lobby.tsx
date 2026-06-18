@@ -20,7 +20,7 @@ export default function Lobby({ state, meId, onLeave }: Props) {
   const invite = async () => {
     const result = await share({
       title: "Ballhog",
-      text: `Pull up — room ${state.code} on Ballhog. Name the hooper, fastest bucket wins.`,
+      text: `Pull up to room ${state.code} on Ballhog. Name the hooper, fastest bucket wins.`,
       url: inviteUrl(state.code),
     });
     if (result === "copied") {
@@ -40,7 +40,7 @@ export default function Lobby({ state, meId, onLeave }: Props) {
           {shareLabel}
         </button>
         <span className="code-card-hint">
-          {connected.length === 1 ? "solo trial — or bring up to 4 more" : "up to 5 players"}
+          {connected.length === 1 ? "solo trial, or bring up to 4 more" : "up to 5 players"}
         </span>
       </section>
 

@@ -1,0 +1,75 @@
+interface Props {
+  onClose: () => void;
+}
+
+const STEPS = [
+  { n: "01", title: "A FACE DROPS", desc: "Every player sees the same NBA player at the same instant. 20 seconds on the shot clock." },
+  { n: "02", title: "NAME HIM", desc: "Type fast. First correct answer takes the round. Wrong guesses lock you out. Not sure? Skip it." },
+  { n: "03", title: "FIRST TO 5 WINS", desc: "Your knowledge rating moves every round — deep cuts earn more, easy misses cost you." },
+  { n: "04", title: "SOLO MODE", desc: "No friends? Five rounds, one rating. Prove you watch more than highlights." },
+];
+
+const RATINGS = [
+  { label: "CASUAL",   range: "0 – 199",    color: "#6B5C42" },
+  { label: "FAN",      range: "200 – 399",  color: "#E8591A" },
+  { label: "BALLER",   range: "400 – 599",  color: "#2E7D3E" },
+  { label: "ANALYST",  range: "600 – 799",  color: "#1565C0" },
+  { label: "SAVANT",   range: "800 – 1000", color: "#8B2BE2" },
+];
+
+const BackArrow = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
+  </svg>
+);
+
+export default function HowToPlay({ onClose }: Props) {
+  return (
+    <div className="overlay">
+      <div className="overlay-header">
+        <button className="btn-icon overlay-back" onClick={onClose} aria-label="Close">
+          <BackArrow />
+        </button>
+        <span className="overlay-title">HOW TO PLAY</span>
+        <span className="overlay-spacer" />
+      </div>
+
+      <div className="overlay-body">
+        <div className="howto-page-steps">
+          {STEPS.map(({ n, title, desc }) => (
+            <div key={n} className="howto-page-step">
+              <div className="howto-page-num">{n}</div>
+              <div>
+                <div className="howto-page-title">{title}</div>
+                <p className="howto-page-desc">{desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="howto-section">
+          <div className="howto-section-label">PRO TIPS</div>
+          <ul className="howto-tips-list">
+            <li>Jersey numbers and team colors are visible clues</li>
+            <li>Harder players earn you more rating points</li>
+            <li>Wrong answers lock you out — skip when unsure</li>
+            <li>Share your room code to invite friends instantly</li>
+          </ul>
+        </div>
+
+        <div className="howto-section">
+          <div className="howto-section-label">KNOWLEDGE RATINGS</div>
+          <div className="rating-list">
+            {RATINGS.map(({ label, range, color }) => (
+              <div key={label} className="rating-row">
+                <span className="rating-dot" style={{ background: color }} />
+                <span className="rating-label">{label}</span>
+                <span className="rating-range">{range}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
