@@ -14,6 +14,7 @@
   --green:        #2E7D3E;
   --green-light:  #3D9E4A;
   --red:          #C8102E;
+  --ink-shadow:   #1A1208;
 
   --serif: Georgia, "Times New Roman", serif;
   --sans:  "Inter", system-ui, sans-serif;
@@ -228,31 +229,31 @@ body {
 .btn-primary {
   background: var(--orange);
   color: var(--white);
-  box-shadow: 4px 4px 0 var(--black);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
 }
 
 .btn-primary:hover:not(:disabled) {
-  box-shadow: 6px 6px 0 var(--black);
+  box-shadow: 6px 6px 0 var(--ink-shadow);
 }
 
 .btn-secondary {
   background: transparent;
   color: var(--ink);
-  box-shadow: 4px 4px 0 var(--black);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
 }
 
 .btn-secondary:hover:not(:disabled) {
-  box-shadow: 6px 6px 0 var(--black);
+  box-shadow: 6px 6px 0 var(--ink-shadow);
 }
 
 .btn-go {
   background: var(--green);
   color: var(--white);
-  box-shadow: 4px 4px 0 var(--black);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
 }
 
 .btn-go:hover:not(:disabled) {
-  box-shadow: 6px 6px 0 var(--black);
+  box-shadow: 6px 6px 0 var(--ink-shadow);
 }
 
 .btn-ghost {
@@ -323,8 +324,9 @@ body {
 .join-title {
   font-family: var(--serif);
   font-weight: 900;
-  font-size: clamp(52px, 14vw, 72px);
-  line-height: 0.88;
+  font-size: clamp(34px, 9vw, 46px);
+  letter-spacing: 0.01em;
+  line-height: 1;
   margin: 0 0 14px;
   color: var(--ink);
 }
@@ -398,10 +400,10 @@ body {
 }
 
 .input-code {
-  font-family: var(--serif);
-  font-weight: 900;
-  font-size: 24px;
-  letter-spacing: 0.2em;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   text-align: center;
   flex: 1;
@@ -578,7 +580,7 @@ body {
 
 .roster-card.is-ready {
   background: var(--green);
-  box-shadow: 4px 4px 0 var(--black);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
 }
 
 .roster-card.is-gone {
@@ -953,7 +955,7 @@ body {
   border: 3px solid var(--black);
   border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 4px 4px 0 var(--black);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
 }
 
 .search-item {
@@ -1033,7 +1035,7 @@ body {
   border: 3px solid var(--black);
   border-radius: var(--radius);
   padding: 14px 20px;
-  box-shadow: 4px 4px 0 var(--black);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
 }
 
 .result-banner-correct {
