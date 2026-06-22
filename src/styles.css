@@ -4,13 +4,18 @@
   --cream:        #F5F0E8;
   --cream-dark:   #E8E0CC;
   --cream-deep:   #D9CEB4;
-  --orange:       #E8591A;
-  --orange-light: #F2874A;
+  --orange:       #6E3A28;
+  --orange-light: #9C5B42;
+  --pink-highlight: #F3CCC5;
   --black:        #1A1208;
   --ink:          #1A1208;
   --muted:        #6B5C42;
   --muted-light:  #9A8C72;
   --white:        #FFFFFF;
+  /* Text on saturated/always-dark surfaces (orange/green/red buttons, the
+     code card). Stays light in both themes — unlike --white, which flips to a
+     dark surface color in dark mode. */
+  --on-accent:    #F8F3EA;
   --green:        #2E7D3E;
   --green-light:  #3D9E4A;
   --red:          #C8102E;
@@ -18,6 +23,7 @@
 
   --serif: Georgia, "Times New Roman", serif;
   --sans:  "Inter", system-ui, sans-serif;
+  --display: "Anton", "Arial Narrow", Impact, sans-serif;
   --radius: 2px;
 }
 
@@ -26,12 +32,18 @@
 [data-theme="dark"] {
   --cream:        #1C1814;
   --cream-dark:   #251F18;
-  --cream-deep:   #332B22;
+  --cream-deep:   #3A3025;
   --black:        #F0EAD6;
   --ink:          #F0EAD6;
-  --muted:        #9A8C72;
-  --muted-light:  #6B5C42;
+  --muted:        #B8A988;
+  --muted-light:  #8A7A5E;
   --white:        #2A2318;
+  /* Brighter rust reads on dark surfaces (logo, primary card, accents). */
+  --orange:       #C97A45;
+  --orange-light: #DD9460;
+  /* Brutalist offset needs to be lighter than the near-black surfaces here,
+     so the hard shadow stays visible instead of vanishing into the bg. */
+  --ink-shadow:   #6E5F49;
 }
 
 /* Surfaces that must stay dark in dark mode (use --black as bg in light mode) */
@@ -78,29 +90,41 @@ body {
 
 .app {
   width: 100%;
-  max-width: 460px;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
   background: var(--cream);
 }
 
+/* In-room screens keep the original narrow column; the homepage goes
+   full-bleed so the desktop hero/nav/footer can span the viewport. */
+.lobby,
+.game,
+.win {
+  width: 100%;
+  max-width: 460px;
+  margin-inline: auto;
+}
+
 /* ── nav / topbar ─────────────────────────────────────────────── */
 
 .topbar {
-  background: var(--black);
-  padding: 10px 14px;
+  background: var(--cream);
+  padding: 0 clamp(16px, 4vw, 44px);
+  height: 60px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 3px solid var(--orange);
-  gap: 8px;
+  border-bottom: 3px solid var(--ink);
+  box-shadow: 0 6px 0 -3px var(--ink);
+  gap: 12px;
+  flex-shrink: 0;
 }
 
 .topbar-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex: 1;
   min-width: 0;
 }
@@ -108,17 +132,67 @@ body {
 .topbar-right {
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: clamp(6px, 2.4vw, 34px);
   flex-shrink: 0;
 }
 
 .topbar-home {
-  color: var(--muted-light);
+  color: var(--muted);
   flex-shrink: 0;
 }
 
 .topbar-home:hover {
-  color: var(--white);
+  color: var(--ink);
+}
+
+/* ── nav links (text on desktop, icons on mobile) ─────────────── */
+
+.navlink {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px 0;
+  display: flex;
+  align-items: center;
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color 120ms ease;
+}
+
+.navlink:hover {
+  color: var(--orange);
+}
+
+.navlink[aria-pressed="true"] {
+  color: var(--orange);
+}
+
+.navlink[aria-pressed="true"] .navlink-text {
+  box-shadow: inset 0 -3px 0 var(--orange);
+}
+
+.navlink-icon {
+  display: none;
+}
+
+@media (max-width: 640px) {
+  .navlink {
+    padding: 0;
+  }
+  .navlink-text {
+    display: none;
+  }
+  .navlink-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+  }
 }
 
 .btn-icon {
@@ -162,11 +236,21 @@ body {
 }
 
 .logo {
-  font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 900;
-  color: var(--white);
-  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--display);
+  font-size: 24px;
+  letter-spacing: 0.04em;
+  color: var(--orange);
+}
+
+.logo-mark {
+  flex-shrink: 0;
+}
+
+.logo-word {
+  transform: skewX(-6deg);
 }
 
 .logo-accent {
@@ -228,7 +312,7 @@ body {
 
 .btn-primary {
   background: var(--orange);
-  color: var(--white);
+  color: var(--on-accent);
   box-shadow: 4px 4px 0 var(--ink-shadow);
 }
 
@@ -237,7 +321,7 @@ body {
 }
 
 .btn-secondary {
-  background: transparent;
+  background: var(--white);
   color: var(--ink);
   box-shadow: 4px 4px 0 var(--ink-shadow);
 }
@@ -248,7 +332,7 @@ body {
 
 .btn-go {
   background: var(--green);
-  color: var(--white);
+  color: var(--on-accent);
   box-shadow: 4px 4px 0 var(--ink-shadow);
 }
 
@@ -284,7 +368,7 @@ body {
 }
 
 .input:focus {
-  box-shadow: 0 0 0 3px rgba(232, 89, 26, 0.2);
+  box-shadow: 0 0 0 3px rgba(110, 58, 40, 0.2);
 }
 
 .input::placeholder {
@@ -310,82 +394,152 @@ body {
 /* ── join / home ──────────────────────────────────────────────── */
 
 .join {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  flex: 1;
-  gap: 16px;
-  padding: 28px 20px calc(28px + env(safe-area-inset-bottom));
+  width: 100%;
+  background: var(--cream);
+  /* subtle dot texture echoing the reference background */
+  background-image: radial-gradient(var(--cream-deep) 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
+}
+
+.join-inner {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: clamp(28px, 6vw, 60px) clamp(20px, 5vw, 40px) 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 22px;
 }
 
 .join-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.join-ball {
+  width: clamp(76px, 16vw, 116px);
+  height: auto;
   margin-bottom: 6px;
 }
 
 .join-title {
-  font-family: var(--serif);
-  font-weight: 900;
-  font-size: clamp(34px, 9vw, 46px);
-  letter-spacing: 0.01em;
-  line-height: 1;
-  margin: 0 0 14px;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: clamp(60px, 15vw, 148px);
+  line-height: 0.85;
+  letter-spacing: 0.015em;
+  margin: 0;
   color: var(--ink);
+  transform: skewX(-7deg);
+  text-shadow: 5px 6px 0 var(--pink-highlight);
 }
 
-.join-title::after {
-  display: none;
-}
-
-.join-tag-bar {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin-top: 14px;
-}
-
-.join-tag-accent {
-  width: 4px;
-  background: var(--orange);
-  align-self: stretch;
-  flex-shrink: 0;
-  border-radius: 2px;
+.join-title-hog {
+  color: inherit;
 }
 
 .join-tag {
   font-family: var(--sans);
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--muted);
+  font-weight: 800;
+  font-size: clamp(17px, 3.2vw, 30px);
+  letter-spacing: 0.01em;
+  line-height: 1.2;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
-  line-height: 1.5;
-  margin: 0;
-  overflow-wrap: break-word;
+  color: var(--ink);
+  margin: 8px 0 0;
 }
 
-.join-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--muted-light);
+.join-tag-hi {
+  background: var(--pink-highlight);
+  color: #1A1208; /* fixed dark — the pink box stays light in both themes */
+  padding: 1px 8px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+.join-inner .field {
+  width: 100%;
+  max-width: 460px;
+  text-align: left;
+}
+
+/* ── home action cards ────────────────────────────────────────── */
+
+.card-grid {
+  width: 100%;
+  max-width: 880px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.card-btn {
   font-family: var(--sans);
   font-weight: 800;
-  font-size: 11px;
-  letter-spacing: 0.15em;
+  font-size: 17px;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
-  margin: 4px 0;
+  color: var(--ink);
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 6px 6px 0 var(--ink-shadow);
+  cursor: pointer;
+  padding: 26px 16px;
+  min-height: 132px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: transform 80ms ease, box-shadow 80ms ease;
 }
 
-.join-divider::before,
-.join-divider::after {
-  content: "";
-  flex: 1;
-  height: 2px;
-  background: var(--cream-deep);
+.card-btn:hover:not(:disabled) {
+  box-shadow: 8px 8px 0 var(--ink-shadow);
+}
+
+.card-btn:active:not(:disabled) {
+  transform: translate(3px, 3px);
+  box-shadow: 0 0 0 var(--ink-shadow) !important;
+}
+
+.card-btn:disabled {
+  color: var(--muted-light);
+  border-color: var(--cream-deep);
+  box-shadow: 4px 4px 0 var(--cream-deep);
+  cursor: not-allowed;
+}
+
+.card-btn-primary {
+  background: var(--orange);
+  color: #F5F0E8; /* fixed light — the brown fill is dark in both themes */
+}
+
+.card-btn-primary:disabled {
+  background: var(--cream-dark);
+}
+
+.card-btn-icon {
+  display: flex;
+}
+
+.card-btn-label {
+  line-height: 1.1;
 }
 
 .join-row {
   display: flex;
   gap: 10px;
+  width: 100%;
+  max-width: 460px;
 }
 
 .join-row .input {
@@ -409,9 +563,68 @@ body {
   flex: 1;
 }
 
+/* ── home footer (full-bleed dark bar) ────────────────────────── */
+
+.home-footer {
+  margin-top: auto;
+  width: 100%;
+  background: #16100A;
+  color: var(--cream);
+  padding: 20px clamp(20px, 5vw, 44px) calc(20px + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+}
+
+.home-footer-brand {
+  font-family: var(--display);
+  font-size: 22px;
+  letter-spacing: 0.04em;
+  color: #F5F0E8;
+  transform: skewX(-6deg);
+}
+
+.home-footer-brand .logo-accent {
+  color: #DD9460; /* bright rust for contrast on the near-black footer */
+}
+
+.home-footer-meta {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  color: #9A8C72;
+}
+
+@media (max-width: 640px) {
+  .card-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .card-btn {
+    flex-direction: row;
+    justify-content: space-between;
+    min-height: 0;
+    padding: 18px 20px;
+    font-size: 16px;
+  }
+  .card-btn-icon {
+    order: 2;
+  }
+  .card-btn-label {
+    order: 1;
+  }
+  .home-footer {
+    justify-content: center;
+    text-align: center;
+  }
+}
+
 .invite-banner {
-  background: rgba(232, 89, 26, 0.08);
-  border: 2px solid rgba(232, 89, 26, 0.3);
+  background: rgba(110, 58, 40, 0.08);
+  border: 2px solid rgba(110, 58, 40, 0.3);
   border-radius: var(--radius);
   padding: 14px 16px;
   font-size: 13px;
@@ -521,7 +734,7 @@ body {
   font-size: 72px;
   line-height: 1;
   letter-spacing: 0.1em;
-  color: var(--white);
+  color: var(--on-accent);
 }
 
 .code-card-hint {
@@ -534,8 +747,8 @@ body {
 .btn-invite {
   margin-top: 12px;
   background: var(--orange);
-  border-color: var(--white);
-  color: var(--white);
+  border-color: var(--on-accent);
+  color: var(--on-accent);
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -544,7 +757,7 @@ body {
 
 .btn-invite:disabled {
   background: var(--orange);
-  color: var(--white);
+  color: var(--on-accent);
   opacity: 0.7;
 }
 
@@ -611,7 +824,7 @@ body {
 }
 
 .roster-card.is-ready .roster-name {
-  color: var(--white);
+  color: var(--on-accent);
 }
 
 .tag {
@@ -626,7 +839,7 @@ body {
 
 .tag-host {
   background: var(--orange);
-  color: var(--white);
+  color: var(--on-accent);
 }
 
 .tag-you {
@@ -644,7 +857,7 @@ body {
 }
 
 .roster-status.ok {
-  color: var(--white);
+  color: var(--on-accent);
 }
 
 .lobby-actions {
@@ -1071,7 +1284,7 @@ body {
 }
 
 .result-banner-correct .result-subhead {
-  color: var(--white);
+  color: var(--on-accent);
 }
 
 .result-banner-missed .result-subhead {
@@ -1108,7 +1321,7 @@ body {
   font-size: 28px;
   line-height: 1;
   margin: 0;
-  color: var(--white);
+  color: var(--on-accent);
 }
 
 .result-meta {
@@ -1275,7 +1488,7 @@ body {
   font-weight: 900;
   font-size: 22px;
   margin: 8px 0 0;
-  color: var(--white);
+  color: var(--on-accent);
 }
 
 .win-desc {
@@ -1306,7 +1519,7 @@ body {
   left: 0;
   right: 0;
   background: var(--red);
-  color: var(--white);
+  color: var(--on-accent);
   font-family: var(--sans);
   font-weight: 800;
   font-size: 12px;

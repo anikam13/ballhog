@@ -44,3 +44,15 @@ export function loadRoom(): string | null {
 export function clearRoom() {
   localStorage.removeItem(ROOM_KEY);
 }
+
+let soloIntent = false;
+
+export function markSoloIntent() {
+  soloIntent = true;
+}
+
+export function consumeSoloIntent(): boolean {
+  const v = soloIntent;
+  soloIntent = false;
+  return v;
+}
