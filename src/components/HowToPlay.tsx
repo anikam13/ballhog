@@ -1,3 +1,5 @@
+import Overlay from "./Overlay";
+
 interface Props {
   onClose: () => void;
 }
@@ -17,25 +19,10 @@ const RATINGS = [
   { label: "SAVANT",   range: "800 – 1000", color: "#8B2BE2" },
 ];
 
-const BackArrow = () => (
-  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-    <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-  </svg>
-);
-
 export default function HowToPlay({ onClose }: Props) {
   return (
-    <div className="overlay">
-      <div className="overlay-header">
-        <button className="btn-icon overlay-back" onClick={onClose} aria-label="Close">
-          <BackArrow />
-        </button>
-        <span className="overlay-title">HOW TO PLAY</span>
-        <span className="overlay-spacer" />
-      </div>
-
-      <div className="overlay-body">
-        <div className="howto-page-steps">
+    <Overlay title="HOW TO PLAY" onClose={onClose}>
+      <div className="howto-page-steps">
           {STEPS.map(({ n, title, desc }) => (
             <div key={n} className="howto-page-step">
               <div className="howto-page-num">{n}</div>
@@ -69,7 +56,6 @@ export default function HowToPlay({ onClose }: Props) {
             ))}
           </div>
         </div>
-      </div>
-    </div>
+    </Overlay>
   );
 }

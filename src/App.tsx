@@ -10,6 +10,7 @@ import WinScreen from "./components/WinScreen";
 import HowToPlay from "./components/HowToPlay";
 import About from "./components/About";
 import Settings, { initDarkMode } from "./components/Settings";
+import BallMark from "./components/BallMark";
 
 const playerId = getPlayerId();
 
@@ -110,7 +111,12 @@ export default function App() {
 
   let screen;
   if (booting) {
-    screen = <div className="boot">WARMING UP…</div>;
+    screen = (
+      <div className="boot">
+        <BallMark size={52} className="boot-mark" />
+        <span className="boot-text">WARMING UP…</span>
+      </div>
+    );
   } else if (!inRoom) {
     screen = <JoinScreen playerId={playerId} onEntered={handleEntered} onError={setToast} />;
   } else if (state.phase === "lobby") {
@@ -131,40 +137,45 @@ export default function App() {
             </button>
           ) : null}
           <span className="logo">
-            BALL<span className="logo-accent">HOG</span>
+            <BallMark size={28} className="logo-mark" />
+            <span className="logo-word">
+              BALL<span className="logo-accent">HOG</span>
+            </span>
           </span>
           {inRoom && state.phase !== "lobby" && (
             <span className="topbar-code">RM {state.code}</span>
           )}
         </div>
-        <div className="topbar-right">
+        <nav className="topbar-right">
           <button
-            className="btn-icon"
+            className="navlink"
             onClick={() => setPage(page === "howto" ? null : "howto")}
             aria-label="How to play"
             aria-pressed={page === "howto"}
           >
-            <QuestionIcon />
+            <span className="navlink-icon"><QuestionIcon /></span>
+            <span className="navlink-text">RULES</span>
           </button>
           <button
-            className="btn-icon"
+            className="navlink"
             onClick={() => setPage(page === "about" ? null : "about")}
             aria-label="About"
             aria-pressed={page === "about"}
           >
-            <InfoIcon />
+            <span className="navlink-icon"><InfoIcon /></span>
+            <span className="navlink-text">ABOUT</span>
           </button>
           <button
-            className="btn-icon"
+            className="navlink"
             onClick={() => setPage(page === "settings" ? null : "settings")}
             aria-label="Settings"
             aria-pressed={page === "settings"}
           >
-            <GearIcon />
+            <span className="navlink-icon"><GearIcon /></span>
+            <span className="navlink-text">SETTINGS</span>
           </button>
-        </div>
+        </nav>
       </header>
-      <div className="pattern-stripe" />
       {screen}
       {page === "howto" && <HowToPlay onClose={() => setPage(null)} />}
       {page === "about" && <About onClose={() => setPage(null)} />}

@@ -19,7 +19,12 @@ const TIER_COLOR: Record<string, string> = {
 export default function Scoreboard({ state, meId }: Props) {
   const guessing = state.phase === "guessing" || state.phase === "countdown";
   return (
-    <ul className="scoreboard">
+    <div className="scoreboard-wrap">
+      <div className="scoreboard-head">
+        <span className="scoreboard-head-title">SCOREBOARD</span>
+        <span className="scoreboard-head-room">RM {state.code}</span>
+      </div>
+      <ul className="scoreboard">
       {state.players.map((p) => {
         const answered = guessing && state.answeredIds.includes(p.id);
         const skipped = guessing && state.skippedIds.includes(p.id);
@@ -45,6 +50,7 @@ export default function Scoreboard({ state, meId }: Props) {
           </li>
         );
       })}
-    </ul>
+      </ul>
+    </div>
   );
 }

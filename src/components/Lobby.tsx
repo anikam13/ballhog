@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { RoomState } from "../../shared/protocol";
 import { MIN_PLAYERS } from "../../shared/protocol";
 import { socket } from "../socket";
 import { inviteUrl, share } from "../share";
+import { consumeSoloIntent } from "../session";
 
 interface Props {
   state: RoomState;
@@ -16,6 +17,13 @@ export default function Lobby({ state, meId, onLeave }: Props) {
   const connected = state.players.filter((p) => p.connected);
   const everyoneReady = connected.length >= MIN_PLAYERS && connected.every((p) => p.ready);
   const [shareLabel, setShareLabel] = useState("INVITE YOUR SQUAD");
+  const [autoSolo] = useState(() => consumeSoloIntent());
+
+  useEffect(() => {
+    if (!autoSolo || connected.length !== 1) return;
+    if (!me.ready) socket.emit("toggleReady");
+    else if (everyoneReady) socket.emit("startGame");
+  }, [autoSolo, me.ready, everyoneReady, connected.length]);
 
   const invite = async () => {
     const result = await share({
@@ -39,9 +47,7 @@ export default function Lobby({ state, meId, onLeave }: Props) {
         <button className="btn btn-small btn-invite" onClick={invite}>
           {shareLabel}
         </button>
-        <span className="code-card-hint">
-          {connected.length === 1 ? "solo trial, or bring up to 4 more" : "up to 5 players"}
-        </span>
+        {connected.length > 1 && <span className="code-card-hint">up to 5 players</span>}
       </section>
 
       <ul className="roster">

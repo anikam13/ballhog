@@ -105,110 +105,119 @@ export default function GameView({ state, meId }: Props) {
     const isSolo = state.players.length === 1;
     const correct = !!lastResult.winnerId;
     return (
-      <main className="game">
-        <Scoreboard state={state} meId={meId} />
-        <section className="result">
-          <div className={`result-banner ${correct ? "result-banner-correct" : "result-banner-missed"}`}>
-            <div>
-              <p className="result-callout">
-                {isSolo
-                  ? correct ? "Bucket!" : "Skipped / Missed"
-                  : correct
-                    ? iWon ? "Bucket! You buried it" : `${lastResult.winnerNickname} buries it`
-                    : "Airball. Nobody got it"}
-              </p>
-              <p className="result-subhead">
-                {isSolo
-                  ? correct ? `Got it${lastResult.winnerElapsedMs != null ? ` · ${lastResult.winnerElapsedMs}ms` : ""}` : "No bucket"
-                  : correct && lastResult.winnerElapsedMs != null
-                    ? <span className="result-ms">{lastResult.winnerElapsedMs}ms</span>
-                    : ""}
-              </p>
+      <main className="game game-playing">
+        <div className="game-court">
+          <section className="result">
+            <div className={`result-banner ${correct ? "result-banner-correct" : "result-banner-missed"}`}>
+              <div>
+                <p className="result-callout">
+                  {isSolo
+                    ? correct ? "Bucket!" : "Skipped / Missed"
+                    : correct
+                      ? iWon ? "Bucket! You buried it" : `${lastResult.winnerNickname} buries it`
+                      : "Airball. Nobody got it"}
+                </p>
+                <p className="result-subhead">
+                  {isSolo
+                    ? correct ? `Got it${lastResult.winnerElapsedMs != null ? ` · ${lastResult.winnerElapsedMs}ms` : ""}` : "No bucket"
+                    : correct && lastResult.winnerElapsedMs != null
+                      ? <span className="result-ms">{lastResult.winnerElapsedMs}ms</span>
+                      : ""}
+                </p>
+              </div>
             </div>
-          </div>
-          <div className="result-player-card">
-            <ClueCard clue={lastResult.clue} imageUrl={lastResult.revealedImageUrl} revealed />
-            <div className="result-player-info">
-              <p className="result-name">{lastResult.clueName}</p>
-              <p className="result-meta">DIFFICULTY {lastResult.difficulty}</p>
+            <div className="result-player-card">
+              <ClueCard clue={lastResult.clue} imageUrl={lastResult.revealedImageUrl} revealed />
+              <div className="result-player-info">
+                <p className="result-name">{lastResult.clueName}</p>
+                <p className="result-meta">DIFFICULTY {lastResult.difficulty}</p>
+              </div>
             </div>
+            {!isSolo && (
+              <ul className="result-answers">
+                {lastResult.answers.map((a) => (
+                  <li key={a.playerId} className={a.correct ? "ok" : "miss"}>
+                    <span className="result-answer-mark">{a.correct ? "✓" : "✗"}</span>
+                    <span className="result-answer-nick">{a.nickname}</span>
+                    <span className="result-answer-pick">{a.pickedName}</span>
+                    <span className="result-answer-ms">{a.elapsedMs}ms</span>
+                  </li>
+                ))}
+                {lastResult.answers.length === 0 && <li className="miss">no answers came in</li>}
+              </ul>
+            )}
+            {isSolo && (
+              <p className="solo-round-counter">
+                ROUND {lastResult.roundNumber} OF {SOLO_ROUNDS}
+              </p>
+            )}
+          </section>
+        </div>
+
+        <aside className="game-rail">
+          <Scoreboard state={state} meId={meId} />
+          <div className="next-round-card">
+            <span className="next-round-label">NEXT ROUND</span>
+            <div className="next-bar next-bar-rail" key={`rail-${lastResult.roundNumber}`} />
           </div>
-          {!isSolo && (
-            <ul className="result-answers">
-              {lastResult.answers.map((a) => (
-                <li key={a.playerId} className={a.correct ? "ok" : "miss"}>
-                  <span className="result-answer-mark">{a.correct ? "✓" : "✗"}</span>
-                  <span className="result-answer-nick">{a.nickname}</span>
-                  <span className="result-answer-pick">{a.pickedName}</span>
-                  <span className="result-answer-ms">{a.elapsedMs}ms</span>
-                </li>
-              ))}
-              {lastResult.answers.length === 0 && <li className="miss">no answers came in</li>}
-            </ul>
-          )}
-          {isSolo && (
-            <p className="solo-round-counter">
-              ROUND {lastResult.roundNumber} OF {SOLO_ROUNDS}
-            </p>
-          )}
-          <div className="next-bar" key={lastResult.roundNumber} />
-        </section>
+        </aside>
       </main>
     );
   }
 
-  // ---- countdown / guessing -------------------------------------------------
-  return (
-    <main className="game">
-      <Scoreboard state={state} meId={meId} />
-
-      {!revealed ? (
+  // ---- countdown -----------------------------------------------------------
+  if (!revealed) {
+    return (
+      <main className="game-countdown">
         <section className="countdown">
+          <span className="countdown-round">ROUND {state.roundNumber}</span>
           <span className="countdown-num" key={countdownNum ?? 0}>
             {countdownNum ?? "…"}
           </span>
           <p className="countdown-hint">EYES UP. HANDS READY.</p>
         </section>
-      ) : (
-        <div className="game-body">
-          <div className="game-meta">
-            <span className="round-label">ROUND {state.roundNumber}</span>
-            <span className={`shot-clock ${shotClock < 5000 ? "is-low" : ""}`}>
-              {(shotClock / 1000).toFixed(1)}
-            </span>
-          </div>
+      </main>
+    );
+  }
 
-          {state.cluePoolRecycled && state.roundNumber > 0 && (
-            <p className="recycle-note">fresh clues exhausted, running it back with repeats</p>
-          )}
+  // ---- guessing ------------------------------------------------------------
+  // The scoreboard and shot-clock are the same cards everywhere: a side rail on
+  // desktop, stacked above the court on mobile.
+  const timeStr = (shotClock / 1000).toFixed(1);
+  const lowClock = shotClock < 5000 ? "is-low" : "";
+  const clockPct = Math.max(0, Math.min(100, (shotClock / ROUND_MS) * 100));
 
-          <section className="play">
-            {clue && <ClueCard clue={clue} />}
+  const waitingOn =
+    state.players
+      .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
+      .map((p) => p.nickname)
+      .join(", ") || "the buzzer";
 
+  return (
+    <main className="game game-playing">
+      <div className="game-court">
+        <div className="game-meta">
+          <span className="round-label">ROUND {state.roundNumber}</span>
+        </div>
+
+        {state.cluePoolRecycled && state.roundNumber > 0 && (
+          <p className="recycle-note">fresh clues exhausted, running it back with repeats</p>
+        )}
+
+        <section className="play">
+          {clue && <ClueCard clue={clue} />}
+
+          <div className="play-controls">
             {answered ? (
               <div className="locked">
                 <p className="locked-title">LOCKED IN</p>
                 {myPick && <p className="locked-pick">{myPick.name}</p>}
-                <p className="locked-wait">
-                  waiting on{" "}
-                  {state.players
-                    .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
-                    .map((p) => p.nickname)
-                    .join(", ") || "the buzzer"}
-                  …
-                </p>
+                <p className="locked-wait">waiting on {waitingOn}…</p>
               </div>
             ) : skipped ? (
               <div className="locked">
                 <p className="locked-title">SKIPPED</p>
-                <p className="locked-wait">
-                  waiting on{" "}
-                  {state.players
-                    .filter((p) => p.connected && !state.answeredIds.includes(p.id) && !state.skippedIds.includes(p.id))
-                    .map((p) => p.nickname)
-                    .join(", ") || "the buzzer"}
-                  …
-                </p>
+                <p className="locked-wait">waiting on {waitingOn}…</p>
               </div>
             ) : (
               <>
@@ -218,9 +227,20 @@ export default function GameView({ state, meId }: Props) {
                 </button>
               </>
             )}
-          </section>
+          </div>
+        </section>
+      </div>
+
+      <aside className="game-rail">
+        <Scoreboard state={state} meId={meId} />
+        <div className={`shotclock-card ${lowClock}`}>
+          <span className="shotclock-label">SHOT CLOCK</span>
+          <span className={`shot-clock ${lowClock}`}>{timeStr}</span>
+          <div className="shotclock-bar">
+            <div className="shotclock-bar-fill" style={{ width: `${clockPct}%` }} />
+          </div>
         </div>
-      )}
+      </aside>
     </main>
   );
 }
