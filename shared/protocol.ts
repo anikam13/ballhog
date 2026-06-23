@@ -3,11 +3,13 @@
 // clients before the round result — the clue is broadcast as number+color only.
 
 export const TARGET_SCORE = 5;
+export const MIN_TARGET_SCORE = 3;
+export const MAX_TARGET_SCORE = 10;
 export const MIN_PLAYERS = 1;
-/** Number of rounds in a solo game before the rating is shown. */
-export const SOLO_ROUNDS = 5;
-/** Starting knowledge score — middle of the 0–1000 range (HOOPER tier). */
-export const KNOWLEDGE_START = 500;
+/** Fixed round count for solo games (not user-configurable). */
+export const SOLO_ROUNDS = 10;
+/** Starting knowledge score — middle of the CASUAL tier (0–199). */
+export const KNOWLEDGE_START = 100;
 export const MAX_PLAYERS = 5;
 
 /** ms between "round starting" broadcast and the synchronized reveal (3-2-1). */
@@ -111,9 +113,10 @@ export interface JoinPayload {
 export type Ack<T> = (res: { ok: true; data: T } | { ok: false; error: string }) => void;
 
 export interface ClientToServerEvents {
-  create: (p: { nickname: string; playerId: string; solo?: boolean }, ack: Ack<{ code: string }>) => void;
+  create: (p: { nickname: string; playerId: string; solo?: boolean; targetScore?: number }, ack: Ack<{ code: string }>) => void;
   join: (p: JoinPayload, ack: Ack<{ code: string }>) => void;
   toggleReady: () => void;
+  setTargetScore: (targetScore: number) => void;
   startGame: () => void;
   submitAnswer: (p: { pickedId: string; elapsedMs: number }) => void;
   skipRound: () => void;

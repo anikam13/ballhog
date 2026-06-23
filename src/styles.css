@@ -66,6 +66,10 @@
   --ink-shadow:     #5A4D3E;
   --notice-bg:      rgba(201, 150, 106, 0.1);
   --notice-border:  rgba(201, 150, 106, 0.28);
+  /* Progress bar empty track on flipped-dark cards */
+  --track-empty:    rgba(248, 243, 234, 0.14);
+  --track-edge:     rgba(248, 243, 234, 0.42);
+  --edge-on-surface: rgba(201, 149, 110, 0.55);
 }
 
 /* Surfaces that must stay dark in dark mode */
@@ -681,6 +685,31 @@ body {
   }
 }
 
+.join-invite {
+  width: 100%;
+  max-width: 460px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.join-invite-card {
+  pointer-events: none;
+  cursor: default;
+  min-height: 0;
+  padding: 16px 18px;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.join-invite-card .card-btn-icon {
+  order: 2;
+}
+
+.join-invite-card .card-btn-label {
+  order: 1;
+}
+
 .invite-banner {
   background: var(--notice-bg);
   border: 2px solid var(--notice-border);
@@ -758,10 +787,21 @@ body {
 /* ── lobby ────────────────────────────────────────────────────── */
 
 .lobby {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px calc(12px + env(safe-area-inset-bottom));
+}
+
+.lobby-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px 20px calc(28px + env(safe-area-inset-bottom));
+  padding-bottom: 6px;
 }
 
 .code-card {
@@ -919,11 +959,81 @@ body {
   color: var(--on-accent);
 }
 
+.lobby-rounds {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 12px 6px;
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
+  text-align: center;
+}
+
+.lobby-rounds-label {
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+  line-height: 1;
+}
+
+.lobby-rounds-stepper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.lobby-rounds-btn {
+  width: 38px;
+  height: 38px;
+  font-family: var(--sans);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--ink);
+  background: var(--cream);
+  border: 3px solid var(--black);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 120ms ease;
+}
+
+.lobby-rounds-btn:hover:not(:disabled) {
+  background: var(--cream-dark);
+}
+
+.lobby-rounds-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.lobby-rounds-value {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 28px;
+  line-height: 1;
+  color: var(--ink);
+  min-width: 36px;
+  text-align: center;
+}
+
+.lobby-rounds-value-readonly {
+  font-size: 32px;
+}
+
 .lobby-actions {
+  flex-shrink: 0;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  margin-top: 4px;
+  padding-top: 8px;
+  border-top: 3px solid var(--cream-deep);
+  background: var(--cream);
 }
 
 .lobby-wait {
@@ -932,6 +1042,21 @@ body {
   font-weight: 600;
   font-size: 14px;
   margin: 4px 0;
+}
+
+.lobby-wait-dots {
+  font-family: var(--sans);
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  line-height: 1;
+  margin: 0;
+  animation: lobby-wait-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes lobby-wait-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
 }
 
 /* ── scoreboard ───────────────────────────────────────────────── */
@@ -1172,6 +1297,51 @@ body {
    too dim on charcoal in dark) — match countdown/code-card tokens instead. */
 [data-theme="dark"] .score-chip-pts {
   color: var(--on-accent);
+}
+
+[data-theme="dark"] .score-chip-name {
+  color: var(--on-accent);
+}
+
+[data-theme="dark"] .scoreboard-head-room {
+  background: var(--surface-ink);
+  color: var(--on-accent);
+}
+
+[data-theme="dark"] .scoreboard-wrap,
+[data-theme="dark"] .shotclock-card {
+  border-color: var(--edge-on-surface);
+}
+
+[data-theme="dark"] .scoreboard-head {
+  border-bottom-color: var(--track-edge);
+}
+
+[data-theme="dark"] .score-chip {
+  border-color: var(--track-edge);
+  background: var(--cream-dark);
+}
+
+[data-theme="dark"] .input,
+[data-theme="dark"] .search-results {
+  border-color: var(--track-edge);
+  background: #221C16;
+  color: var(--on-accent);
+}
+
+[data-theme="dark"] .input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+
+[data-theme="dark"] .thermo,
+[data-theme="dark"] .shotclock-bar {
+  background: var(--track-empty);
+  border-color: var(--track-edge);
+}
+
+[data-theme="dark"] .shotclock-label {
+  color: var(--muted);
 }
 
 [data-theme="dark"] .shot-clock {

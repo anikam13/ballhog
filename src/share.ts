@@ -4,17 +4,43 @@ export function inviteUrl(code: string): string {
   return `${location.origin}/?code=${code}`;
 }
 
-function consumeInviteCode(): string | null {
-  const params = new URLSearchParams(location.search);
-  const code = params.get("code");
-  if (!code) return null;
-  // Strip the param so refreshes/bookmarks of an in-room session stay clean.
-  history.replaceState(null, "", location.pathname);
-  return code.toUpperCase().slice(0, 4);
+export function ratingShareUrl(tier: string, score: number): string {
+  const params = new URLSearchParams({ tier, score: String(score) });
+  return `${location.origin}/?${params}`;
 }
 
+export type SharedRating = { tier: string; score: number };
+
+function consumeUrlParams(): { invitedCode: string | null; sharedRating: SharedRating | null } {
+  const params = new URLSearchParams(location.search);
+  const code = params.get("code");
+  const tier = params.get("tier");
+  const scoreRaw = params.get("score");
+
+  if (code || tier) {
+    history.replaceState(null, "", location.pathname);
+  }
+
+  const invitedCode = code ? code.toUpperCase().slice(0, 4) : null;
+
+  let sharedRating: SharedRating | null = null;
+  if (tier && scoreRaw) {
+    const score = parseInt(scoreRaw, 10);
+    if (Number.isFinite(score) && score >= 0 && score <= 1000) {
+      sharedRating = { tier, score };
+    }
+  }
+
+  return { invitedCode, sharedRating };
+}
+
+const urlParams = consumeUrlParams();
+
 /** Code from an invite link (?code=ABCD), captured once at page load. */
-export const invitedCode = consumeInviteCode();
+export const invitedCode = urlParams.invitedCode;
+
+/** Solo rating from a share link (?tier=SAVANT&score=642), captured once at page load. */
+export const sharedRating = urlParams.sharedRating;
 
 /**
  * Share via the native sheet when available (mobile), else copy to clipboard.

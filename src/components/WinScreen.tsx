@@ -1,9 +1,9 @@
 import { useState } from "react";
 import type { RoomState } from "../../shared/protocol";
-import { SOLO_ROUNDS, knowledgeTier } from "../../shared/protocol";
+import { knowledgeTier } from "../../shared/protocol";
 import { FEEDBACK_FORM_URL } from "../config";
 import { socket } from "../socket";
-import { share } from "../share";
+import { ratingShareUrl, share } from "../share";
 import Scoreboard from "./Scoreboard";
 
 const FEEDBACK_DISMISS_KEY = "ballhog-feedback-dismissed";
@@ -71,8 +71,8 @@ export default function WinScreen({ state, meId, onLeave }: Props) {
     const shareRating = async () => {
       const result = await share({
         title: "Ballhog",
-        text: `I rated ${finalTier} (${champ.knowledgeScore}/1000) on Ballhog's ${SOLO_ROUNDS}-round NBA knowledge trial. Think you watch more ball?`,
-        url: location.origin,
+        text: `I rated ${finalTier} (${champ.knowledgeScore}/1000) on Ballhog's ${state.targetScore}-round NBA knowledge trial. Think you watch more ball?`,
+        url: ratingShareUrl(finalTier, champ.knowledgeScore),
       });
       if (result === "copied") {
         setShareLabel("COPIED");
@@ -82,7 +82,7 @@ export default function WinScreen({ state, meId, onLeave }: Props) {
     return (
       <main className="win">
         <div className="win-rank-card">
-          <p className="win-kicker">FINAL RATING · {SOLO_ROUNDS} ROUNDS</p>
+          <p className="win-kicker">FINAL RATING · {state.targetScore} ROUNDS</p>
           <h1 className="win-name">{finalTier}</h1>
           <p className="win-desc">{TIER_DESC[finalTier] ?? ""}</p>
           <p className="win-sub">{champ.knowledgeScore} / 1000</p>

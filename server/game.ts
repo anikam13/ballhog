@@ -9,8 +9,10 @@ import {
   MIN_PLAYERS,
   RESULT_MS,
   ROUND_MS,
-  SOLO_ROUNDS,
   TARGET_SCORE,
+  SOLO_ROUNDS,
+  MIN_TARGET_SCORE,
+  MAX_TARGET_SCORE,
   type Phase,
   type RoomState,
   type RoundResultInfo,
@@ -41,6 +43,7 @@ interface Room {
   code: string;
   hostId: string;
   isSolo: boolean;
+  targetScore: number;
   phase: Phase;
   players: Map<string, ServerPlayer>;
   usedClueIds: Set<string>;
@@ -82,7 +85,7 @@ export class GameManager {
 
   // ---- lifecycle -----------------------------------------------------------
 
-  createRoom(nickname: string, playerId: string, socketId: string, solo = false): Room {
+  createRoom(nickname: string, playerId: string, socketId: string, solo = false, targetScore = TARGET_SCORE): Room {
     let code: string;
     do {
       code = Array.from({ length: 4 }, () =>
@@ -94,6 +97,9 @@ export class GameManager {
       code,
       hostId: playerId,
       isSolo: solo,
+      targetScore: solo
+        ? SOLO_ROUNDS
+        : Math.min(MAX_TARGET_SCORE, Math.max(MIN_TARGET_SCORE, Math.round(targetScore))),
       phase: "lobby",
       players: new Map(),
       usedClueIds: new Set(),
@@ -207,9 +213,22 @@ export class GameManager {
     this.push(room);
   }
 
-  startGame(code: string, _playerId: string) {
+  setTargetScore(code: string, playerId: string, targetScore: number) {
     const room = this.rooms.get(code);
     if (!room || room.phase !== "lobby") return;
+    if (playerId !== room.hostId) throw new Error("Only the host can change the round count.");
+    const next = Math.round(targetScore);
+    if (next < MIN_TARGET_SCORE || next > MAX_TARGET_SCORE) {
+      throw new Error(`Round count must be between ${MIN_TARGET_SCORE} and ${MAX_TARGET_SCORE}.`);
+    }
+    room.targetScore = next;
+    this.push(room);
+  }
+
+  startGame(code: string, playerId: string) {
+    const room = this.rooms.get(code);
+    if (!room || room.phase !== "lobby") return;
+    if (playerId !== room.hostId) throw new Error("Only the host can start the game.");
     const connected = [...room.players.values()].filter((p) => p.connected);
     if (connected.length < MIN_PLAYERS) throw new Error("Need at least 1 player.");
     if (!connected.every((p) => p.ready)) throw new Error("Everyone must ready up first.");
@@ -346,8 +365,10 @@ export class GameManager {
     const winner = correct[0] ?? null;
 
     // Update knowledge scores for all players bidirectionally.
-    const gain = Math.max(20, Math.round(clue.difficulty * 0.6));
-    const penaltyForDiff = (d: number) => Math.max(15, Math.round((100 - d) * 0.5));
+    const gain = Math.max(40, Math.round(clue.difficulty * 1.0));
+    // Easy misses still cost the most; hard misses now sting too (old floor was 15 at d=100).
+    const penaltyForDiff = (d: number) =>
+      Math.max(42, Math.round((100 - d) * 0.5 + d * 0.32));
     for (const [pid, answer] of room.answers) {
       const p = room.players.get(pid);
       if (!p) continue;
@@ -390,9 +411,9 @@ export class GameManager {
     room.currentClue = null;
     room.revealAt = null;
 
-    const isSolo = room.players.size === 1;
-    const soloFinished = isSolo && room.roundNumber >= SOLO_ROUNDS;
-    const champion = !isSolo && [...room.players.values()].find((p) => p.score >= TARGET_SCORE);
+    const isSolo = room.isSolo;
+    const soloFinished = isSolo && room.roundNumber >= room.targetScore;
+    const champion = !isSolo && [...room.players.values()].find((p) => p.score >= room.targetScore);
 
     room.phase = "result";
     this.push(room);
@@ -456,7 +477,7 @@ export class GameManager {
         connected: p.connected,
       })),
       hostId: room.hostId,
-      targetScore: TARGET_SCORE,
+      targetScore: room.targetScore,
       roundNumber: room.roundNumber,
       revealAt: room.revealAt,
       clue: room.currentClue ? this.cluePublic(room, room.currentClue) : null,

@@ -2,11 +2,12 @@ import { useRef, useState } from "react";
 import { FEEDBACK_FORM_URL } from "../config";
 import { socket } from "../socket";
 import { getNickname, saveNickname } from "../session";
-import { invitedCode } from "../share";
+import { invitedCode, sharedRating } from "../share";
 import BallMark from "./BallMark";
 
 interface Props {
   playerId: string;
+  inviteMode: boolean;
   onEntered: (code: string) => void;
   onError: (msg: string) => void;
   onOpenTerms: () => void;
@@ -34,17 +35,17 @@ const SoloIcon = () => (
   </svg>
 );
 
-export default function JoinScreen({ playerId, onEntered, onError, onOpenTerms }: Props) {
+export default function JoinScreen({ playerId, inviteMode, onEntered, onError, onOpenTerms }: Props) {
   const [nickname, setNickname] = useState(getNickname());
-  const [code, setCode] = useState(invitedCode ?? "");
+  const [code, setCode] = useState(inviteMode ? (invitedCode ?? "") : "");
   const [busy, setBusy] = useState(false);
   const [showRules, setShowRules] = useState(false);
-  const [joinOpen, setJoinOpen] = useState(invitedCode !== null);
+  const [joinOpen, setJoinOpen] = useState(inviteMode);
   const codeRef = useRef<HTMLInputElement>(null);
 
   const validNick = nickname.trim().length >= 2;
   const validCode = code.trim().length === 4;
-  const invited = invitedCode !== null && code === invitedCode;
+  const invited = inviteMode && invitedCode !== null && code === invitedCode;
 
   const create = () => {
     if (!validNick || busy) return;
@@ -113,6 +114,13 @@ export default function JoinScreen({ playerId, onEntered, onError, onOpenTerms }
           </div>
         )}
 
+        {sharedRating && (
+          <div className="invite-banner">
+            A friend rated <strong>{sharedRating.tier}</strong> ({sharedRating.score}/1000). Think you
+            can top it?
+          </div>
+        )}
+
         <label className="field">
           <span className="field-label">YOUR NAME</span>
           <input
@@ -121,62 +129,92 @@ export default function JoinScreen({ playerId, onEntered, onError, onOpenTerms }
             maxLength={16}
             placeholder="e.g. LEBRON"
             onChange={(e) => setNickname(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && (invited ? join() : create())}
+            onKeyDown={(e) => e.key === "Enter" && (inviteMode ? join() : create())}
             autoComplete="off"
             autoFocus={!validNick}
           />
         </label>
 
-        <div className="card-grid">
-          <button
-            className="card-btn card-btn-primary"
-            disabled={!validNick || busy}
-            onClick={create}
-          >
-            <span className="card-btn-icon"><CreateIcon /></span>
-            <span className="card-btn-label">CREATE ROOM</span>
-          </button>
-
-          <button
-            className="card-btn"
-            disabled={!validNick || busy}
-            onClick={onJoinCard}
-            aria-expanded={joinOpen}
-          >
-            <span className="card-btn-icon"><JoinIcon /></span>
-            <span className="card-btn-label">JOIN ROOM</span>
-          </button>
-
-          <button
-            className="card-btn"
-            disabled={!validNick || busy}
-            onClick={playSolo}
-          >
-            <span className="card-btn-icon"><SoloIcon /></span>
-            <span className="card-btn-label">SINGLE PLAYER MODE</span>
-          </button>
-        </div>
-
-        {joinOpen && (
-          <div className="join-row">
-            <input
-              ref={codeRef}
-              className="input input-code"
-              value={code}
-              maxLength={4}
-              placeholder="CODE"
-              onChange={(e) => setCode(e.target.value.toUpperCase())}
-              onKeyDown={(e) => e.key === "Enter" && join()}
-              autoComplete="off"
-            />
-            <button
-              className="btn btn-go"
-              disabled={!validNick || !validCode || busy}
-              onClick={join}
-            >
-              GO
-            </button>
+        {inviteMode ? (
+          <div className="join-invite">
+            <div className="card-btn join-invite-card" aria-hidden="true">
+              <span className="card-btn-icon"><JoinIcon /></span>
+              <span className="card-btn-label">JOIN ROOM</span>
+            </div>
+            <div className="join-row">
+              <input
+                ref={codeRef}
+                className="input input-code"
+                value={code}
+                maxLength={4}
+                placeholder="CODE"
+                onChange={(e) => setCode(e.target.value.toUpperCase())}
+                onKeyDown={(e) => e.key === "Enter" && join()}
+                autoComplete="off"
+              />
+              <button
+                className="btn btn-go"
+                disabled={!validNick || !validCode || busy}
+                onClick={join}
+              >
+                GO
+              </button>
+            </div>
           </div>
+        ) : (
+          <>
+            <div className="card-grid">
+              <button
+                className="card-btn card-btn-primary"
+                disabled={!validNick || busy}
+                onClick={create}
+              >
+                <span className="card-btn-icon"><CreateIcon /></span>
+                <span className="card-btn-label">CREATE ROOM</span>
+              </button>
+
+              <button
+                className="card-btn"
+                disabled={!validNick || busy}
+                onClick={onJoinCard}
+                aria-expanded={joinOpen}
+              >
+                <span className="card-btn-icon"><JoinIcon /></span>
+                <span className="card-btn-label">JOIN ROOM</span>
+              </button>
+
+              <button
+                className="card-btn"
+                disabled={!validNick || busy}
+                onClick={playSolo}
+              >
+                <span className="card-btn-icon"><SoloIcon /></span>
+                <span className="card-btn-label">SINGLE PLAYER MODE</span>
+              </button>
+            </div>
+
+            {joinOpen && (
+              <div className="join-row">
+                <input
+                  ref={codeRef}
+                  className="input input-code"
+                  value={code}
+                  maxLength={4}
+                  placeholder="CODE"
+                  onChange={(e) => setCode(e.target.value.toUpperCase())}
+                  onKeyDown={(e) => e.key === "Enter" && join()}
+                  autoComplete="off"
+                />
+                <button
+                  className="btn btn-go"
+                  disabled={!validNick || !validCode || busy}
+                  onClick={join}
+                >
+                  GO
+                </button>
+              </div>
+            )}
+          </>
         )}
 
         <section className="howto">
@@ -198,7 +236,7 @@ export default function JoinScreen({ playerId, onEntered, onError, onOpenTerms }
                 earn more, easy misses cost you. Climb from CASUAL to SAVANT.
               </li>
               <li>
-                <strong>Solo?</strong> Five rounds, one rating. Prove you watch more than highlights.
+                <strong>Solo?</strong> Ten rounds, one rating. Prove you watch more than highlights.
               </li>
             </ol>
           )}

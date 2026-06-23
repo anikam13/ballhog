@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { RoomState } from "../../shared/protocol";
-import { MIN_PLAYERS } from "../../shared/protocol";
+import { MIN_PLAYERS, MAX_TARGET_SCORE, MIN_TARGET_SCORE } from "../../shared/protocol";
 import { socket } from "../socket";
 import { inviteUrl, share } from "../share";
 
@@ -31,52 +31,87 @@ export default function Lobby({ state, meId, onLeave }: Props) {
     }
   };
 
+  const canTipOff = everyoneReady && isHost;
+
   return (
     <main className="lobby">
-      <section className="code-card">
-        <span className="code-card-label">ROOM CODE</span>
-        <span className="code-card-code">{state.code}</span>
-        <button className="btn btn-small btn-invite" onClick={invite}>
-          {shareLabel}
-        </button>
-        {connected.length > 1 && <span className="code-card-hint">up to 5 players</span>}
-      </section>
+      <div className="lobby-body">
+        <section className="code-card">
+          <span className="code-card-label">ROOM CODE</span>
+          <span className="code-card-code">{state.code}</span>
+          <button className="btn btn-small btn-invite" onClick={invite}>
+            {shareLabel}
+          </button>
+          {connected.length > 1 && <span className="code-card-hint">up to 5 players</span>}
+        </section>
 
-      <ul className="roster">
-        {state.players.map((p, i) => (
-          <li
-            key={p.id}
-            className={`roster-card ${p.ready ? "is-ready" : ""} ${p.connected ? "" : "is-gone"}`}
-          >
-            <span className="roster-num">{i + 1}</span>
-            <span className="roster-name">
-              {p.nickname}
-              {p.id === state.hostId && <span className="tag tag-host">HOST</span>}
-              {p.id === meId && <span className="tag tag-you">YOU</span>}
-            </span>
-            <span className={`roster-status ${p.ready ? "ok" : ""}`}>
-              {!p.connected ? "GONE" : p.ready ? "READY" : "WARMING UP"}
-            </span>
-          </li>
-        ))}
-      </ul>
+        <ul className="roster">
+          {state.players.map((p, i) => (
+            <li
+              key={p.id}
+              className={`roster-card ${p.ready ? "is-ready" : ""} ${p.connected ? "" : "is-gone"}`}
+            >
+              <span className="roster-num">{i + 1}</span>
+              <span className="roster-name">
+                {p.nickname}
+                {p.id === state.hostId && <span className="tag tag-host">HOST</span>}
+                {p.id === meId && <span className="tag tag-you">YOU</span>}
+              </span>
+              <span className={`roster-status ${p.ready ? "ok" : ""}`}>
+                {!p.connected ? "GONE" : p.ready ? "READY" : "WARMING UP"}
+              </span>
+            </li>
+          ))}
+        </ul>
+
+        <section className="lobby-rounds">
+          <span className="lobby-rounds-label">ROUNDS</span>
+          {isHost ? (
+            <div className="lobby-rounds-stepper">
+              <button
+                type="button"
+                className="lobby-rounds-btn"
+                disabled={state.targetScore <= MIN_TARGET_SCORE}
+                onClick={() => socket.emit("setTargetScore", state.targetScore - 1)}
+                aria-label="Fewer rounds"
+              >
+                −
+              </button>
+              <span className="lobby-rounds-value">{state.targetScore}</span>
+              <button
+                type="button"
+                className="lobby-rounds-btn"
+                disabled={state.targetScore >= MAX_TARGET_SCORE}
+                onClick={() => socket.emit("setTargetScore", state.targetScore + 1)}
+                aria-label="More rounds"
+              >
+                +
+              </button>
+            </div>
+          ) : (
+            <span className="lobby-rounds-value lobby-rounds-value-readonly">{state.targetScore}</span>
+          )}
+        </section>
+      </div>
 
       <div className="lobby-actions">
+        {canTipOff ? (
+          <button className="btn btn-go" onClick={() => socket.emit("startGame")}>
+            TIP OFF
+          </button>
+        ) : everyoneReady ? (
+          <p className="lobby-wait">waiting for the host…</p>
+        ) : (
+          <p className="lobby-wait lobby-wait-dots" aria-label="Waiting for players to ready up">
+            …
+          </p>
+        )}
+
         <button
           className={`btn ${me.ready ? "btn-ghost" : "btn-primary"}`}
           onClick={() => socket.emit("toggleReady")}
         >
           {me.ready ? "UNREADY" : "READY UP"}
-        </button>
-
-        <button
-          className="btn btn-go"
-          disabled={!everyoneReady}
-          onClick={() => socket.emit("startGame")}
-        >
-          {everyoneReady
-            ? connected.length === 1 ? "GO SOLO" : "TIP-OFF"
-            : "WAITING ON READIES"}
         </button>
 
         <button className="btn btn-ghost btn-small" onClick={onLeave}>

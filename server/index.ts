@@ -63,9 +63,9 @@ function bind(socket: Socket, code: string, playerId: string) {
 }
 
 io.on("connection", (socket) => {
-  socket.on("create", ({ nickname, playerId, solo }, ack) => {
+  socket.on("create", ({ nickname, playerId, solo, targetScore }, ack) => {
     try {
-      const room = game.createRoom(nickname, playerId, socket.id, solo === true);
+      const room = game.createRoom(nickname, playerId, socket.id, solo === true, targetScore);
       bind(socket, room.code, playerId);
       // the room broadcast fired before this socket joined the channel
       socket.emit("state", game.toPublicState(room));
@@ -89,6 +89,16 @@ io.on("connection", (socket) => {
   socket.on("toggleReady", () => {
     const s = sessions.get(socket.id);
     if (s) game.toggleReady(s.code, s.playerId);
+  });
+
+  socket.on("setTargetScore", (targetScore) => {
+    const s = sessions.get(socket.id);
+    if (!s) return;
+    try {
+      game.setTargetScore(s.code, s.playerId, targetScore);
+    } catch (e) {
+      socket.emit("error", (e as Error).message);
+    }
   });
 
   socket.on("startGame", () => {

@@ -47,6 +47,7 @@ export default function App() {
   const [booting, setBooting] = useState(true);
   const [dropped, setDropped] = useState(false);
   const [page, setPage] = useState<Page>(null);
+  const [inviteMode, setInviteMode] = useState(invitedCode !== null);
 
   useEffect(() => { initDarkMode(); }, []);
 
@@ -103,7 +104,10 @@ export default function App() {
     else document.title = `Round ${state.roundNumber} · Ballhog`;
   }, [inRoom, state?.phase, state?.code, state?.roundNumber]);
 
-  const handleEntered = (code: string) => saveRoom(code);
+  const handleEntered = (code: string) => {
+    saveRoom(code);
+    setInviteMode(false);
+  };
   const handleLeave = () => {
     socket.emit("leave");
     clearRoom();
@@ -121,7 +125,9 @@ export default function App() {
   } else if (!inRoom) {
     screen = (
       <JoinScreen
+        key={inviteMode ? "invite" : "default"}
         playerId={playerId}
+        inviteMode={inviteMode}
         onEntered={handleEntered}
         onError={setToast}
         onOpenTerms={() => setPage("terms")}
@@ -146,8 +152,12 @@ export default function App() {
     <div className="app">
       <header className="topbar">
         <div className="topbar-left">
-          {inRoom ? (
-            <button className="btn-icon topbar-home" onClick={handleLeave} aria-label="Home">
+          {inRoom || inviteMode ? (
+            <button
+              className="btn-icon topbar-home"
+              onClick={inRoom ? handleLeave : () => setInviteMode(false)}
+              aria-label="Home"
+            >
               <HomeIcon />
             </button>
           ) : null}

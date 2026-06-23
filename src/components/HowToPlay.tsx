@@ -7,8 +7,8 @@ interface Props {
 const STEPS = [
   { n: "1", title: "A FACE DROPS", desc: "Every player sees the same NBA player at the same instant. 20 seconds on the shot clock." },
   { n: "2", title: "NAME HIM", desc: "Type fast. First correct answer takes the round. Wrong guesses lock you out. Not sure? Skip it." },
-  { n: "3", title: "FIRST TO 5 WINS", desc: "Your knowledge rating moves every round: deep cuts earn more, easy misses cost you." },
-  { n: "4", title: "SOLO MODE", desc: "No friends? Five rounds, one rating. Prove you watch more than highlights." },
+  { n: "3", title: "FIRST TO 5 WINS", desc: "Everyone starts CASUAL. Correct guesses climb your rating; deep cuts earn more, easy misses cost you." },
+  { n: "4", title: "SOLO MODE", desc: "No friends? Ten rounds, one rating. Prove you watch more than highlights." },
 ];
 
 const RATINGS = [
@@ -38,6 +38,7 @@ export default function HowToPlay({ onClose }: Props) {
           <div className="howto-section-label">PRO TIPS</div>
           <ul className="howto-tips-list">
             <li>Jersey numbers and team colors are visible clues</li>
+            <li>Everyone starts at CASUAL and climbs with correct guesses</li>
             <li>Harder players earn you more rating points</li>
             <li>Wrong answers lock you out. Skip when unsure.</li>
             <li>Share your room code to invite friends instantly</li>

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CluePublic, RoomState, SearchablePlayer } from "../../shared/protocol";
-import { ROUND_MS, SOLO_ROUNDS, knowledgeTier } from "../../shared/protocol";
+import { ROUND_MS, knowledgeTier } from "../../shared/protocol";
 import { serverNow, socket } from "../socket";
 import PlayerSearch from "./PlayerSearch";
 import Scoreboard from "./Scoreboard";
@@ -148,7 +148,7 @@ export default function GameView({ state, meId }: Props) {
             )}
             {isSolo && (
               <p className="solo-round-counter">
-                ROUND {lastResult.roundNumber} OF {SOLO_ROUNDS}
+                ROUND {lastResult.roundNumber} OF {state.targetScore}
               </p>
             )}
           </section>
