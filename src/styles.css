@@ -188,6 +188,7 @@ body {
 }
 
 .topbar:has(+ .join)::after {
+  --court-stripe: clamp(40px, 9vmin, 52px);
   content: "";
   position: absolute;
   left: 0;
@@ -198,9 +199,9 @@ body {
   background-image: repeating-linear-gradient(
     90deg,
     transparent 0,
-    transparent 49px,
-    rgba(255, 255, 255, 0.04) 49px,
-    rgba(255, 255, 255, 0.04) 52px
+    transparent calc(var(--court-stripe) - 3px),
+    rgba(255, 255, 255, 0.04) calc(var(--court-stripe) - 3px),
+    rgba(255, 255, 255, 0.04) var(--court-stripe)
   );
   box-shadow: 0 3px 0 var(--red);
   pointer-events: none;
@@ -485,35 +486,35 @@ body {
 /* ── join / home ──────────────────────────────────────────────── */
 
 .join {
+  /* Hardwood plank scale — vmin tracks the short edge (portrait-friendly). */
+  --join-plank-y: clamp(16px, 3.8vmin, 30px);
+  --join-plank-x: clamp(48px, 11vmin, 88px);
   flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   background-color: var(--cream);
-  /* Light parquet crosshatch — court print, not dot grid */
+  /* Vertical plank parquet — hardwood seams seen from above, not dot grid */
   background-image:
     linear-gradient(
+      to bottom,
+      transparent calc(100% - 1px),
+      color-mix(in srgb, var(--cream-deep) 24%, transparent) 100%
+    ),
+    linear-gradient(
       90deg,
-      color-mix(in srgb, var(--cream-deep) 38%, transparent) 1px,
-      transparent 1px
+      transparent calc(100% - 1px),
+      color-mix(in srgb, var(--cream-deep) 14%, transparent) 100%
     ),
     linear-gradient(
-      color-mix(in srgb, var(--cream-deep) 38%, transparent) 1px,
-      transparent 1px
-    ),
-    linear-gradient(
-      135deg,
-      transparent 48.5%,
-      color-mix(in srgb, var(--cream-deep) 22%, transparent) 49.5%,
-      transparent 50.5%
-    ),
-    linear-gradient(
-      45deg,
-      transparent 48.5%,
-      color-mix(in srgb, var(--cream-deep) 22%, transparent) 49.5%,
-      transparent 50.5%
+      180deg,
+      color-mix(in srgb, var(--cream-deep) 4%, transparent) 0%,
+      transparent 50%
     );
-  background-size: 26px 26px, 26px 26px, 52px 52px, 52px 52px;
+  background-size:
+    100% var(--join-plank-y),
+    var(--join-plank-x) 100%,
+    100% calc(var(--join-plank-y) * 2);
 }
 
 .join-inner {
