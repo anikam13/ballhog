@@ -216,10 +216,10 @@ export class GameManager {
   setTargetScore(code: string, playerId: string, targetScore: number) {
     const room = this.rooms.get(code);
     if (!room || room.phase !== "lobby") return;
-    if (playerId !== room.hostId) throw new Error("Only the host can change the round count.");
+    if (playerId !== room.hostId) throw new Error("Only the host can change the win target.");
     const next = Math.round(targetScore);
     if (next < MIN_TARGET_SCORE || next > MAX_TARGET_SCORE) {
-      throw new Error(`Round count must be between ${MIN_TARGET_SCORE} and ${MAX_TARGET_SCORE}.`);
+      throw new Error(`Correct guesses to win must be between ${MIN_TARGET_SCORE} and ${MAX_TARGET_SCORE}.`);
     }
     room.targetScore = next;
     this.push(room);

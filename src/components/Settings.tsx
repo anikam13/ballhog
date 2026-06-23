@@ -59,6 +59,22 @@ export default function Settings({ onClose }: Props) {
           ↗
         </span>
       </a>
+
+      {import.meta.env.DEV && (
+        <>
+          <div className="settings-section-label">DEVELOPER</div>
+
+          <a className="settings-row" href="#dev" onClick={onClose}>
+            <div className="settings-row-text">
+              <div className="settings-row-label">PLAYER REVIEW</div>
+              <div className="settings-row-desc">Curate clue players locally</div>
+            </div>
+            <span className="settings-row-external" aria-hidden="true">
+              ↗
+            </span>
+          </a>
+        </>
+      )}
     </Overlay>
   );
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CluePublic, RoomState, SearchablePlayer } from "../../shared/protocol";
-import { ROUND_MS, knowledgeTier } from "../../shared/protocol";
+import { RESULT_MS, ROUND_MS, knowledgeTier } from "../../shared/protocol";
 import { serverNow, socket } from "../socket";
 import PlayerSearch from "./PlayerSearch";
 import Scoreboard from "./Scoreboard";
@@ -158,7 +158,11 @@ export default function GameView({ state, meId }: Props) {
           <Scoreboard state={state} meId={meId} />
           <div className="next-round-card">
             <span className="next-round-label">NEXT ROUND</span>
-            <div className="next-bar next-bar-rail" key={`rail-${lastResult.roundNumber}`} />
+            <div
+              className="next-bar next-bar-rail"
+              key={`rail-${lastResult.roundNumber}`}
+              style={{ "--result-ms": `${RESULT_MS}ms` } as React.CSSProperties}
+            />
           </div>
         </aside>
       </main>

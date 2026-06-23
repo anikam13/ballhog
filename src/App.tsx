@@ -11,6 +11,7 @@ import HowToPlay from "./components/HowToPlay";
 import About from "./components/About";
 import Terms from "./components/Terms";
 import Settings, { initDarkMode } from "./components/Settings";
+import DevReview from "./components/DevReview";
 import BallMark from "./components/BallMark";
 
 const playerId = getPlayerId();
@@ -41,6 +42,23 @@ const GearIcon = () => (
   </svg>
 );
 
+function useDevRoute(): [boolean, () => void] {
+  const [devMode, setDevMode] = useState(() => window.location.hash === "#dev");
+
+  useEffect(() => {
+    const onHash = () => setDevMode(window.location.hash === "#dev");
+    window.addEventListener("hashchange", onHash);
+    return () => window.removeEventListener("hashchange", onHash);
+  }, []);
+
+  const exitDev = () => {
+    window.location.hash = "";
+    setDevMode(false);
+  };
+
+  return [devMode, exitDev];
+}
+
 export default function App() {
   const [state, setState] = useState<RoomState | null>(null);
   const [toast, setToast] = useState<string | null>(null);
@@ -48,6 +66,7 @@ export default function App() {
   const [dropped, setDropped] = useState(false);
   const [page, setPage] = useState<Page>(null);
   const [inviteMode, setInviteMode] = useState(invitedCode !== null);
+  const [devMode, exitDev] = useDevRoute();
 
   useEffect(() => { initDarkMode(); }, []);
 
@@ -96,6 +115,7 @@ export default function App() {
 
   const me = state?.players.find((p) => p.id === playerId) ?? null;
   const inRoom = state !== null && me !== null;
+  const showBetaTag = !booting && !inRoom && page === null;
 
   useEffect(() => {
     if (!inRoom) document.title = "Ballhog: name the hooper";
@@ -113,6 +133,23 @@ export default function App() {
     clearRoom();
     setState(null);
   };
+
+  if (devMode) {
+    if (import.meta.env.DEV) {
+      return <DevReview onExit={exitDev} />;
+    }
+    return (
+      <div className="dev-review">
+        <div className="dev-review-panel">
+          <h1 className="dev-review-title">UNAVAILABLE</h1>
+          <p className="dev-review-muted">Player review is only available in local development.</p>
+          <button className="btn btn-secondary" onClick={exitDev}>
+            BACK
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   let screen;
   if (booting) {
@@ -166,6 +203,11 @@ export default function App() {
             <span className="logo-word">
               BALL<span className="logo-accent">HOG</span>
             </span>
+            {showBetaTag && (
+              <span className="beta-tag" aria-label="Beta version">
+                BETA
+              </span>
+            )}
           </span>
         </div>
         <nav className="topbar-right">

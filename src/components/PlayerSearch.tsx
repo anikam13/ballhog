@@ -15,6 +15,8 @@ function fetchPool(): Promise<SearchablePlayer[]> {
 
 const MAX_RESULTS = 8;
 const DEBOUNCE_MS = 120;
+// Ignore taps after the finger moves enough to count as a scroll gesture.
+const SCROLL_THRESHOLD_PX = 8;
 
 // accent-insensitive matching: "doncic" finds "Dončić"
 const fold = (s: string) =>
@@ -34,6 +36,7 @@ export default function PlayerSearch({ disabled, onPick }: Props) {
   const [debounced, setDebounced] = useState("");
   const [cursor, setCursor] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const touchRef = useRef({ y: 0, moved: false });
 
   useEffect(() => {
     fetchPool().then(setPool).catch(() => {});
@@ -76,6 +79,16 @@ export default function PlayerSearch({ disabled, onPick }: Props) {
     onPick(p);
   };
 
+  const onResultsPointerDown = (e: React.PointerEvent) => {
+    touchRef.current = { y: e.clientY, moved: false };
+  };
+
+  const onResultsPointerMove = (e: React.PointerEvent) => {
+    if (Math.abs(e.clientY - touchRef.current.y) > SCROLL_THRESHOLD_PX) {
+      touchRef.current.moved = true;
+    }
+  };
+
   const onKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
@@ -106,13 +119,21 @@ export default function PlayerSearch({ disabled, onPick }: Props) {
         enterKeyHint="go"
       />
       {results.length > 0 && !disabled && (
-        <ul className="search-results">
+        <ul
+          className="search-results"
+          onPointerDown={onResultsPointerDown}
+          onPointerMove={onResultsPointerMove}
+        >
           {results.map((p, i) => (
             <li key={p.id}>
               <button
+                type="button"
                 className={`search-item ${i === cursor ? "is-active" : ""}`}
                 onPointerDown={(e) => {
-                  e.preventDefault(); // beat input blur on mobile
+                  e.preventDefault(); // keep input focused on mobile
+                }}
+                onClick={() => {
+                  if (touchRef.current.moved) return;
                   pick(p);
                 }}
               >

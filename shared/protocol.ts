@@ -17,7 +17,7 @@ export const COUNTDOWN_MS = 3500;
 /** ms players have to answer after the reveal before the round force-finalizes. */
 export const ROUND_MS = 20000;
 /** ms the per-round result stays up before the next round auto-starts. */
-export const RESULT_MS = 6000;
+export const RESULT_MS = 3000;
 
 export type Phase = "lobby" | "countdown" | "guessing" | "result" | "gameover";
 

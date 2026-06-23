@@ -232,8 +232,9 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
                 guesses lock you out. Not sure? Skip it.
               </li>
               <li>
-                <strong>First to 5 wins.</strong> Your knowledge rating moves every round: deep cuts
-                earn more, easy misses cost you. Climb from CASUAL to SAVANT.
+                <strong>First to X correct guesses wins.</strong> Host picks 3–10. Your knowledge
+                rating moves every round: deep cuts earn more, easy misses cost you. Climb from
+                CASUAL to SAVANT.
               </li>
               <li>
                 <strong>Solo?</strong> Ten rounds, one rating. Prove you watch more than highlights.

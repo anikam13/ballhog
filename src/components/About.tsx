@@ -14,29 +14,12 @@ export default function About({ onClose }: Props) {
           <p className="about-tagline">The NBA player identification game.</p>
         </div>
 
-        <div className="about-stats-row">
-          <div className="about-stat">
-            <div className="about-stat-num">3,000+</div>
-            <div className="about-stat-label">HOOPERS</div>
-          </div>
-          <div className="about-stat-divider" />
-          <div className="about-stat">
-            <div className="about-stat-num">36</div>
-            <div className="about-stat-label">SEASONS</div>
-          </div>
-          <div className="about-stat-divider" />
-          <div className="about-stat">
-            <div className="about-stat-num">5</div>
-            <div className="about-stat-label">TO WIN</div>
-          </div>
-        </div>
-
         <div className="about-section">
           <div className="about-section-title">THE GAME</div>
           <p className="about-section-text">
             Ballhog tests your NBA knowledge in real time. Recognize players from photos: jersey
             numbers, colorways, and pure basketball instinct. Play solo for a personal rating or
-            race your crew to 5.
+            race your crew — first to X correct guesses wins (host picks 3–10).
           </p>
         </div>
 

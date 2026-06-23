@@ -19,7 +19,34 @@ export interface CluePlayer {
   colorName?: string;
 }
 
-function computeDifficulty(c: { firstYear: number; lastYear: number; source: string }): number {
+export interface CluePlayerRaw {
+  id: string;
+  name: string;
+  source: string;
+  firstYear: number;
+  lastYear: number;
+}
+
+export interface PlayerOverride {
+  approved?: boolean;
+  difficulty?: number;
+}
+
+export type PlayerOverrides = Record<string, PlayerOverride>;
+
+export interface ReviewPlayer {
+  id: string;
+  name: string;
+  source: string;
+  firstYear: number;
+  lastYear: number;
+  computedDifficulty: number;
+  difficulty: number;
+  headshotUrl: string;
+  override: PlayerOverride | null;
+}
+
+export function computeDifficulty(c: { firstYear: number; lastYear: number; source: string }): number {
   const era = Math.max(0, (2020 - c.firstYear) / 30) * 60;
   const recency = Math.max(0, (2020 - c.lastYear) / 10) * 25;
   const src = c.source === "proxy" ? 15 : 0;
@@ -111,38 +138,132 @@ function generate() {
     };
   });
 
-  return { pool, clues };
+  return { pool, clues, rawClues: null as CluePlayerRaw[] | null };
 }
 
 const ROOT = path.join(import.meta.dirname, "..");
 export const HEADSHOT_DIR = path.join(ROOT, "public", "headshots");
+const OVERRIDES_PATH = path.join(ROOT, "data", "player_overrides.json");
 
-function loadReal(): { pool: SearchablePlayer[]; clues: CluePlayer[] } | null {
+function loadOverrides(): PlayerOverrides {
+  try {
+    return JSON.parse(fs.readFileSync(OVERRIDES_PATH, "utf8"));
+  } catch {
+    return {};
+  }
+}
+
+let playerOverrides = loadOverrides();
+
+function hasHeadshot(id: string): boolean {
+  return fs.existsSync(path.join(HEADSHOT_DIR, `${id}.jpg`));
+}
+
+function buildCluesFromRaw(raw: CluePlayerRaw[], overrides: PlayerOverrides): CluePlayer[] {
+  return raw
+    .filter((c) => hasHeadshot(c.id))
+    .filter((c) => overrides[c.id]?.approved !== false)
+    .map((c) => {
+      const computed = computeDifficulty(c);
+      const o = overrides[c.id];
+      return {
+        id: c.id,
+        name: c.name,
+        hasImage: true,
+        difficulty: o?.difficulty ?? computed,
+      };
+    });
+}
+
+function loadReal(): { pool: SearchablePlayer[]; clues: CluePlayer[]; rawClues: CluePlayerRaw[] } | null {
   try {
     const pool: SearchablePlayer[] = JSON.parse(
       fs.readFileSync(path.join(ROOT, "data", "searchable_players.json"), "utf8")
     );
-    const raw: { id: string; name: string; source: string; firstYear: number; lastYear: number }[] = JSON.parse(
+    const raw: CluePlayerRaw[] = JSON.parse(
       fs.readFileSync(path.join(ROOT, "data", "clue_players.json"), "utf8")
     );
-    const clues: CluePlayer[] = raw
-      .filter((c) => fs.existsSync(path.join(HEADSHOT_DIR, `${c.id}.jpg`)))
-      .map((c) => ({ id: c.id, name: c.name, hasImage: true, difficulty: computeDifficulty(c) }));
+    const clues = buildCluesFromRaw(raw, playerOverrides);
     if (pool.length < 100 || clues.length < 10) return null;
-    return { pool, clues };
+    return { pool, clues, rawClues: raw };
   } catch {
     return null;
   }
 }
 
 const real = loadReal();
-const { pool, clues } = real ?? generate();
+const generated = real ? null : generate();
+const { pool, clues: initialClues, rawClues } = real ?? {
+  pool: generated!.pool,
+  clues: generated!.clues,
+  rawClues: generated!.rawClues,
+};
+
+/** Mutable — rebuilt when dev overrides are saved. */
+export const CLUE_PLAYERS: CluePlayer[] = [...initialClues];
+
+function rebuildCluePlayers() {
+  if (!rawClues) return;
+  const next = buildCluesFromRaw(rawClues, playerOverrides);
+  CLUE_PLAYERS.length = 0;
+  CLUE_PLAYERS.push(...next);
+}
+
 console.log(
   real
-    ? `[ballhog] real data: ${pool.length} searchable, ${clues.length} clue players with headshots`
+    ? `[ballhog] real data: ${pool.length} searchable, ${CLUE_PLAYERS.length} clue players with headshots`
     : "[ballhog] placeholder data (run \`npx tsx scripts/pipeline.ts\` to build the real set)"
 );
 
 export const SEARCHABLE_POOL: SearchablePlayer[] = pool;
-export const CLUE_PLAYERS: CluePlayer[] = clues;
 export const NAME_BY_ID = new Map(pool.map((p) => [p.id, p.name]));
+
+export function getPlayerOverrides(): PlayerOverrides {
+  return playerOverrides;
+}
+
+export function getReviewPlayers(): ReviewPlayer[] {
+  if (!rawClues) {
+    return CLUE_PLAYERS.map((c) => ({
+      id: c.id,
+      name: c.name,
+      source: "placeholder",
+      firstYear: 2000,
+      lastYear: 2010,
+      computedDifficulty: c.difficulty,
+      difficulty: playerOverrides[c.id]?.difficulty ?? c.difficulty,
+      headshotUrl: `/headshots/${c.id}.jpg`,
+      override: playerOverrides[c.id] ?? null,
+    }));
+  }
+
+  return rawClues
+    .filter((c) => hasHeadshot(c.id))
+    .map((c) => {
+      const computed = computeDifficulty(c);
+      const o = playerOverrides[c.id];
+      return {
+        id: c.id,
+        name: c.name,
+        source: c.source,
+        firstYear: c.firstYear,
+        lastYear: c.lastYear,
+        computedDifficulty: computed,
+        difficulty: o?.difficulty ?? computed,
+        headshotUrl: `/headshots/${c.id}.jpg`,
+        override: o ?? null,
+      };
+    });
+}
+
+export function savePlayerOverride(id: string, patch: PlayerOverride): void {
+  const prev = playerOverrides[id] ?? {};
+  const next: PlayerOverride = { ...prev };
+  if (patch.approved !== undefined) next.approved = patch.approved;
+  if (patch.difficulty !== undefined) next.difficulty = patch.difficulty;
+
+  const merged = { ...playerOverrides, [id]: next };
+  playerOverrides = merged;
+  fs.writeFileSync(OVERRIDES_PATH, JSON.stringify(playerOverrides, null, 2) + "\n");
+  rebuildCluePlayers();
+}

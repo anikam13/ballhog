@@ -7,7 +7,7 @@ interface Props {
 const STEPS = [
   { n: "1", title: "A FACE DROPS", desc: "Every player sees the same NBA player at the same instant. 20 seconds on the shot clock." },
   { n: "2", title: "NAME HIM", desc: "Type fast. First correct answer takes the round. Wrong guesses lock you out. Not sure? Skip it." },
-  { n: "3", title: "FIRST TO 5 WINS", desc: "Everyone starts CASUAL. Correct guesses climb your rating; deep cuts earn more, easy misses cost you." },
+  { n: "3", title: "FIRST TO X CORRECT", desc: "Host picks 3–10. First to that many correct guesses wins. Everyone starts CASUAL — deep cuts earn more, easy misses cost you." },
   { n: "4", title: "SOLO MODE", desc: "No friends? Ten rounds, one rating. Prove you watch more than highlights." },
 ];
 

@@ -5,13 +5,14 @@ import type {
   ClientToServerEvents,
   ServerToClientEvents,
 } from "../shared/protocol";
-import { SEARCHABLE_POOL } from "./data";
+import { getReviewPlayers, savePlayerOverride, SEARCHABLE_POOL } from "./data";
 import { GameManager } from "./game";
 
 const PORT = Number(process.env.PORT ?? 3001);
 const isProd = process.env.NODE_ENV === "production";
 
 const app = express();
+app.use(express.json());
 const httpServer = createServer(app);
 const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer, {
   cors: { origin: true }, // dev: vite proxies /socket.io, but allow direct LAN phones too
@@ -30,6 +31,34 @@ app.get("/api/players", (_req, res) => {
   res.setHeader("Cache-Control", "public, max-age=3600");
   res.type("application/json").send(poolJson);
 });
+
+if (!isProd) {
+  app.get("/api/dev/review", (_req, res) => {
+    res.json(getReviewPlayers());
+  });
+
+  app.post("/api/dev/review", (req, res) => {
+    const { id, approved, difficulty } = req.body ?? {};
+    if (typeof id !== "string" || !id) {
+      res.status(400).json({ error: "id required" });
+      return;
+    }
+    if (approved !== undefined && typeof approved !== "boolean") {
+      res.status(400).json({ error: "approved must be boolean" });
+      return;
+    }
+    if (difficulty !== undefined && (typeof difficulty !== "number" || difficulty < 0 || difficulty > 100)) {
+      res.status(400).json({ error: "difficulty must be 0-100" });
+      return;
+    }
+    try {
+      savePlayerOverride(id, { approved, difficulty });
+      res.json({ ok: true });
+    } catch (e) {
+      res.status(500).json({ error: (e as Error).message });
+    }
+  });
+}
 
 const game = new GameManager((code, state) => {
   io.to(code).emit("state", state);

@@ -64,33 +64,34 @@ export default function Lobby({ state, meId, onLeave }: Props) {
           ))}
         </ul>
 
-        <section className="lobby-rounds">
-          <span className="lobby-rounds-label">ROUNDS</span>
+        <section className="lobby-target" aria-label={`First to ${state.targetScore} correct guesses`}>
+          <span className="lobby-target-label">FIRST TO</span>
           {isHost ? (
-            <div className="lobby-rounds-stepper">
+            <div className="lobby-target-stepper">
               <button
                 type="button"
-                className="lobby-rounds-btn"
+                className="lobby-target-btn"
                 disabled={state.targetScore <= MIN_TARGET_SCORE}
                 onClick={() => socket.emit("setTargetScore", state.targetScore - 1)}
-                aria-label="Fewer rounds"
+                aria-label="Fewer correct guesses"
               >
                 −
               </button>
-              <span className="lobby-rounds-value">{state.targetScore}</span>
+              <span className="lobby-target-value">{state.targetScore}</span>
               <button
                 type="button"
-                className="lobby-rounds-btn"
+                className="lobby-target-btn"
                 disabled={state.targetScore >= MAX_TARGET_SCORE}
                 onClick={() => socket.emit("setTargetScore", state.targetScore + 1)}
-                aria-label="More rounds"
+                aria-label="More correct guesses"
               >
                 +
               </button>
             </div>
           ) : (
-            <span className="lobby-rounds-value lobby-rounds-value-readonly">{state.targetScore}</span>
+            <span className="lobby-target-value lobby-target-value-readonly">{state.targetScore}</span>
           )}
+          <span className="lobby-target-sublabel">correct guesses</span>
         </section>
       </div>
 

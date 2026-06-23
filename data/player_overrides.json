@@ -1,0 +1,610 @@
+{
+  "reedpa01": {
+    "approved": true,
+    "difficulty": 90
+  },
+  "highsha01": {
+    "approved": true,
+    "difficulty": 75
+  },
+  "whiteda01": {
+    "approved": true,
+    "difficulty": 90
+  },
+  "mclaujo01": {
+    "approved": true,
+    "difficulty": 60
+  },
+  "gillan01": {
+    "approved": true,
+    "difficulty": 75
+  },
+  "huertke01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "niangge01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "bambamo01": {
+    "approved": true,
+    "difficulty": 2
+  },
+  "aldamsa01": {
+    "approved": true,
+    "difficulty": 25
+  },
+  "moorewe01": {
+    "approved": true,
+    "difficulty": 80
+  },
+  "willipa01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "richajo01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "willike04": {
+    "approved": true,
+    "difficulty": 60
+  },
+  "klebima01": {
+    "approved": true,
+    "difficulty": 40
+  },
+  "johnsja01": {
+    "approved": true,
+    "difficulty": 20
+  },
+  "leverca01": {
+    "approved": true,
+    "difficulty": 25
+  },
+  "pickeja02": {
+    "approved": true,
+    "difficulty": 80
+  },
+  "trentga02": {
+    "approved": true,
+    "difficulty": 70
+  },
+  "bantoda01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "jacksan01": {
+    "approved": true,
+    "difficulty": 90
+  },
+  "minotjo01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "hoodsja01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "buzelma01": {
+    "approved": true,
+    "difficulty": 30
+  },
+  "pritcpa01": {
+    "approved": true,
+    "difficulty": 10
+  },
+  "watsope01": {
+    "approved": true,
+    "difficulty": 30
+  },
+  "woodch01": {
+    "approved": true,
+    "difficulty": 20
+  },
+  "alvarjo01": {
+    "approved": true,
+    "difficulty": 5
+  },
+  "baldwpa01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "richani01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "smithja05": {
+    "approved": true,
+    "difficulty": 40
+  },
+  "butleja02": {
+    "approved": true,
+    "difficulty": 90
+  },
+  "manntr01": {
+    "approved": true,
+    "difficulty": 20
+  },
+  "dilliro01": {
+    "approved": true,
+    "difficulty": 20
+  },
+  "mathube01": {
+    "approved": true,
+    "difficulty": 30
+  },
+  "thorjt01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "smithdr01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "houstca01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "hendrta01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "harrito02": {
+    "approved": true,
+    "difficulty": 16
+  },
+  "umudest01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "millele01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "peterdr01": {
+    "approved": false,
+    "difficulty": 83
+  },
+  "missiyv01": {
+    "approved": true,
+    "difficulty": 60
+  },
+  "smithja04": {
+    "approved": true,
+    "difficulty": 65
+  },
+  "miltosh01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "princta02": {
+    "approved": true,
+    "difficulty": 45
+  },
+  "reathdu01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "pasecan01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "bostobr01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "cainja01": {
+    "approved": true,
+    "difficulty": 75
+  },
+  "blackan01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "murrake02": {
+    "approved": true,
+    "difficulty": 35
+  },
+  "rhodeja01": {
+    "approved": false,
+    "difficulty": 0
+  },
+  "grimequ01": {
+    "approved": true,
+    "difficulty": 20
+  },
+  "chrisjo01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "murratr01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "mooremi01": {
+    "approved": false,
+    "difficulty": 77
+  },
+  "roberal01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "boguemu01": {
+    "approved": true,
+    "difficulty": 10
+  },
+  "willibu01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "davisda01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "kerseje01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "harrial01": {
+    "approved": true,
+    "difficulty": 72
+  },
+  "grayeje01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "turneje01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "jacksbo01": {
+    "approved": true,
+    "difficulty": 87
+  },
+  "geigema01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "garlawi01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "besttr01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "tisdawa01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "williwa02": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "kittlke01": {
+    "approved": false,
+    "difficulty": 99
+  },
+  "pricema01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "smitsri01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "minorgr01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "humphja01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "foxri01": {
+    "approved": true,
+    "difficulty": 80
+  },
+  "mcmilna01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "mccloge01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "smithke01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "laettch01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "majerda01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "jacksji01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "piercri01": {
+    "approved": true,
+    "difficulty": 100
+  },
+  "chambto01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "aguirma01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "corbity01": {
+    "approved": false,
+    "difficulty": 100
+  },
+  "billuch01": {
+    "approved": true,
+    "difficulty": 16
+  },
+  "bynuman01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "maggeco01": {
+    "approved": true,
+    "difficulty": 73
+  },
+  "westde01": {
+    "approved": true,
+    "difficulty": 40
+  },
+  "watsocj01": {
+    "approved": true,
+    "difficulty": 47
+  },
+  "hayesja01": {
+    "approved": false,
+    "difficulty": 72
+  },
+  "greenge01": {
+    "approved": true,
+    "difficulty": 46
+  },
+  "thomake01": {
+    "approved": false,
+    "difficulty": 80
+  },
+  "chandwi01": {
+    "approved": true,
+    "difficulty": 50
+  },
+  "gordobe01": {
+    "approved": true,
+    "difficulty": 58
+  },
+  "milicda01": {
+    "approved": true,
+    "difficulty": 30
+  },
+  "davisgl01": {
+    "approved": true,
+    "difficulty": 24
+  },
+  "redicjj01": {
+    "approved": true,
+    "difficulty": 8
+  },
+  "martike01": {
+    "approved": true,
+    "difficulty": 41
+  },
+  "youngth01": {
+    "approved": true,
+    "difficulty": 38
+  },
+  "duhonch01": {
+    "approved": true,
+    "difficulty": 84
+  },
+  "howarjo01": {
+    "approved": true,
+    "difficulty": 65
+  },
+  "westda01": {
+    "approved": true,
+    "difficulty": 52
+  },
+  "tuckepj01": {
+    "approved": true,
+    "difficulty": 17
+  },
+  "anderry01": {
+    "approved": true,
+    "difficulty": 37
+  },
+  "tollian01": {
+    "approved": true,
+    "difficulty": 37
+  },
+  "jianlyi01": {
+    "approved": true,
+    "difficulty": 77
+  },
+  "diawbo01": {
+    "approved": true,
+    "difficulty": 48
+  },
+  "murphtr01": {
+    "approved": true,
+    "difficulty": 88
+  },
+  "claxtsp01": {
+    "approved": false,
+    "difficulty": 79
+  },
+  "blatcan01": {
+    "approved": true,
+    "difficulty": 73
+  },
+  "artesro01": {
+    "approved": true,
+    "difficulty": 19
+  },
+  "farmajo01": {
+    "approved": true,
+    "difficulty": 62
+  },
+  "pachuza01": {
+    "approved": true,
+    "difficulty": 12
+  },
+  "fryech01": {
+    "approved": true,
+    "difficulty": 20
+  },
+  "simmojo02": {
+    "approved": true,
+    "difficulty": 68
+  },
+  "mudiaem01": {
+    "approved": true,
+    "difficulty": 61
+  },
+  "poeltja01": {
+    "approved": true,
+    "difficulty": 59
+  },
+  "bullore01": {
+    "approved": true,
+    "difficulty": 54
+  },
+  "turnemy01": {
+    "approved": true,
+    "difficulty": 29
+  },
+  "dinwisp01": {
+    "approved": true,
+    "difficulty": 30
+  },
+  "houseda01": {
+    "approved": true,
+    "difficulty": 83
+  },
+  "payneca01": {
+    "approved": true,
+    "difficulty": 23
+  },
+  "collida01": {
+    "approved": true,
+    "difficulty": 35
+  },
+  "casspom01": {
+    "approved": true,
+    "difficulty": 38
+  },
+  "kennalu01": {
+    "approved": true,
+    "difficulty": 63
+  },
+  "willide02": {
+    "approved": true,
+    "difficulty": 65
+  },
+  "anderky01": {
+    "approved": true,
+    "difficulty": 25
+  },
+  "mccontj01": {
+    "approved": true,
+    "difficulty": 23
+  },
+  "morrimo01": {
+    "approved": true,
+    "difficulty": 47
+  },
+  "cartewe01": {
+    "approved": true,
+    "difficulty": 54
+  },
+  "ennisja01": {
+    "approved": true,
+    "difficulty": 75
+  },
+  "nurkiju01": {
+    "approved": true,
+    "difficulty": 25
+  },
+  "johnsty01": {
+    "approved": true,
+    "difficulty": 51
+  },
+  "evansty01": {
+    "approved": true,
+    "difficulty": 38
+  },
+  "ibakase01": {
+    "approved": true,
+    "difficulty": 35
+  },
+  "kiddgmi01": {
+    "approved": true,
+    "difficulty": 29
+  },
+  "burketr01": {
+    "approved": true,
+    "difficulty": 64
+  },
+  "winslju01": {
+    "approved": true,
+    "difficulty": 71
+  },
+  "gallola01": {
+    "approved": true,
+    "difficulty": 67
+  },
+  "nesmiaa01": {
+    "approved": true,
+    "difficulty": 23
+  },
+  "okorois01": {
+    "approved": true,
+    "difficulty": 62
+  },
+  "murphtr02": {
+    "approved": true,
+    "difficulty": 26
+  },
+  "daniedy01": {
+    "approved": true,
+    "difficulty": 15
+  },
+  "mathega01": {
+    "approved": true,
+    "difficulty": 80
+  },
+  "landajo01": {
+    "approved": true,
+    "difficulty": 69
+  },
+  "mitchda01": {
+    "approved": true,
+    "difficulty": 36
+  },
+  "durenja01": {
+    "approved": true,
+    "difficulty": 33
+  },
+  "willigr01": {
+    "approved": true,
+    "difficulty": 29
+  },
+  "quickim01": {
+    "approved": true,
+    "difficulty": 28
+  }
+}

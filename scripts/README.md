@@ -40,3 +40,9 @@ Re-run the script. To force-refresh headshots delete `public/headshots/` first.
 If BR markup changes, fix `parseSeasonPage()`; if the 2K repo dies, swap
 `fetch2kBand()` to another mirror (HoopsHype publishes current 2K ratings as a
 JS-rendered Next.js page).
+
+## Dev player review
+
+Local-only UI at `#dev` (Settings → Player Review) for curating clue players.
+Available when running `npm run dev` — no env vars or password required.
+Overrides are written to `data/player_overrides.json`.
