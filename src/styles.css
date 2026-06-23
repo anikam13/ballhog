@@ -474,13 +474,10 @@ body {
   background-repeat: repeat;
 }
 
-/* Dark mode: warm charcoal wash so light wood doesn't glare on charcoal field. */
-[data-theme="dark"] .join::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: color-mix(in srgb, var(--cream) 62%, transparent);
-  pointer-events: none;
+[data-theme="dark"] .join {
+  background-color: var(--cream);
+  background-image: radial-gradient(var(--cream-deep) 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
 }
 
 .join-inner {
