@@ -75,6 +75,8 @@ export interface RoundResultInfo {
 export interface RoomState {
   code: string;
   phase: Phase;
+  /** True for rooms created via single-player mode — skips the lobby. */
+  isSolo: boolean;
   players: PlayerInfo[];
   hostId: string;
   targetScore: number;
@@ -109,7 +111,7 @@ export interface JoinPayload {
 export type Ack<T> = (res: { ok: true; data: T } | { ok: false; error: string }) => void;
 
 export interface ClientToServerEvents {
-  create: (p: { nickname: string; playerId: string }, ack: Ack<{ code: string }>) => void;
+  create: (p: { nickname: string; playerId: string; solo?: boolean }, ack: Ack<{ code: string }>) => void;
   join: (p: JoinPayload, ack: Ack<{ code: string }>) => void;
   toggleReady: () => void;
   startGame: () => void;

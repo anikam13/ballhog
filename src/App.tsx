@@ -9,12 +9,13 @@ import GameView from "./components/GameView";
 import WinScreen from "./components/WinScreen";
 import HowToPlay from "./components/HowToPlay";
 import About from "./components/About";
+import Terms from "./components/Terms";
 import Settings, { initDarkMode } from "./components/Settings";
 import BallMark from "./components/BallMark";
 
 const playerId = getPlayerId();
 
-type Page = "howto" | "about" | "settings" | null;
+type Page = "howto" | "about" | "settings" | "terms" | null;
 
 const HomeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -96,7 +97,7 @@ export default function App() {
   const inRoom = state !== null && me !== null;
 
   useEffect(() => {
-    if (!inRoom) document.title = "Ballhog — name the hooper";
+    if (!inRoom) document.title = "Ballhog: name the hooper";
     else if (state.phase === "lobby") document.title = `Room ${state.code} · Ballhog`;
     else if (state.phase === "gameover") document.title = "Ballgame · Ballhog";
     else document.title = `Round ${state.roundNumber} · Ballhog`;
@@ -118,7 +119,21 @@ export default function App() {
       </div>
     );
   } else if (!inRoom) {
-    screen = <JoinScreen playerId={playerId} onEntered={handleEntered} onError={setToast} />;
+    screen = (
+      <JoinScreen
+        playerId={playerId}
+        onEntered={handleEntered}
+        onError={setToast}
+        onOpenTerms={() => setPage("terms")}
+      />
+    );
+  } else if (state.phase === "lobby" && state.isSolo) {
+    screen = (
+      <div className="boot">
+        <BallMark size={52} className="boot-mark" />
+        <span className="boot-text">TIP-OFF…</span>
+      </div>
+    );
   } else if (state.phase === "lobby") {
     screen = <Lobby state={state} meId={playerId} onLeave={handleLeave} />;
   } else if (state.phase === "gameover") {
@@ -142,9 +157,6 @@ export default function App() {
               BALL<span className="logo-accent">HOG</span>
             </span>
           </span>
-          {inRoom && state.phase !== "lobby" && (
-            <span className="topbar-code">RM {state.code}</span>
-          )}
         </div>
         <nav className="topbar-right">
           <button
@@ -180,6 +192,7 @@ export default function App() {
       {page === "howto" && <HowToPlay onClose={() => setPage(null)} />}
       {page === "about" && <About onClose={() => setPage(null)} />}
       {page === "settings" && <Settings onClose={() => setPage(null)} />}
+      {page === "terms" && <Terms onClose={() => setPage(null)} />}
       {dropped && !booting && <div className="reconnect-banner">RECONNECTING…</div>}
       {toast && <div className="toast">{toast}</div>}
     </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FEEDBACK_FORM_URL } from "../config";
 import Overlay from "./Overlay";
 
 interface Props {
@@ -41,6 +42,23 @@ export default function Settings({ onClose }: Props) {
           <div className="toggle-knob" />
         </div>
       </button>
+
+      <div className="settings-section-label">FEEDBACK</div>
+
+      <a
+        className="settings-row"
+        href={FEEDBACK_FORM_URL}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <div className="settings-row-text">
+          <div className="settings-row-label">SEND FEEDBACK</div>
+          <div className="settings-row-desc">Report bugs or suggest players</div>
+        </div>
+        <span className="settings-row-external" aria-hidden="true">
+          ↗
+        </span>
+      </a>
     </Overlay>
   );
 }

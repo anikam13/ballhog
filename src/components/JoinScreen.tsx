@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
+import { FEEDBACK_FORM_URL } from "../config";
 import { socket } from "../socket";
-import { getNickname, markSoloIntent, saveNickname } from "../session";
+import { getNickname, saveNickname } from "../session";
 import { invitedCode } from "../share";
 import BallMark from "./BallMark";
 
@@ -8,17 +9,18 @@ interface Props {
   playerId: string;
   onEntered: (code: string) => void;
   onError: (msg: string) => void;
+  onOpenTerms: () => void;
 }
 
 const CreateIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round">
     <circle cx="12" cy="12" r="9" />
     <path d="M12 8v8M8 12h8" />
   </svg>
 );
 
 const JoinIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="9" cy="8" r="3.2" />
     <path d="M3.5 19c0-3 2.5-5 5.5-5s5.5 2 5.5 5" />
     <path d="M18 9v5M15.5 11.5h5" />
@@ -26,13 +28,13 @@ const JoinIcon = () => (
 );
 
 const SoloIcon = () => (
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="8" r="3.4" />
     <path d="M5.5 19c0-3.3 2.9-5.5 6.5-5.5s6.5 2.2 6.5 5.5" />
   </svg>
 );
 
-export default function JoinScreen({ playerId, onEntered, onError }: Props) {
+export default function JoinScreen({ playerId, onEntered, onError, onOpenTerms }: Props) {
   const [nickname, setNickname] = useState(getNickname());
   const [code, setCode] = useState(invitedCode ?? "");
   const [busy, setBusy] = useState(false);
@@ -85,8 +87,7 @@ export default function JoinScreen({ playerId, onEntered, onError }: Props) {
     if (!validNick || busy) return;
     setBusy(true);
     saveNickname(nickname.trim());
-    markSoloIntent();
-    socket.emit("create", { nickname: nickname.trim(), playerId }, (res) => {
+    socket.emit("create", { nickname: nickname.trim(), playerId, solo: true }, (res) => {
       setBusy(false);
       if (res.ok) onEntered(res.data.code);
       else onError(res.error);
@@ -97,7 +98,7 @@ export default function JoinScreen({ playerId, onEntered, onError }: Props) {
     <main className="join">
       <div className="join-inner">
         <div className="join-hero">
-          <BallMark size={104} className="join-ball" />
+          <BallMark size={80} className="join-ball" />
           <h1 className="join-title">
             BALL<span className="join-title-hog">HOG</span>
           </h1>
@@ -118,7 +119,7 @@ export default function JoinScreen({ playerId, onEntered, onError }: Props) {
             className="input"
             value={nickname}
             maxLength={16}
-            placeholder="e.g. SPIDA"
+            placeholder="e.g. LEBRON"
             onChange={(e) => setNickname(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && (invited ? join() : create())}
             autoComplete="off"
@@ -208,7 +209,19 @@ export default function JoinScreen({ playerId, onEntered, onError }: Props) {
         <span className="home-footer-brand">
           BALL<span className="logo-accent">HOG</span>
         </span>
-        <span className="home-footer-meta">3,000+ HOOPERS · 1990–2026 · NO LOGIN. NO APP. JUST HOOPS.</span>
+        <nav className="home-footer-links" aria-label="Legal and support">
+          <a
+            href={FEEDBACK_FORM_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="home-footer-link"
+          >
+            FEEDBACK
+          </a>
+          <button type="button" className="home-footer-link" onClick={onOpenTerms}>
+            TERMS & CONDITIONS
+          </button>
+        </nav>
       </footer>
     </main>
   );

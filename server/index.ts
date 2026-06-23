@@ -35,11 +35,12 @@ const game = new GameManager((code, state) => {
   io.to(code).emit("state", state);
 });
 
-// Current clue headshot, addressed by room+round only so the URL can't
-// identify the player. Cacheable briefly so the countdown preload is reused
-// at reveal; the round number in the path busts it next round.
-app.get("/api/clue/:code/:round.jpg", (req, res) => {
-  const file = game.clueImagePath(req.params.code, Number(req.params.round));
+// Current clue headshot, addressed by room + a monotonic clue serial so the
+// URL can't identify the player. Cacheable briefly so the countdown preload is
+// reused at reveal; the serial is unique per round across the room's whole
+// lifetime, so it never collides with a cached image from a previous game.
+app.get("/api/clue/:code/:serial.jpg", (req, res) => {
+  const file = game.clueImagePath(req.params.code, Number(req.params.serial));
   if (!file) {
     res.status(404).end();
     return;
@@ -62,9 +63,9 @@ function bind(socket: Socket, code: string, playerId: string) {
 }
 
 io.on("connection", (socket) => {
-  socket.on("create", ({ nickname, playerId }, ack) => {
+  socket.on("create", ({ nickname, playerId, solo }, ack) => {
     try {
-      const room = game.createRoom(nickname, playerId, socket.id);
+      const room = game.createRoom(nickname, playerId, socket.id, solo === true);
       bind(socket, room.code, playerId);
       // the room broadcast fired before this socket joined the channel
       socket.emit("state", game.toPublicState(room));

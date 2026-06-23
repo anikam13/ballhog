@@ -6,18 +6,18 @@ import sharp from "sharp";
 
 const PUB = path.join(import.meta.dirname, "..", "public");
 
-const GOLD = "#fdb927";
+const BALL_BROWN = "#6E3A28";
 const COURT = "#0b0b0d";
 const RED = "#c8102e";
 const INK = "#f4f1ea";
 
-/** Basketball mark — gold ball, court-dark seams. */
+/** Basketball mark — brown ball, court-dark seams. */
 function ballSvg(size: number, pad = 0): string {
   const c = size / 2;
   const r = c - pad - size * 0.06;
   const sw = Math.max(2, size * 0.055);
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
-  <circle cx="${c}" cy="${c}" r="${r}" fill="${GOLD}" stroke="${COURT}" stroke-width="${sw}"/>
+  <circle cx="${c}" cy="${c}" r="${r}" fill="${BALL_BROWN}" stroke="${COURT}" stroke-width="${sw}"/>
   <line x1="${c}" y1="${c - r}" x2="${c}" y2="${c + r}" stroke="${COURT}" stroke-width="${sw}"/>
   <line x1="${c - r}" y1="${c}" x2="${c + r}" y2="${c}" stroke="${COURT}" stroke-width="${sw}"/>
   <path d="M ${c - r * 0.62} ${c - r * 0.79} A ${r * 1.1} ${r * 1.1} 0 0 1 ${c - r * 0.62} ${c + r * 0.79}" fill="none" stroke="${COURT}" stroke-width="${sw}"/>
@@ -54,7 +54,7 @@ function ogSvg(): string {
   <rect width="1200" height="630" fill="${COURT}"/>
   ${stripes}
   <g transform="translate(95 150)">${ball}</g>
-  <text x="330" y="300" font-family="Impact, Arial Narrow, sans-serif" font-weight="900" font-size="140" letter-spacing="2" fill="${INK}">BALL<tspan fill="${GOLD}">HOG</tspan></text>
+  <text x="330" y="300" font-family="Impact, Arial Narrow, sans-serif" font-weight="900" font-size="140" letter-spacing="2" fill="${INK}">BALL<tspan fill="${BALL_BROWN}">HOG</tspan></text>
   <text x="335" y="380" font-family="Impact, Arial Narrow, sans-serif" font-weight="700" font-size="34" fill="#9b958a" textLength="760" lengthAdjust="spacingAndGlyphs">NAME THE HOOPER. FASTEST BUCKET WINS.</text>
   <rect x="0" y="570" width="1200" height="60" fill="${RED}"/>
   <text x="600" y="610" text-anchor="middle" font-family="Impact, Arial Narrow, sans-serif" font-weight="700" font-size="26" fill="${INK}" textLength="640" lengthAdjust="spacingAndGlyphs">FIRST TO 5 · UP TO 5 PLAYERS · OR GO SOLO</text>

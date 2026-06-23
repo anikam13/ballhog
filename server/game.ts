@@ -40,12 +40,18 @@ interface Answer {
 interface Room {
   code: string;
   hostId: string;
+  isSolo: boolean;
   phase: Phase;
   players: Map<string, ServerPlayer>;
   usedClueIds: Set<string>;
   cluePoolRecycled: boolean;
   currentClue: CluePlayer | null;
   roundNumber: number;
+  // Monotonic per-clue counter that never resets — used to address the
+  // anonymous clue image so its URL is unique for every round across the
+  // room's lifetime. (roundNumber resets each game and would collide on a
+  // rematch, letting the browser serve a stale cached headshot.)
+  clueSerial: number;
   revealAt: number | null;
   answers: Map<string, Answer>;
   skips: Set<string>;
@@ -76,7 +82,7 @@ export class GameManager {
 
   // ---- lifecycle -----------------------------------------------------------
 
-  createRoom(nickname: string, playerId: string, socketId: string): Room {
+  createRoom(nickname: string, playerId: string, socketId: string, solo = false): Room {
     let code: string;
     do {
       code = Array.from({ length: 4 }, () =>
@@ -87,12 +93,14 @@ export class GameManager {
     const room: Room = {
       code,
       hostId: playerId,
+      isSolo: solo,
       phase: "lobby",
       players: new Map(),
       usedClueIds: new Set(),
       cluePoolRecycled: false,
       currentClue: null,
       roundNumber: 0,
+      clueSerial: 0,
       revealAt: null,
       answers: new Map(),
       skips: new Set(),
@@ -103,13 +111,14 @@ export class GameManager {
     };
     this.rooms.set(code, room);
     this.addPlayer(room, nickname, playerId, socketId);
+    if (solo) this.autoStartSolo(room);
     return room;
   }
 
   /** Join (or reconnect — stable per-device playerId) a room. Throws on failure. */
   join(code: string, nickname: string, playerId: string, socketId: string): Room {
     const room = this.rooms.get(code.toUpperCase());
-    if (!room) throw new Error("Room not found — check the code.");
+    if (!room) throw new Error("Room not found. Check the code.");
 
     const existing = room.players.get(playerId);
     if (existing) {
@@ -204,6 +213,17 @@ export class GameManager {
     const connected = [...room.players.values()].filter((p) => p.connected);
     if (connected.length < MIN_PLAYERS) throw new Error("Need at least 1 player.");
     if (!connected.every((p) => p.ready)) throw new Error("Everyone must ready up first.");
+    this.beginGame(room);
+  }
+
+  private autoStartSolo(room: Room) {
+    const player = room.players.get(room.hostId);
+    if (!player) return;
+    player.ready = true;
+    this.beginGame(room);
+  }
+
+  private beginGame(room: Room) {
     // Drop lobby ghosts at tip-off so they don't skew solo detection or hang
     // around the scoreboard all game.
     for (const p of [...room.players.values()]) {
@@ -231,6 +251,7 @@ export class GameManager {
     // usedClueIds intentionally kept: repeat games keep drawing fresh clues
     // until the pool runs dry, then recycle (see pickClue).
     this.push(room);
+    if (room.isSolo) this.autoStartSolo(room);
   }
 
   // ---- rounds --------------------------------------------------------------
@@ -239,6 +260,7 @@ export class GameManager {
     const clue = this.pickClue(room);
     room.currentClue = clue;
     room.roundNumber += 1;
+    room.clueSerial += 1;
     room.revealAt = Date.now() + COUNTDOWN_MS;
     room.answers.clear();
     room.skips.clear();
@@ -371,14 +393,6 @@ export class GameManager {
     const isSolo = room.players.size === 1;
     const soloFinished = isSolo && room.roundNumber >= SOLO_ROUNDS;
     const champion = !isSolo && [...room.players.values()].find((p) => p.score >= TARGET_SCORE);
-    if (soloFinished || champion) {
-      room.phase = "gameover";
-      room.gameWinnerId = champion ? champion.id : [...room.players.keys()][0];
-      if (room.timer) clearTimeout(room.timer);
-      room.timer = null;
-      this.push(room);
-      return;
-    }
 
     room.phase = "result";
     this.push(room);
@@ -391,6 +405,12 @@ export class GameManager {
         this.setTimer(room, RESULT_MS, () => this.push(room));
         return;
       }
+      if (soloFinished || champion) {
+        room.phase = "gameover";
+        room.gameWinnerId = champion ? champion.id : [...room.players.keys()][0];
+        this.push(room);
+        return;
+      }
       this.startRound(room);
     });
   }
@@ -400,15 +420,15 @@ export class GameManager {
   /** Pre-reveal clue payload — must never identify the player. */
   private cluePublic(room: Room, clue: CluePlayer): CluePublic {
     return clue.hasImage
-      ? { imageUrl: `/api/clue/${room.code}/${room.roundNumber}.jpg` }
+      ? { imageUrl: `/api/clue/${room.code}/${room.clueSerial}.jpg` }
       : { jersey: clue.jersey, color: clue.color, colorName: clue.colorName };
   }
 
   /** Resolve the current clue's headshot file for the anonymous image route. */
-  clueImagePath(code: string, round: number): string | null {
+  clueImagePath(code: string, serial: number): string | null {
     const room = this.rooms.get(code.toUpperCase());
     const clue = room?.currentClue;
-    if (!room || !clue?.hasImage || room.roundNumber !== round) return null;
+    if (!room || !clue?.hasImage || room.clueSerial !== serial) return null;
     if (room.phase !== "countdown" && room.phase !== "guessing") return null;
     return path.join(HEADSHOT_DIR, `${clue.id}.jpg`);
   }
@@ -426,6 +446,7 @@ export class GameManager {
     return {
       code: room.code,
       phase: room.phase,
+      isSolo: room.isSolo,
       players: [...room.players.values()].map((p) => ({
         id: p.id,
         nickname: p.nickname,

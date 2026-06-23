@@ -7,8 +7,15 @@
   --orange:       #6E3A28;
   --orange-light: #9C5B42;
   --pink-highlight: #F3CCC5;
+  /* Brutalist offset behind display type; highlight box behind inline tags. */
+  --hero-shadow:    var(--pink-highlight);
+  --highlight:      var(--pink-highlight);
+  --highlight-ink:  #1A1208;
   --black:        #1A1208;
   --ink:          #1A1208;
+  /* Deepest surfaces (topbar, footer, code cards) — always dark in both themes. */
+  --surface-ink:    var(--black);
+  --surface-footer: #16100A;
   --muted:        #6B5C42;
   --muted-light:  #9A8C72;
   --white:        #FFFFFF;
@@ -24,6 +31,8 @@
   --green-light:  #3D9E4A;
   --red:          #C8102E;
   --ink-shadow:   #1A1208;
+  --notice-bg:    rgba(110, 58, 40, 0.08);
+  --notice-border: rgba(110, 58, 40, 0.3);
 
   --serif: Georgia, "Times New Roman", serif;
   --sans:  "Inter", system-ui, sans-serif;
@@ -34,28 +43,47 @@
 /* ── dark mode ─────────────────────────────────────────────────── */
 
 [data-theme="dark"] {
-  --cream:        #1C1814;
-  --cream-dark:   #251F18;
-  --cream-deep:   #3A3025;
-  --black:        #F0EAD6;
-  --ink:          #F0EAD6;
-  --muted:        #B8A988;
-  --muted-light:  #8A7A5E;
-  --white:        #2A2318;
-  /* Brighter rust reads on dark surfaces (logo, primary card, accents). */
-  --orange:       #C97A45;
-  --orange-light: #DD9460;
-  /* Brutalist offset needs to be lighter than the near-black surfaces here,
-     so the hard shadow stays visible instead of vanishing into the bg. */
-  --ink-shadow:   #6E5F49;
+  /* Warm charcoal field — brown undertone, not blue-gray. */
+  --cream:        #1A1612;
+  --cream-dark:   #231E18;
+  --cream-deep:   #342A20;
+  --black:        #EDE6D6;
+  --ink:          #EDE6D6;
+  --muted:        #B0A088;
+  --muted-light:  #847560;
+  --white:        #2A231A;
+  /* Unified rust/tan accent family — one hue, two weights. */
+  --orange:       #B8724A;
+  --orange-light: #C9956E;
+  --accent-on-dark: #C9956E;
+  /* Swap pink brutalism for warm tan/rust so hero + tagline match accents. */
+  --pink-highlight: #C9A67A;
+  --hero-shadow:    #5C4638;
+  --highlight:      #C9A67A;
+  --highlight-ink:  #1A1208;
+  --surface-ink:    #100E0A;
+  --surface-footer: #16100A;
+  --ink-shadow:     #5A4D3E;
+  --notice-bg:      rgba(201, 150, 106, 0.1);
+  --notice-border:  rgba(201, 150, 106, 0.28);
 }
 
-/* Surfaces that must stay dark in dark mode (use --black as bg in light mode) */
-[data-theme="dark"] .topbar        { background: #0D0B08; }
-[data-theme="dark"] .code-card     { background: #0D0B08; border-color: #F0EAD6; }
-[data-theme="dark"] .result-player-card { background: #0D0B08; }
-[data-theme="dark"] .countdown     { background: #0D0B08; }
-[data-theme="dark"] .win-rank-card { background: #0D0B08; }
+/* Surfaces that must stay dark in dark mode */
+[data-theme="dark"] .topbar            { background: var(--surface-ink); }
+[data-theme="dark"] .code-card         { background: var(--surface-ink); border-color: var(--ink); }
+[data-theme="dark"] .result-player-card { background: var(--surface-ink); }
+[data-theme="dark"] .countdown         { background: var(--surface-ink); }
+[data-theme="dark"] .win-rank-card     { background: var(--surface-ink); }
+[data-theme="dark"] .logo              { color: var(--ink); }
+[data-theme="dark"] .logo-accent       { color: var(--orange-light); }
+[data-theme="dark"] .input:focus {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 35%, transparent);
+}
+[data-theme="dark"] .toast {
+  background: var(--surface-ink);
+  color: var(--on-accent);
+  box-shadow: 4px 4px 0 var(--orange-light);
+}
 
 * {
   box-sizing: border-box;
@@ -120,7 +148,6 @@ body {
   align-items: center;
   justify-content: space-between;
   border-bottom: 3px solid var(--ink);
-  box-shadow: 0 6px 0 -3px var(--ink);
   gap: 12px;
   flex-shrink: 0;
 }
@@ -216,8 +243,8 @@ body {
 }
 
 .btn-icon:hover {
-  color: var(--white);
-  background: rgba(255,255,255,0.08);
+  color: var(--ink);
+  background: color-mix(in srgb, var(--ink) 8%, transparent);
 }
 
 .btn-icon[aria-pressed="true"] {
@@ -259,16 +286,6 @@ body {
 
 .logo-accent {
   color: var(--orange);
-}
-
-.topbar-code {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--muted-light);
-  flex-shrink: 0;
 }
 
 .boot {
@@ -427,37 +444,43 @@ body {
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
-  padding: clamp(28px, 6vw, 60px) clamp(20px, 5vw, 40px) 52px;
+  padding: clamp(16px, 3vh, 36px) clamp(20px, 5vw, 40px);
+  /* Fill the space above the footer and center the stack so the empty room is
+     balanced top and bottom instead of pooling under the buttons. `safe`
+     keeps the hero from being clipped when the content is taller than the
+     viewport (short screens, HOW IT WORKS expanded). */
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: safe center;
   text-align: center;
-  gap: 22px;
+  gap: clamp(16px, 2.6vh, 28px);
 }
 
 .join-hero {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
 }
 
 .join-ball {
-  width: clamp(76px, 16vw, 116px);
+  width: clamp(60px, 12vw, 88px);
   height: auto;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .join-title {
   font-family: var(--display);
   font-weight: 400;
-  font-size: clamp(60px, 15vw, 148px);
+  font-size: clamp(46px, 11vw, 112px);
   line-height: 0.85;
   letter-spacing: 0.015em;
   margin: 0;
   color: var(--ink);
   transform: skewX(-7deg);
-  text-shadow: 5px 6px 0 var(--pink-highlight);
+  text-shadow: 4px 5px 0 var(--hero-shadow);
 }
 
 .join-title-hog {
@@ -467,17 +490,17 @@ body {
 .join-tag {
   font-family: var(--sans);
   font-weight: 800;
-  font-size: clamp(17px, 3.2vw, 30px);
+  font-size: clamp(14px, 2.6vw, 24px);
   letter-spacing: 0.01em;
   line-height: 1.2;
   text-transform: uppercase;
   color: var(--ink);
-  margin: 8px 0 0;
+  margin: 12px 0 0;
 }
 
 .join-tag-hi {
-  background: var(--pink-highlight);
-  color: #1A1208; /* fixed dark — the pink box stays light in both themes */
+  background: var(--highlight);
+  color: var(--highlight-ink);
   padding: 1px 8px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
@@ -496,28 +519,28 @@ body {
   max-width: 880px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
+  gap: 12px;
 }
 
 .card-btn {
   font-family: var(--sans);
   font-weight: 800;
-  font-size: 17px;
+  font-size: 15px;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   color: var(--ink);
   background: var(--white);
   border: 3px solid var(--ink);
   border-radius: var(--radius);
-  box-shadow: 6px 6px 0 var(--ink-shadow);
+  box-shadow: 5px 5px 0 var(--ink-shadow);
   cursor: pointer;
-  padding: 26px 16px;
-  min-height: 132px;
+  padding: 20px 14px;
+  min-height: 104px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 10px;
   transition: transform 80ms ease, box-shadow 80ms ease;
 }
 
@@ -539,7 +562,7 @@ body {
 
 .card-btn-primary {
   background: var(--orange);
-  color: #F5F0E8; /* fixed light — the brown fill is dark in both themes */
+  color: var(--on-accent);
 }
 
 .card-btn-primary:disabled {
@@ -587,7 +610,7 @@ body {
 .home-footer {
   margin-top: auto;
   width: 100%;
-  background: #16100A;
+  background: var(--surface-footer);
   color: var(--cream);
   padding: 20px clamp(20px, 5vw, 44px) calc(20px + env(safe-area-inset-bottom));
   display: flex;
@@ -601,20 +624,37 @@ body {
   font-family: var(--display);
   font-size: 22px;
   letter-spacing: 0.04em;
-  color: #F5F0E8;
+  color: var(--on-accent);
   transform: skewX(-6deg);
 }
 
 .home-footer-brand .logo-accent {
-  color: #DD9460; /* bright rust for contrast on the near-black footer */
+  color: var(--orange-light);
 }
 
-.home-footer-meta {
+.home-footer-links {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.home-footer-link {
   font-family: var(--sans);
-  font-weight: 700;
   font-size: 11px;
-  letter-spacing: 0.12em;
-  color: #9A8C72;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--on-accent) 65%, transparent);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.home-footer-link:hover {
+  color: var(--cream);
 }
 
 @media (max-width: 640px) {
@@ -626,8 +666,8 @@ body {
     flex-direction: row;
     justify-content: space-between;
     min-height: 0;
-    padding: 18px 20px;
-    font-size: 16px;
+    padding: 14px 18px;
+    font-size: 14px;
   }
   .card-btn-icon {
     order: 2;
@@ -642,8 +682,8 @@ body {
 }
 
 .invite-banner {
-  background: rgba(110, 58, 40, 0.08);
-  border: 2px solid rgba(110, 58, 40, 0.3);
+  background: var(--notice-bg);
+  border: 2px solid var(--notice-border);
   border-radius: var(--radius);
   padding: 14px 16px;
   font-size: 13px;
@@ -1127,6 +1167,22 @@ body {
   background: var(--red);
 }
 
+/* Scoreboard + shot clock sit on --white/--cream cards that flip dark.
+   Display numerals must not use --orange (dark brown in light mode, still
+   too dim on charcoal in dark) — match countdown/code-card tokens instead. */
+[data-theme="dark"] .score-chip-pts {
+  color: var(--on-accent);
+}
+
+[data-theme="dark"] .shot-clock {
+  color: var(--accent-on-dark);
+}
+
+[data-theme="dark"] .shotclock-card.is-low .shot-clock,
+[data-theme="dark"] .shot-clock.is-low {
+  color: var(--red);
+}
+
 /* ── next-round card (result rail) ────────────────────────────── */
 .next-round-card {
   display: flex;
@@ -1170,7 +1226,7 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 16px;
+  gap: clamp(16px, 3vh, 24px);
   background: var(--black);
   padding: 40px 20px;
 }
@@ -1178,8 +1234,8 @@ body {
 .countdown-round {
   font-family: var(--sans);
   font-weight: 800;
-  font-size: 12px;
-  letter-spacing: 0.3em;
+  font-size: clamp(20px, 4.5vw, 30px);
+  letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--muted-light);
 }
@@ -1201,8 +1257,8 @@ body {
 .countdown-hint {
   font-family: var(--sans);
   font-weight: 700;
-  font-size: 14px;
-  letter-spacing: 0.2em;
+  font-size: clamp(18px, 3.8vw, 26px);
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--muted-light);
 }
@@ -1631,11 +1687,14 @@ body {
 .win-name {
   font-family: var(--serif);
   font-weight: 900;
-  font-size: 72px;
+  /* Scale to fit the card so long tiers/nicknames (e.g. HOOPER) don't bleed
+     past the right edge on narrow screens; capped at the desktop size. */
+  font-size: clamp(38px, 13vw, 72px);
   line-height: 0.9;
   margin: 0;
   text-transform: uppercase;
   color: var(--accent-on-dark);
+  overflow-wrap: anywhere;
 }
 
 .win-sub {
@@ -1659,11 +1718,59 @@ body {
   margin-top: 8px;
 }
 
+/* Push the scoreboard below the action buttons — the rank card and the CTAs
+   (run it back / share / leave) are the focus; the scoreboard is a footnote.
+   .win is a single centered column at every width, so this is safe globally. */
+.win .scoreboard-wrap { order: 1; width: 100%; }
+
 .win-actions {
   display: flex;
   flex-direction: column;
   gap: 10px;
   width: 100%;
+}
+
+.win-feedback-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin-top: 2px;
+}
+
+.win-feedback-text {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+
+.win-feedback-link {
+  color: var(--muted);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.win-feedback-link:hover {
+  color: var(--ink);
+}
+
+.win-feedback-dismiss {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.7;
+}
+
+.win-feedback-dismiss:hover {
+  opacity: 1;
+  color: var(--ink);
 }
 
 /* ── reconnect ────────────────────────────────────────────────── */
@@ -1743,7 +1850,7 @@ body {
 }
 
 .overlay-header {
-  background: var(--black);
+  background: var(--surface-ink);
   border-bottom: 3px solid var(--orange);
   padding: 10px 14px;
   display: flex;
@@ -1757,7 +1864,7 @@ body {
 }
 
 .overlay-back:hover {
-  color: var(--white);
+  color: var(--on-accent);
 }
 
 .overlay-title {
@@ -1766,7 +1873,7 @@ body {
   font-weight: 800;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--white);
+  color: var(--on-accent);
   flex: 1;
 }
 
@@ -1915,7 +2022,7 @@ body {
   font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
-  color: var(--muted);
+  color: var(--orange);
   margin: 8px 0 0;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -1931,6 +2038,12 @@ body {
   box-shadow: 4px 4px 0 var(--orange);
 }
 
+[data-theme="dark"] .about-stats-row {
+  background: var(--surface-ink);
+  border-color: var(--surface-ink);
+  box-shadow: 4px 4px 0 var(--orange);
+}
+
 .about-stat {
   flex: 1;
   text-align: center;
@@ -1942,7 +2055,7 @@ body {
   font-weight: 900;
   font-size: 28px;
   line-height: 1;
-  color: var(--orange);
+  color: var(--on-accent);
 }
 
 .about-stat-label {
@@ -1951,13 +2064,13 @@ body {
   font-weight: 800;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: var(--muted-light);
+  color: var(--accent-on-dark);
   margin-top: 4px;
 }
 
 .about-stat-divider {
   width: 2px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(248, 243, 234, 0.18);
   flex-shrink: 0;
 }
 
@@ -1973,7 +2086,7 @@ body {
   font-weight: 800;
   letter-spacing: 0.25em;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--orange);
 }
 
 .about-section-text {
@@ -1981,6 +2094,30 @@ body {
   font-size: 14px;
   line-height: 1.65;
   color: var(--ink);
+  margin: 0;
+}
+
+/* ── terms page ───────────────────────────────────────────────── */
+
+.terms-disclaimer {
+  font-family: var(--sans);
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--muted);
+  margin: 0;
+  padding: 12px 14px;
+  background: var(--notice-bg);
+  border: 2px solid var(--notice-border);
+  border-radius: var(--radius);
+}
+
+.terms-updated {
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-light);
   margin: 0;
 }
 
@@ -2016,6 +2153,19 @@ body {
 
 .settings-row:hover {
   border-color: var(--orange);
+}
+
+a.settings-row {
+  text-decoration: none;
+  color: inherit;
+}
+
+.settings-row-external {
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--muted);
+  flex-shrink: 0;
 }
 
 .settings-row-text {
@@ -2072,6 +2222,56 @@ body {
 
 .toggle-on .toggle-knob {
   transform: translateX(18px);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   PHONES — keep the photo, search box, and SKIP above the fold.
+   The stacked rail (scoreboard + shot clock) used to eat ~315px before
+   the clue even started, pushing the typing area off-screen. Compact the
+   rail and cap the photo to the viewport so gameplay stays reachable.
+   ════════════════════════════════════════════════════════════════ */
+
+@media (max-width: 759px) {
+  /* Trim the gaps that separated the (now compact) stacked cards. */
+  .game-court { gap: 12px; }
+  .game-rail { gap: 10px; }
+
+  /* Scoreboard: slimmer header + chips so reference info isn't the page. */
+  .scoreboard-head { padding: 9px 14px; }
+  .scoreboard { padding: 10px; gap: 6px; }
+  .score-chip { padding: 8px 12px; }
+
+  /* Shot clock becomes a slim strip: label + count on one row, bar below.
+     This is the time-critical card, so it stays visible — just shorter. */
+  .shotclock-card {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 6px 12px;
+    padding: 10px 16px 12px;
+  }
+  .shot-clock { font-size: 34px; }
+  .shotclock-bar { flex-basis: 100%; }
+
+  /* Cap the photo to a slice of the viewport so the search box + SKIP land
+     on-screen on shorter phones (dvh follows the shrinking URL bar). */
+  .play .clue-card { height: min(260px, 38dvh); }
+
+  /* While guessing, drop the scoreboard below the SKIP button — it's reference
+     info, not the active task. display:contents dissolves the rail so its two
+     cards become flex items of the column and can be reordered independently:
+     shot clock stays pinned at top, scoreboard falls to the bottom. (Countdown
+     screens keep the rail intact — this is .game-guessing / .game-result only.) */
+  .game-guessing .game-rail { display: contents; }
+  .game-guessing .shotclock-card { order: -1; }
+  .game-guessing .scoreboard-wrap { order: 1; }
+
+  /* Round result: next-round timer pinned to the top (mirrors the shot clock's
+     spot during guessing), then the reveal, then the scoreboard at the bottom. */
+  .game-result .game-rail { display: contents; }
+  .game-result .next-round-card { order: -1; }
+  .game-result .scoreboard-wrap { order: 1; }
 }
 
 /* ════════════════════════════════════════════════════════════════

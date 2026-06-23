@@ -19,7 +19,7 @@ const CloseIcon = () => (
 );
 
 /**
- * Shared chrome for the top-menu pages (How to play / About / Settings).
+ * Shared chrome for the top-menu pages (How to play / About / Settings / Terms).
  * On mobile it's a full-screen slide-up sheet; on desktop the same markup
  * becomes a centered modal card over a dimmed backdrop. Closes on Escape or
  * a click on the backdrop.

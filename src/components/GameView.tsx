@@ -105,7 +105,7 @@ export default function GameView({ state, meId }: Props) {
     const isSolo = state.players.length === 1;
     const correct = !!lastResult.winnerId;
     return (
-      <main className="game game-playing">
+      <main className="game game-playing game-result">
         <div className="game-court">
           <section className="result">
             <div className={`result-banner ${correct ? "result-banner-correct" : "result-banner-missed"}`}>
@@ -194,7 +194,7 @@ export default function GameView({ state, meId }: Props) {
       .join(", ") || "the buzzer";
 
   return (
-    <main className="game game-playing">
+    <main className="game game-playing game-guessing">
       <div className="game-court">
         <div className="game-meta">
           <span className="round-label">ROUND {state.roundNumber}</span>

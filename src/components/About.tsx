@@ -34,7 +34,7 @@ export default function About({ onClose }: Props) {
         <div className="about-section">
           <div className="about-section-title">THE GAME</div>
           <p className="about-section-text">
-            Ballhog tests your NBA knowledge in real time. Recognize players from photos — jersey
+            Ballhog tests your NBA knowledge in real time. Recognize players from photos: jersey
             numbers, colorways, and pure basketball instinct. Play solo for a personal rating or
             race your crew to 5.
           </p>
@@ -43,8 +43,8 @@ export default function About({ onClose }: Props) {
         <div className="about-section">
           <div className="about-section-title">PLAYER POOL</div>
           <p className="about-section-text">
-            Every player who appeared in an NBA game from 1990 through 2026 — from all-time greats
-            to deep bench contributors.
+            Every player who appeared in an NBA game from 1990 through 2026. All-time greats to
+            deep bench contributors.
           </p>
         </div>
 

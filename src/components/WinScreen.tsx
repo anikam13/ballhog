@@ -1,9 +1,49 @@
 import { useState } from "react";
 import type { RoomState } from "../../shared/protocol";
 import { SOLO_ROUNDS, knowledgeTier } from "../../shared/protocol";
+import { FEEDBACK_FORM_URL } from "../config";
 import { socket } from "../socket";
 import { share } from "../share";
 import Scoreboard from "./Scoreboard";
+
+const FEEDBACK_DISMISS_KEY = "ballhog-feedback-dismissed";
+
+function WinFeedbackPrompt() {
+  const [dismissed, setDismissed] = useState(
+    () => sessionStorage.getItem(FEEDBACK_DISMISS_KEY) === "1"
+  );
+
+  if (dismissed) return null;
+
+  const dismiss = () => {
+    sessionStorage.setItem(FEEDBACK_DISMISS_KEY, "1");
+    setDismissed(true);
+  };
+
+  return (
+    <div className="win-feedback-prompt">
+      <p className="win-feedback-text">
+        Something off?{" "}
+        <a
+          href={FEEDBACK_FORM_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="win-feedback-link"
+        >
+          Tell us
+        </a>
+      </p>
+      <button
+        type="button"
+        className="win-feedback-dismiss"
+        onClick={dismiss}
+        aria-label="Dismiss feedback prompt"
+      >
+        ×
+      </button>
+    </div>
+  );
+}
 
 interface Props {
   state: RoomState;
@@ -59,6 +99,7 @@ export default function WinScreen({ state, meId, onLeave }: Props) {
             LEAVE
           </button>
         </div>
+        <WinFeedbackPrompt />
       </main>
     );
   }
@@ -69,7 +110,7 @@ export default function WinScreen({ state, meId, onLeave }: Props) {
         <p className="win-kicker">{iWon ? "GAME. YOU'RE HIM." : "BALLGAME."}</p>
         <h1 className="win-name">{champ?.nickname ?? "???"}</h1>
         <p className="win-sub">
-          TAKES IT {champ?.score ?? 0}–
+          TAKES IT {champ?.score ?? 0}-
           {Math.max(0, ...state.players.filter((p) => p.id !== state.gameWinnerId).map((p) => p.score))}
         </p>
       </div>
@@ -88,6 +129,7 @@ export default function WinScreen({ state, meId, onLeave }: Props) {
           LEAVE ROOM
         </button>
       </div>
+      <WinFeedbackPrompt />
     </main>
   );
 }

@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { RoomState } from "../../shared/protocol";
 import { MIN_PLAYERS } from "../../shared/protocol";
 import { socket } from "../socket";
 import { inviteUrl, share } from "../share";
-import { consumeSoloIntent } from "../session";
 
 interface Props {
   state: RoomState;
@@ -17,13 +16,6 @@ export default function Lobby({ state, meId, onLeave }: Props) {
   const connected = state.players.filter((p) => p.connected);
   const everyoneReady = connected.length >= MIN_PLAYERS && connected.every((p) => p.ready);
   const [shareLabel, setShareLabel] = useState("INVITE YOUR SQUAD");
-  const [autoSolo] = useState(() => consumeSoloIntent());
-
-  useEffect(() => {
-    if (!autoSolo || connected.length !== 1) return;
-    if (!me.ready) socket.emit("toggleReady");
-    else if (everyoneReady) socket.emit("startGame");
-  }, [autoSolo, me.ready, everyoneReady, connected.length]);
 
   const invite = async () => {
     const result = await share({
@@ -56,7 +48,7 @@ export default function Lobby({ state, meId, onLeave }: Props) {
             key={p.id}
             className={`roster-card ${p.ready ? "is-ready" : ""} ${p.connected ? "" : "is-gone"}`}
           >
-            <span className="roster-num">{String(i + 1).padStart(2, "0")}</span>
+            <span className="roster-num">{i + 1}</span>
             <span className="roster-name">
               {p.nickname}
               {p.id === state.hostId && <span className="tag tag-host">HOST</span>}
