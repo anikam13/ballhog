@@ -486,43 +486,31 @@ body {
 /* ── join / home ──────────────────────────────────────────────── */
 
 .join {
-  /* Hardwood plank scale — vmin tracks the short edge (portrait-friendly). */
-  --join-plank-y: clamp(16px, 3.8vmin, 30px);
-  --join-plank-x: clamp(48px, 11vmin, 88px);
-  /* Mix with --cream (not transparent) so seams read on the base fill. */
-  --join-plank-h: color-mix(in srgb, var(--cream-deep) 55%, var(--cream));
-  --join-plank-v: color-mix(in srgb, var(--cream-deep) 42%, var(--cream));
-  --join-plank-wash: color-mix(in srgb, var(--cream-deep) 14%, var(--cream));
+  /* Seamless running-bond hardwood — tile width tracks the short edge. */
+  --join-floor-tile: clamp(280px, 55vmin, 560px);
+  position: relative;
   flex: 1;
   display: flex;
   flex-direction: column;
   width: 100%;
   background-color: var(--cream);
-  /* Vertical plank parquet — hardwood seams seen from above, not dot grid */
-  background-image:
-    linear-gradient(
-      to bottom,
-      transparent calc(100% - 2px),
-      var(--join-plank-h) 100%
-    ),
-    linear-gradient(
-      90deg,
-      transparent calc(100% - 1px),
-      var(--join-plank-v) 100%
-    ),
-    linear-gradient(
-      180deg,
-      var(--join-plank-wash) 0%,
-      transparent 55%
-    );
-  background-size:
-    100% var(--join-plank-y),
-    var(--join-plank-x) 100%,
-    100% calc(var(--join-plank-y) * 2);
+  background-image: url('/textures/join-floor.png');
+  background-size: var(--join-floor-tile) auto;
   background-repeat: repeat;
 }
 
+/* Dark mode: warm charcoal wash so light wood doesn't glare on charcoal field. */
+[data-theme="dark"] .join::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: color-mix(in srgb, var(--cream) 62%, transparent);
+  pointer-events: none;
+}
+
 .join-inner {
+  position: relative;
+  z-index: 1;
   width: 100%;
   max-width: 900px;
   margin: 0 auto;
