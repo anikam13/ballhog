@@ -203,7 +203,6 @@ body {
     rgba(255, 255, 255, 0.16) calc(var(--court-stripe) - 3px),
     rgba(255, 255, 255, 0.16) var(--court-stripe)
   );
-  box-shadow: 0 3px 0 var(--red);
   pointer-events: none;
 }
 
