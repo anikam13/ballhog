@@ -200,8 +200,8 @@ body {
     90deg,
     transparent 0,
     transparent calc(var(--court-stripe) - 3px),
-    rgba(255, 255, 255, 0.04) calc(var(--court-stripe) - 3px),
-    rgba(255, 255, 255, 0.04) var(--court-stripe)
+    rgba(255, 255, 255, 0.16) calc(var(--court-stripe) - 3px),
+    rgba(255, 255, 255, 0.16) var(--court-stripe)
   );
   box-shadow: 0 3px 0 var(--red);
   pointer-events: none;
@@ -489,6 +489,10 @@ body {
   /* Hardwood plank scale — vmin tracks the short edge (portrait-friendly). */
   --join-plank-y: clamp(16px, 3.8vmin, 30px);
   --join-plank-x: clamp(48px, 11vmin, 88px);
+  /* Mix with --cream (not transparent) so seams read on the base fill. */
+  --join-plank-h: color-mix(in srgb, var(--cream-deep) 55%, var(--cream));
+  --join-plank-v: color-mix(in srgb, var(--cream-deep) 42%, var(--cream));
+  --join-plank-wash: color-mix(in srgb, var(--cream-deep) 14%, var(--cream));
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -498,23 +502,24 @@ body {
   background-image:
     linear-gradient(
       to bottom,
-      transparent calc(100% - 1px),
-      color-mix(in srgb, var(--cream-deep) 24%, transparent) 100%
+      transparent calc(100% - 2px),
+      var(--join-plank-h) 100%
     ),
     linear-gradient(
       90deg,
       transparent calc(100% - 1px),
-      color-mix(in srgb, var(--cream-deep) 14%, transparent) 100%
+      var(--join-plank-v) 100%
     ),
     linear-gradient(
       180deg,
-      color-mix(in srgb, var(--cream-deep) 4%, transparent) 0%,
-      transparent 50%
+      var(--join-plank-wash) 0%,
+      transparent 55%
     );
   background-size:
     100% var(--join-plank-y),
     var(--join-plank-x) 100%,
     100% calc(var(--join-plank-y) * 2);
+  background-repeat: repeat;
 }
 
 .join-inner {
