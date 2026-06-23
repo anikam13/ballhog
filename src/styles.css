@@ -476,8 +476,8 @@ body {
 
 [data-theme="dark"] .join {
   background-color: var(--cream);
-  background-image: url('/textures/join-floor-dark.png');
-  background-size: var(--join-floor-tile-w) var(--join-floor-tile-h);
+  background-image: radial-gradient(var(--cream-deep) 1.1px, transparent 1.2px);
+  background-size: 22px 22px;
   background-repeat: repeat;
 }
 
