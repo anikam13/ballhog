@@ -47,9 +47,7 @@ export default function Lobby({ state, meId, onLeave }: Props) {
         <button className="btn btn-small btn-invite" onClick={invite}>
           {shareLabel}
         </button>
-        <span className="code-card-hint">
-          {connected.length === 1 ? "solo trial, or bring up to 4 more" : "up to 5 players"}
-        </span>
+        {connected.length > 1 && <span className="code-card-hint">up to 5 players</span>}
       </section>
 
       <ul className="roster">

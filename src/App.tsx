@@ -111,7 +111,12 @@ export default function App() {
 
   let screen;
   if (booting) {
-    screen = <div className="boot">WARMING UP…</div>;
+    screen = (
+      <div className="boot">
+        <BallMark size={52} className="boot-mark" />
+        <span className="boot-text">WARMING UP…</span>
+      </div>
+    );
   } else if (!inRoom) {
     screen = <JoinScreen playerId={playerId} onEntered={handleEntered} onError={setToast} />;
   } else if (state.phase === "lobby") {
