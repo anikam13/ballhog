@@ -486,8 +486,9 @@ body {
 /* ── join / home ──────────────────────────────────────────────── */
 
 .join {
-  /* Seamless running-bond hardwood — tile width tracks the short edge. */
-  --join-floor-tile: clamp(280px, 55vmin, 560px);
+  /* Seamless running-bond hardwood — 15 plank rows per tile; height sets row thickness. */
+  --join-floor-tile-w: clamp(380px, 75vmin, 860px);
+  --join-floor-tile-h: clamp(320px, 54vmin, 600px);
   position: relative;
   flex: 1;
   display: flex;
@@ -495,7 +496,7 @@ body {
   width: 100%;
   background-color: var(--cream);
   background-image: url('/textures/join-floor.png');
-  background-size: var(--join-floor-tile) auto;
+  background-size: var(--join-floor-tile-w) var(--join-floor-tile-h);
   background-repeat: repeat;
 }
 
