@@ -5,7 +5,18 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import type { SearchablePlayer } from "../shared/protocol";
+import type { DecadeMode, SearchablePlayer } from "../shared/protocol";
+
+/** Career bucket used to filter clue pools in decade mode. */
+export type PlayerDecade = "pre-2000s" | "post-2000s";
+
+/**
+ * Classify a player's career into a decade bucket.
+ * Uses the midpoint of firstYear–lastYear: strictly before 2000 → pre-2000s.
+ */
+export function classifyPlayerDecade(firstYear: number, lastYear: number): PlayerDecade {
+  return (firstYear + lastYear) / 2 < 2000 ? "pre-2000s" : "post-2000s";
+}
 
 export interface CluePlayer {
   id: string;
@@ -17,6 +28,8 @@ export interface CluePlayer {
   jersey?: number;
   color?: string;
   colorName?: string;
+  /** Real data: career-era bucket for decade-mode filtering. */
+  decade?: PlayerDecade;
 }
 
 export interface CluePlayerRaw {
@@ -171,6 +184,7 @@ function buildCluesFromRaw(raw: CluePlayerRaw[], overrides: PlayerOverrides): Cl
         name: c.name,
         hasImage: true,
         difficulty: o?.difficulty ?? computed,
+        decade: classifyPlayerDecade(c.firstYear, c.lastYear),
       };
     });
 }
@@ -217,6 +231,12 @@ console.log(
 
 export const SEARCHABLE_POOL: SearchablePlayer[] = pool;
 export const NAME_BY_ID = new Map(pool.map((p) => [p.id, p.name]));
+
+/** Clue players eligible for the room's decade filter (excludes unlabeled placeholder clues). */
+export function cluePoolForDecade(mode: DecadeMode): CluePlayer[] {
+  if (mode === "all") return CLUE_PLAYERS;
+  return CLUE_PLAYERS.filter((c) => c.decade === mode);
+}
 
 export function getPlayerOverrides(): PlayerOverrides {
   return playerOverrides;

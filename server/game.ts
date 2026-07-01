@@ -13,13 +13,14 @@ import {
   SOLO_ROUNDS,
   MIN_TARGET_SCORE,
   MAX_TARGET_SCORE,
+  type DecadeMode,
   type Phase,
   type RoomState,
   type RoundResultInfo,
 } from "../shared/protocol";
 import path from "node:path";
 import type { CluePublic } from "../shared/protocol";
-import { CLUE_PLAYERS, HEADSHOT_DIR, NAME_BY_ID, type CluePlayer } from "./data";
+import { cluePoolForDecade, HEADSHOT_DIR, NAME_BY_ID, type CluePlayer } from "./data";
 
 interface ServerPlayer {
   id: string;
@@ -44,6 +45,7 @@ interface Room {
   hostId: string;
   isSolo: boolean;
   targetScore: number;
+  decadeMode: DecadeMode;
   phase: Phase;
   players: Map<string, ServerPlayer>;
   usedClueIds: Set<string>;
@@ -85,7 +87,14 @@ export class GameManager {
 
   // ---- lifecycle -----------------------------------------------------------
 
-  createRoom(nickname: string, playerId: string, socketId: string, solo = false, targetScore = TARGET_SCORE): Room {
+  createRoom(
+    nickname: string,
+    playerId: string,
+    socketId: string,
+    solo = false,
+    targetScore = TARGET_SCORE,
+    decadeMode: DecadeMode = "all"
+  ): Room {
     let code: string;
     do {
       code = Array.from({ length: 4 }, () =>
@@ -100,6 +109,7 @@ export class GameManager {
       targetScore: solo
         ? SOLO_ROUNDS
         : Math.min(MAX_TARGET_SCORE, Math.max(MIN_TARGET_SCORE, Math.round(targetScore))),
+      decadeMode: decadeMode === "pre-2000s" || decadeMode === "post-2000s" ? decadeMode : "all",
       phase: "lobby",
       players: new Map(),
       usedClueIds: new Set(),
@@ -115,6 +125,7 @@ export class GameManager {
       timer: null,
       emptySince: null,
     };
+    this.assertDecadePool(room);
     this.rooms.set(code, room);
     this.addPlayer(room, nickname, playerId, socketId);
     if (solo) this.autoStartSolo(room);
@@ -225,6 +236,23 @@ export class GameManager {
     this.push(room);
   }
 
+  setDecadeMode(code: string, playerId: string, decadeMode: DecadeMode) {
+    const room = this.rooms.get(code);
+    if (!room || room.phase !== "lobby") return;
+    if (playerId !== room.hostId) throw new Error("Only the host can change decade mode.");
+    const next: DecadeMode =
+      decadeMode === "pre-2000s" || decadeMode === "post-2000s" ? decadeMode : "all";
+    room.decadeMode = next;
+    this.assertDecadePool(room);
+    this.push(room);
+  }
+
+  private assertDecadePool(room: Room) {
+    if (cluePoolForDecade(room.decadeMode).length === 0) {
+      throw new Error("Not enough players for that decade. Try another era or play all eras.");
+    }
+  }
+
   startGame(code: string, playerId: string) {
     const room = this.rooms.get(code);
     if (!room || room.phase !== "lobby") return;
@@ -232,6 +260,7 @@ export class GameManager {
     const connected = [...room.players.values()].filter((p) => p.connected);
     if (connected.length < MIN_PLAYERS) throw new Error("Need at least 1 player.");
     if (!connected.every((p) => p.ready)) throw new Error("Everyone must ready up first.");
+    this.assertDecadePool(room);
     this.beginGame(room);
   }
 
@@ -298,17 +327,19 @@ export class GameManager {
   }
 
   private pickClue(room: Room): CluePlayer {
-    let unused = CLUE_PLAYERS.filter((c) => !room.usedClueIds.has(c.id));
+    const pool = cluePoolForDecade(room.decadeMode);
+    let unused = pool.filter((c) => !room.usedClueIds.has(c.id));
     if (unused.length === 0) {
       // Ran out of unique clues — reshuffle the whole pool and flag it.
       room.usedClueIds.clear();
       room.cluePoolRecycled = true;
-      unused = CLUE_PLAYERS;
+      unused = pool;
     }
     const clue = unused[Math.floor(Math.random() * unused.length)];
     room.usedClueIds.add(clue.id);
     return clue;
   }
+
 
   submitAnswer(code: string, playerId: string, pickedId: string, elapsedMs: number) {
     const room = this.rooms.get(code);
@@ -478,6 +509,7 @@ export class GameManager {
       })),
       hostId: room.hostId,
       targetScore: room.targetScore,
+      decadeMode: room.decadeMode,
       roundNumber: room.roundNumber,
       revealAt: room.revealAt,
       clue: room.currentClue ? this.cluePublic(room, room.currentClue) : null,

@@ -1,9 +1,16 @@
 import { useRef, useState } from "react";
+import type { DecadeMode } from "../../shared/protocol";
 import { FEEDBACK_FORM_URL } from "../config";
 import { socket } from "../socket";
 import { getNickname, saveNickname } from "../session";
 import { invitedCode, sharedRating } from "../share";
 import BallMark from "./BallMark";
+
+const DECADE_OPTIONS: { value: DecadeMode; label: string }[] = [
+  { value: "all", label: "ALL ERAS" },
+  { value: "pre-2000s", label: "PRE-2000S" },
+  { value: "post-2000s", label: "POST-2000S" },
+];
 
 interface Props {
   playerId: string;
@@ -41,6 +48,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
   const [busy, setBusy] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [joinOpen, setJoinOpen] = useState(inviteMode);
+  const [soloDecadeMode, setSoloDecadeMode] = useState<DecadeMode>("all");
   const codeRef = useRef<HTMLInputElement>(null);
 
   const validNick = nickname.trim().length >= 2;
@@ -88,7 +96,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
     if (!validNick || busy) return;
     setBusy(true);
     saveNickname(nickname.trim());
-    socket.emit("create", { nickname: nickname.trim(), playerId, solo: true }, (res) => {
+    socket.emit("create", { nickname: nickname.trim(), playerId, solo: true, decadeMode: soloDecadeMode }, (res) => {
       setBusy(false);
       if (res.ok) onEntered(res.data.code);
       else onError(res.error);
@@ -192,6 +200,22 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
                 <span className="card-btn-label">SINGLE PLAYER MODE</span>
               </button>
             </div>
+
+            <section className="join-decade" aria-label="Solo decade mode">
+              <span className="field-label">SOLO ERA</span>
+              <div className="lobby-decade-options" role="group" aria-label="Select decade filter for solo">
+                {DECADE_OPTIONS.map((opt) => (
+                  <button
+                    key={opt.value}
+                    type="button"
+                    className={`lobby-decade-btn ${soloDecadeMode === opt.value ? "is-active" : ""}`}
+                    onClick={() => setSoloDecadeMode(opt.value)}
+                  >
+                    {opt.label}
+                  </button>
+                ))}
+              </div>
+            </section>
 
             {joinOpen && (
               <div className="join-row">

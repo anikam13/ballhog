@@ -92,9 +92,9 @@ function bind(socket: Socket, code: string, playerId: string) {
 }
 
 io.on("connection", (socket) => {
-  socket.on("create", ({ nickname, playerId, solo, targetScore }, ack) => {
+  socket.on("create", ({ nickname, playerId, solo, targetScore, decadeMode }, ack) => {
     try {
-      const room = game.createRoom(nickname, playerId, socket.id, solo === true, targetScore);
+      const room = game.createRoom(nickname, playerId, socket.id, solo === true, targetScore, decadeMode);
       bind(socket, room.code, playerId);
       // the room broadcast fired before this socket joined the channel
       socket.emit("state", game.toPublicState(room));
@@ -130,6 +130,16 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("setDecadeMode", (decadeMode) => {
+    const s = sessions.get(socket.id);
+    if (!s) return;
+    try {
+      game.setDecadeMode(s.code, s.playerId, decadeMode);
+    } catch (e) {
+      socket.emit("error", (e as Error).message);
+    }
+  });
+
   socket.on("startGame", () => {
     const s = sessions.get(socket.id);
     if (!s) return;
@@ -149,6 +159,7 @@ io.on("connection", (socket) => {
     const s = sessions.get(socket.id);
     if (s) game.skipRound(s.code, s.playerId);
   });
+
 
   socket.on("rematch", () => {
     const s = sessions.get(socket.id);

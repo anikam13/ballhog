@@ -1074,6 +1074,70 @@ body {
   font-size: 32px;
 }
 
+.lobby-decade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px 10px;
+  background: var(--white);
+  border: 3px solid var(--ink);
+  border-radius: var(--radius);
+  box-shadow: 4px 4px 0 var(--ink-shadow);
+  text-align: center;
+}
+
+.lobby-decade-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.lobby-decade-btn {
+  flex: 1 1 auto;
+  min-width: 88px;
+  padding: 8px 6px;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+  background: var(--cream);
+  border: 3px solid var(--black);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: background 120ms ease, color 120ms ease;
+}
+
+.lobby-decade-btn:hover {
+  background: var(--cream-dark);
+}
+
+.lobby-decade-btn.is-active {
+  color: var(--on-accent);
+  background: var(--orange);
+  box-shadow: 3px 3px 0 var(--ink-shadow);
+}
+
+.lobby-decade-readonly {
+  font-family: var(--serif);
+  font-weight: 900;
+  font-size: 22px;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.join-decade {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+  margin-top: 4px;
+}
+
 .lobby-actions {
   flex-shrink: 0;
   display: flex;
@@ -1862,18 +1926,6 @@ body {
   text-align: center;
 }
 
-.next-bar {
-  height: 3px;
-  background: var(--orange);
-  border-radius: 0;
-  animation: drain var(--result-ms, 3s) linear forwards;
-  transform-origin: left;
-}
-
-@keyframes drain {
-  from { transform: scaleX(1); }
-  to   { transform: scaleX(0); }
-}
 
 /* ── win screen ───────────────────────────────────────────────── */
 
