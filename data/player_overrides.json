@@ -5,18 +5,18 @@
   },
   "highsha01": {
     "approved": true,
-    "difficulty": 75
+    "difficulty": 85
   },
   "whiteda01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 90
   },
   "mclaujo01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 60
   },
   "gillan01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 75
   },
   "huertke01": {
@@ -33,10 +33,10 @@
   },
   "aldamsa01": {
     "approved": true,
-    "difficulty": 25
+    "difficulty": 72
   },
   "moorewe01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 80
   },
   "willipa01": {
@@ -45,11 +45,11 @@
   },
   "richajo01": {
     "approved": true,
-    "difficulty": 50
+    "difficulty": 30
   },
   "willike04": {
     "approved": true,
-    "difficulty": 60
+    "difficulty": 90
   },
   "klebima01": {
     "approved": true,
@@ -64,7 +64,7 @@
     "difficulty": 25
   },
   "pickeja02": {
-    "approved": true,
+    "approved": false,
     "difficulty": 80
   },
   "trentga02": {
@@ -72,19 +72,19 @@
     "difficulty": 70
   },
   "bantoda01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 100
   },
   "jacksan01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 90
   },
   "minotjo01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 100
   },
   "hoodsja01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 100
   },
   "buzelma01": {
@@ -101,18 +101,18 @@
   },
   "woodch01": {
     "approved": true,
-    "difficulty": 20
+    "difficulty": 80
   },
   "alvarjo01": {
     "approved": true,
     "difficulty": 5
   },
   "baldwpa01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 100
   },
   "richani01": {
-    "approved": true,
+    "approved": false,
     "difficulty": 50
   },
   "smithja05": {
@@ -120,12 +120,12 @@
     "difficulty": 40
   },
   "butleja02": {
-    "approved": true,
+    "approved": false,
     "difficulty": 90
   },
   "manntr01": {
     "approved": true,
-    "difficulty": 20
+    "difficulty": 70
   },
   "dilliro01": {
     "approved": true,
