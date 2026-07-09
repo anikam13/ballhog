@@ -34,7 +34,8 @@ export default function About({ onClose }: Props) {
         <div className="about-section">
           <div className="about-section-title">NO ACCOUNT NEEDED</div>
           <p className="about-section-text">
-            No login. No app. No tracking. Drop a name and ball out.
+            No login. No app download. Your nickname and room code stay in your browser so you
+            can rejoin — we don&apos;t sell your data. Drop a name and ball out.
           </p>
         </div>
     </Overlay>

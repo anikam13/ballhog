@@ -10,6 +10,7 @@ import WinScreen from "./components/WinScreen";
 import HowToPlay from "./components/HowToPlay";
 import About from "./components/About";
 import Terms from "./components/Terms";
+import Privacy from "./components/Privacy";
 import Settings, { initDarkMode } from "./components/Settings";
 import DevReview from "./components/DevReview";
 import BallMark from "./components/BallMark";
@@ -17,7 +18,7 @@ import SiteFooter from "./components/SiteFooter";
 
 const playerId = getPlayerId();
 
-type Page = "howto" | "about" | "settings" | "terms" | null;
+type Page = "howto" | "about" | "settings" | "terms" | "privacy" | null;
 
 const HomeIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
@@ -241,11 +242,23 @@ export default function App() {
         </nav>
       </header>
       {screen}
-      {!booting && <SiteFooter onOpenTerms={() => setPage("terms")} />}
+      {!booting && (
+        <SiteFooter
+          onOpenTerms={() => setPage("terms")}
+          onOpenPrivacy={() => setPage("privacy")}
+        />
+      )}
       {page === "howto" && <HowToPlay onClose={() => setPage(null)} />}
       {page === "about" && <About onClose={() => setPage(null)} />}
-      {page === "settings" && <Settings onClose={() => setPage(null)} />}
+      {page === "settings" && (
+        <Settings
+          onClose={() => setPage(null)}
+          onOpenPrivacy={() => setPage("privacy")}
+          onOpenTerms={() => setPage("terms")}
+        />
+      )}
       {page === "terms" && <Terms onClose={() => setPage(null)} />}
+      {page === "privacy" && <Privacy onClose={() => setPage(null)} />}
       {dropped && !booting && <div className="reconnect-banner">RECONNECTING…</div>}
       {toast && <div className="toast">{toast}</div>}
     </div>
