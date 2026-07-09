@@ -182,7 +182,7 @@ export default function App() {
   } else if (state.phase === "gameover") {
     screen = <WinScreen state={state} meId={playerId} onLeave={handleLeave} />;
   } else {
-    screen = <GameView state={state} meId={playerId} />;
+    screen = <GameView state={state} meId={playerId} onLeave={handleLeave} />;
   }
 
   return (

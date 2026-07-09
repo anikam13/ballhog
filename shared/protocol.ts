@@ -12,6 +12,9 @@ export const SOLO_ROUNDS = 10;
 export const KNOWLEDGE_START = 100;
 export const MAX_PLAYERS = 5;
 
+/** Career-era filter for clue players. `all` = no filter (default). */
+export type DecadeMode = "all" | "pre-2000s" | "post-2000s";
+
 /** ms between "round starting" broadcast and the synchronized reveal (3-2-1). */
 export const COUNTDOWN_MS = 3500;
 /** ms players have to answer after the reveal before the round force-finalizes. */
@@ -82,6 +85,8 @@ export interface RoomState {
   players: PlayerInfo[];
   hostId: string;
   targetScore: number;
+  /** Lobby setting: only clue players from this career era are drawn. */
+  decadeMode: DecadeMode;
   roundNumber: number;
   /** Server epoch ms at which every client reveals the clue. */
   revealAt: number | null;
@@ -96,6 +101,8 @@ export interface RoomState {
   cluePoolRecycled: boolean;
   /** Test-only: current clue id, present only when BALLHOG_EXPOSE_ANSWER=1. */
   debugClueId?: string;
+  /** Solo only — timers and input are frozen while paused. */
+  isPaused: boolean;
 }
 
 /** Searchable pool entry served over GET /api/players (id↔name map for autocomplete). */
@@ -113,15 +120,20 @@ export interface JoinPayload {
 export type Ack<T> = (res: { ok: true; data: T } | { ok: false; error: string }) => void;
 
 export interface ClientToServerEvents {
-  create: (p: { nickname: string; playerId: string; solo?: boolean; targetScore?: number }, ack: Ack<{ code: string }>) => void;
+  create: (p: { nickname: string; playerId: string; solo?: boolean; targetScore?: number; decadeMode?: DecadeMode }, ack: Ack<{ code: string }>) => void;
   join: (p: JoinPayload, ack: Ack<{ code: string }>) => void;
   toggleReady: () => void;
   setTargetScore: (targetScore: number) => void;
+  setDecadeMode: (decadeMode: DecadeMode) => void;
   startGame: () => void;
   submitAnswer: (p: { pickedId: string; elapsedMs: number }) => void;
   skipRound: () => void;
   rematch: () => void;
   leave: () => void;
+  /** Solo only — freeze round timers and block input. */
+  pause: () => void;
+  /** Solo only — resume from remaining time. */
+  resume: () => void;
   timesync: (clientTime: number, ack: (serverTime: number) => void) => void;
 }
 

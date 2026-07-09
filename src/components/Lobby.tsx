@@ -3,6 +3,7 @@ import type { RoomState } from "../../shared/protocol";
 import { MIN_PLAYERS, MAX_TARGET_SCORE, MIN_TARGET_SCORE } from "../../shared/protocol";
 import { socket } from "../socket";
 import { inviteUrl, share } from "../share";
+import DecadeCycle, { DecadeLabel } from "./DecadeCycle";
 
 interface Props {
   state: RoomState;
@@ -92,6 +93,23 @@ export default function Lobby({ state, meId, onLeave }: Props) {
             <span className="lobby-target-value lobby-target-value-readonly">{state.targetScore}</span>
           )}
           <span className="lobby-target-sublabel">correct guesses</span>
+        </section>
+
+        <section className="lobby-decade" aria-label="Decade mode">
+          {isHost ? (
+            <DecadeCycle
+              value={state.decadeMode}
+              onChange={(mode) => socket.emit("setDecadeMode", mode)}
+              label="ERA"
+            />
+          ) : (
+            <>
+              <span className="lobby-target-label">ERA</span>
+              <span className="lobby-decade-readonly">
+                <DecadeLabel mode={state.decadeMode} />
+              </span>
+            </>
+          )}
         </section>
       </div>
 

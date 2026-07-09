@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { CluePublic, RoomState, SearchablePlayer } from "../../shared/protocol";
-import { RESULT_MS, ROUND_MS, knowledgeTier } from "../../shared/protocol";
+import { RESULT_MS, ROUND_MS } from "../../shared/protocol";
 import { serverNow, socket } from "../socket";
 import PlayerSearch from "./PlayerSearch";
 import Scoreboard from "./Scoreboard";
@@ -24,35 +24,82 @@ function ClueCard({ clue, imageUrl, revealed }: { clue: CluePublic; imageUrl?: s
   );
 }
 
+const PauseIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
+  </svg>
+);
+
 interface Props {
   state: RoomState;
   meId: string;
+  onLeave?: () => void;
 }
 
-export default function GameView({ state, meId }: Props) {
-  const { phase, revealAt, clue, lastResult } = state;
+export default function GameView({ state, meId, onLeave }: Props) {
+  const { phase, revealAt, clue, lastResult, isPaused, isSolo } = state;
 
   const [revealed, setRevealed] = useState(false);
   const [countdownNum, setCountdownNum] = useState<number | null>(null);
   const [shotClock, setShotClock] = useState(ROUND_MS);
   const [myPick, setMyPick] = useState<SearchablePlayer | null>(null);
-  // performance.now() at the instant the clue appeared on THIS device —
-  // reaction time is measured locally so network latency doesn't matter.
   const revealMark = useRef(0);
+  const frozenCountdown = useRef<number | null>(null);
+  const frozenShotClock = useRef(ROUND_MS);
+  const pauseStartedAt = useRef<number | null>(null);
+  const wasPaused = useRef(false);
+
+  const canPause = isSolo && (phase === "countdown" || phase === "guessing");
+
+  const togglePause = () => {
+    if (!canPause) return;
+    socket.emit(isPaused ? "resume" : "pause");
+  };
+
+  useEffect(() => {
+    if (!canPause) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key !== "Escape") return;
+      e.preventDefault();
+      socket.emit(isPaused ? "resume" : "pause");
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [canPause, isPaused]);
 
   // New round → wipe local round state.
   useEffect(() => {
     setRevealed(false);
     setMyPick(null);
     setCountdownNum(null);
+    frozenCountdown.current = null;
+    frozenShotClock.current = ROUND_MS;
   }, [state.roundNumber]);
+
+  // Freeze/unfreeze client clocks when server pause toggles.
+  useEffect(() => {
+    if (isPaused && !wasPaused.current) {
+      if (!revealed && countdownNum !== null) frozenCountdown.current = countdownNum;
+      if (revealed && phase !== "result") {
+        frozenShotClock.current = shotClock;
+        pauseStartedAt.current = performance.now();
+      }
+    }
+    if (!isPaused && wasPaused.current) {
+      if (pauseStartedAt.current !== null && revealed) {
+        revealMark.current += performance.now() - pauseStartedAt.current;
+      }
+      pauseStartedAt.current = null;
+      frozenCountdown.current = null;
+    }
+    wasPaused.current = isPaused;
+  }, [isPaused, revealed, phase, countdownNum, shotClock]);
 
   // Schedule the reveal at the server-synchronized instant.
   useEffect(() => {
-    if (revealAt == null) return;
+    if (revealAt == null || isPaused) return;
     const remaining = revealAt - serverNow();
     if (remaining <= 0) {
-      // Mid-round joiner: clue is already live; their clock starts now.
       revealMark.current = performance.now();
       setRevealed(true);
       return;
@@ -69,7 +116,7 @@ export default function GameView({ state, meId }: Props) {
       clearTimeout(reveal);
       clearInterval(tick);
     };
-  }, [revealAt, state.roundNumber]);
+  }, [revealAt, state.roundNumber, isPaused]);
 
   // Preload the headshot during the countdown so the reveal isn't gated on
   // image load (the per-round URL is anonymous, so this leaks nothing).
@@ -82,27 +129,52 @@ export default function GameView({ state, meId }: Props) {
 
   // Shot clock once revealed.
   useEffect(() => {
-    if (!revealed || phase === "result") return;
+    if (!revealed || phase === "result" || isPaused) return;
     const tick = setInterval(() => {
       setShotClock(Math.max(0, ROUND_MS - (performance.now() - revealMark.current)));
     }, 100);
     return () => clearInterval(tick);
-  }, [revealed, phase]);
+  }, [revealed, phase, isPaused]);
 
   const answered = myPick !== null || state.answeredIds.includes(meId);
   const skipped = state.skippedIds.includes(meId);
 
   const onPick = (p: SearchablePlayer) => {
-    if (answered) return;
+    if (answered || isPaused) return;
     const elapsedMs = Math.round(performance.now() - revealMark.current);
     setMyPick(p);
     socket.emit("submitAnswer", { pickedId: p.id, elapsedMs });
   };
 
+  const pauseOverlay = isPaused && canPause && (
+    <div className="pause-overlay" role="dialog" aria-modal="true" aria-label="Game paused">
+      <div className="pause-card">
+        <p className="pause-title">TIMEOUT</p>
+        <p className="pause-sub">Clock stopped. Take a breath.</p>
+        <div className="pause-actions">
+          <button className="btn btn-primary btn-pause-resume" onClick={() => socket.emit("resume")}>
+            RESUME
+          </button>
+          {onLeave && (
+            <button className="btn btn-secondary btn-pause-quit" onClick={onLeave}>
+              QUIT
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+
+  const pauseBtn = canPause && !isPaused && (
+    <button className="btn-icon btn-pause" onClick={togglePause} aria-label="Pause game">
+      <PauseIcon />
+    </button>
+  );
+
   // ---- result --------------------------------------------------------------
   if (phase === "result" && lastResult) {
     const iWon = lastResult.winnerId === meId;
-    const isSolo = state.players.length === 1;
+    const soloMode = state.players.length === 1;
     const correct = !!lastResult.winnerId;
     return (
       <main className="game game-playing game-result">
@@ -111,14 +183,14 @@ export default function GameView({ state, meId }: Props) {
             <div className={`result-banner ${correct ? "result-banner-correct" : "result-banner-missed"}`}>
               <div>
                 <p className="result-callout">
-                  {isSolo
+                  {soloMode
                     ? correct ? "Bucket!" : "Skipped / Missed"
                     : correct
                       ? iWon ? "Bucket! You buried it" : `${lastResult.winnerNickname} buries it`
                       : "Airball. Nobody got it"}
                 </p>
                 <p className="result-subhead">
-                  {isSolo
+                  {soloMode
                     ? correct ? `Got it${lastResult.winnerElapsedMs != null ? ` · ${lastResult.winnerElapsedMs}ms` : ""}` : "No bucket"
                     : correct && lastResult.winnerElapsedMs != null
                       ? <span className="result-ms">{lastResult.winnerElapsedMs}ms</span>
@@ -133,7 +205,7 @@ export default function GameView({ state, meId }: Props) {
                 <p className="result-meta">DIFFICULTY {lastResult.difficulty}</p>
               </div>
             </div>
-            {!isSolo && (
+            {!soloMode && (
               <ul className="result-answers">
                 {lastResult.answers.map((a) => (
                   <li key={a.playerId} className={a.correct ? "ok" : "miss"}>
@@ -146,7 +218,7 @@ export default function GameView({ state, meId }: Props) {
                 {lastResult.answers.length === 0 && <li className="miss">no answers came in</li>}
               </ul>
             )}
-            {isSolo && (
+            {soloMode && (
               <p className="solo-round-counter">
                 ROUND {lastResult.roundNumber} OF {state.targetScore}
               </p>
@@ -169,27 +241,32 @@ export default function GameView({ state, meId }: Props) {
     );
   }
 
+  const displayCountdown = isPaused && frozenCountdown.current !== null
+    ? frozenCountdown.current
+    : countdownNum;
+  const displayShotClock = isPaused ? frozenShotClock.current : shotClock;
+
   // ---- countdown -----------------------------------------------------------
   if (!revealed) {
     return (
-      <main className="game-countdown">
+      <main className={`game-countdown ${isPaused ? "is-paused" : ""}`}>
+        {pauseBtn}
         <section className="countdown">
           <span className="countdown-round">ROUND {state.roundNumber}</span>
-          <span className="countdown-num" key={countdownNum ?? 0}>
-            {countdownNum ?? "…"}
+          <span className="countdown-num" key={displayCountdown ?? 0}>
+            {displayCountdown ?? "…"}
           </span>
           <p className="countdown-hint">EYES UP. HANDS READY.</p>
         </section>
+        {pauseOverlay}
       </main>
     );
   }
 
   // ---- guessing ------------------------------------------------------------
-  // The scoreboard and shot-clock are the same cards everywhere: a side rail on
-  // desktop, stacked above the court on mobile.
-  const timeStr = (shotClock / 1000).toFixed(1);
-  const lowClock = shotClock < 5000 ? "is-low" : "";
-  const clockPct = Math.max(0, Math.min(100, (shotClock / ROUND_MS) * 100));
+  const timeStr = (displayShotClock / 1000).toFixed(1);
+  const lowClock = displayShotClock < 5000 ? "is-low" : "";
+  const clockPct = Math.max(0, Math.min(100, (displayShotClock / ROUND_MS) * 100));
 
   const waitingOn =
     state.players
@@ -198,7 +275,8 @@ export default function GameView({ state, meId }: Props) {
       .join(", ") || "the buzzer";
 
   return (
-    <main className="game game-playing game-guessing">
+    <main className={`game game-playing game-guessing ${isPaused ? "is-paused" : ""}`}>
+      {pauseBtn}
       <div className="game-court">
         <div className="game-meta">
           <span className="round-label">ROUND {state.roundNumber}</span>
@@ -225,8 +303,12 @@ export default function GameView({ state, meId }: Props) {
               </div>
             ) : (
               <>
-                <PlayerSearch disabled={!revealed} onPick={onPick} />
-                <button className="btn btn-ghost btn-skip" onClick={() => socket.emit("skipRound")}>
+                <PlayerSearch disabled={!revealed || isPaused} onPick={onPick} />
+                <button
+                  className="btn btn-ghost btn-skip"
+                  disabled={isPaused}
+                  onClick={() => socket.emit("skipRound")}
+                >
                   SKIP →
                 </button>
               </>
@@ -245,6 +327,7 @@ export default function GameView({ state, meId }: Props) {
           </div>
         </div>
       </aside>
+      {pauseOverlay}
     </main>
   );
 }
