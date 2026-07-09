@@ -300,29 +300,7 @@ body {
   color: var(--orange);
 }
 
-.logo-tagline {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-  max-width: min(280px, calc(100% - 280px));
-  font-family: var(--sans);
-  font-weight: 600;
-  font-size: 11px;
-  letter-spacing: 0.02em;
-  line-height: 1.2;
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  pointer-events: none;
-  text-align: center;
-}
 
-@media (max-width: 640px) {
-  .logo-tagline {
-    display: none;
-  }
-}
 
 /* Price-tag accent on the landing topbar only */
 .beta-tag {

@@ -207,9 +207,6 @@ export default function App() {
             </span>
           </span>
         </div>
-        <span className="logo-tagline" aria-hidden="true">
-          See the face. Name the player.
-        </span>
         <nav className="topbar-right">
           <button
             className="navlink"
