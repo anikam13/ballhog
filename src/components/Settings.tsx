@@ -4,6 +4,8 @@ import Overlay from "./Overlay";
 
 interface Props {
   onClose: () => void;
+  onOpenPrivacy?: () => void;
+  onOpenTerms?: () => void;
 }
 
 export function initDarkMode() {
@@ -18,7 +20,7 @@ function applyDarkMode(dark: boolean) {
   localStorage.setItem("darkMode", String(dark));
 }
 
-export default function Settings({ onClose }: Props) {
+export default function Settings({ onClose, onOpenPrivacy, onOpenTerms }: Props) {
   const [dark, setDark] = useState(
     () => document.documentElement.getAttribute("data-theme") === "dark"
   );
@@ -59,6 +61,30 @@ export default function Settings({ onClose }: Props) {
           ↗
         </span>
       </a>
+
+      {(onOpenPrivacy || onOpenTerms) && (
+        <>
+          <div className="settings-section-label">LEGAL</div>
+
+          {onOpenPrivacy && (
+            <button type="button" className="settings-row" onClick={onOpenPrivacy}>
+              <div className="settings-row-text">
+                <div className="settings-row-label">PRIVACY POLICY</div>
+                <div className="settings-row-desc">What we store and who we use</div>
+              </div>
+            </button>
+          )}
+
+          {onOpenTerms && (
+            <button type="button" className="settings-row" onClick={onOpenTerms}>
+              <div className="settings-row-text">
+                <div className="settings-row-label">TERMS &amp; CONDITIONS</div>
+                <div className="settings-row-desc">Rules for using Ballhog</div>
+              </div>
+            </button>
+          )}
+        </>
+      )}
 
       {import.meta.env.DEV && (
         <>

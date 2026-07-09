@@ -2,9 +2,10 @@ import { FEEDBACK_FORM_URL } from "../config";
 
 interface Props {
   onOpenTerms: () => void;
+  onOpenPrivacy: () => void;
 }
 
-export default function SiteFooter({ onOpenTerms }: Props) {
+export default function SiteFooter({ onOpenTerms, onOpenPrivacy }: Props) {
   return (
     <footer className="home-footer">
       <span className="home-footer-brand">
@@ -19,8 +20,11 @@ export default function SiteFooter({ onOpenTerms }: Props) {
         >
           FEEDBACK
         </a>
+        <button type="button" className="home-footer-link" onClick={onOpenPrivacy}>
+          PRIVACY
+        </button>
         <button type="button" className="home-footer-link" onClick={onOpenTerms}>
-          TERMS & CONDITIONS
+          TERMS
         </button>
       </nav>
     </footer>
