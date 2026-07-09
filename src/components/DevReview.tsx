@@ -215,7 +215,7 @@ export default function DevReview({ onExit }: { onExit: () => void }) {
           </p>
           <p className="dev-review-muted">
             Removals save immediately and apply to new rounds without restarting the server.
-            Uncheck SKIP REVIEWED to revisit removed players — they show a REMOVED badge.
+            Uncheck SKIP REVIEWED to revisit removed players. They show a REMOVED badge.
           </p>
           <button
             className="btn btn-secondary"

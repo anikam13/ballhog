@@ -69,7 +69,7 @@ export default function Settings({ onClose, onOpenPrivacy, onOpenTerms }: Props)
           <div className="settings-row-label">
             VERSION <span className="settings-beta-tag">BETA</span>
           </div>
-          <div className="settings-row-desc">Early release — features may change</div>
+          <div className="settings-row-desc">Early release. Features may change</div>
         </div>
       </div>
 
