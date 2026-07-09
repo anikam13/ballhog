@@ -63,6 +63,9 @@ interface Room {
   lastResult: RoundResultInfo | null;
   gameWinnerId: string | null;
   timer: NodeJS.Timeout | null; // at most one pending transition per room
+  phaseEndsAt: number | null; // epoch ms when the current timer fires
+  isPaused: boolean;
+  pauseRemainingMs: number | null;
   emptySince: number | null;
 }
 
@@ -123,6 +126,9 @@ export class GameManager {
       lastResult: null,
       gameWinnerId: null,
       timer: null,
+      phaseEndsAt: null,
+      isPaused: false,
+      pauseRemainingMs: null,
       emptySince: null,
     };
     this.assertDecadePool(room);
@@ -296,6 +302,9 @@ export class GameManager {
     room.answers.clear();
     room.lastResult = null;
     room.gameWinnerId = null;
+    room.isPaused = false;
+    room.pauseRemainingMs = null;
+    room.phaseEndsAt = null;
     // usedClueIds intentionally kept: repeat games keep drawing fresh clues
     // until the pool runs dry, then recycle (see pickClue).
     this.push(room);
@@ -312,6 +321,8 @@ export class GameManager {
     room.revealAt = Date.now() + COUNTDOWN_MS;
     room.answers.clear();
     room.skips.clear();
+    room.isPaused = false;
+    room.pauseRemainingMs = null;
     room.phase = "countdown";
     this.push(room);
 
@@ -340,11 +351,59 @@ export class GameManager {
     return clue;
   }
 
+  pause(code: string, playerId: string) {
+    const room = this.rooms.get(code);
+    const player = room?.players.get(playerId);
+    if (!room || !player || !room.isSolo || room.isPaused) return;
+    if (room.phase !== "countdown" && room.phase !== "guessing") return;
+
+    const remaining = room.phaseEndsAt ? Math.max(0, room.phaseEndsAt - Date.now()) : 0;
+    if (room.timer) clearTimeout(room.timer);
+    room.timer = null;
+    room.phaseEndsAt = null;
+    room.isPaused = true;
+    room.pauseRemainingMs = remaining;
+    this.push(room);
+  }
+
+  resume(code: string, playerId: string) {
+    const room = this.rooms.get(code);
+    const player = room?.players.get(playerId);
+    if (!room || !player || !room.isSolo || !room.isPaused) return;
+
+    const remaining = room.pauseRemainingMs ?? 0;
+    room.isPaused = false;
+    room.pauseRemainingMs = null;
+
+    if (room.phase === "countdown") {
+      if (remaining <= 0) {
+        room.phase = "guessing";
+        this.push(room);
+        this.setTimer(room, ROUND_MS, () => this.finalizeRound(room));
+        return;
+      }
+      room.revealAt = Date.now() + remaining;
+      this.setTimer(room, remaining, () => {
+        if (room.phase !== "countdown") return;
+        room.phase = "guessing";
+        this.push(room);
+        this.setTimer(room, ROUND_MS, () => this.finalizeRound(room));
+      });
+    } else if (room.phase === "guessing") {
+      if (remaining <= 0) {
+        this.finalizeRound(room);
+        return;
+      }
+      this.setTimer(room, remaining, () => this.finalizeRound(room));
+    }
+    this.push(room);
+  }
 
   submitAnswer(code: string, playerId: string, pickedId: string, elapsedMs: number) {
     const room = this.rooms.get(code);
     const player = room?.players.get(playerId);
     if (!room || !player || !room.currentClue || !room.revealAt) return;
+    if (room.isPaused) return;
     if (room.phase !== "guessing" && room.phase !== "countdown") return;
     if (room.answers.has(playerId)) return; // one answer per round
 
@@ -370,6 +429,7 @@ export class GameManager {
     const room = this.rooms.get(code);
     const player = room?.players.get(playerId);
     if (!room || !player || !room.currentClue) return;
+    if (room.isPaused) return;
     if (room.phase !== "guessing" && room.phase !== "countdown") return;
     if (room.answers.has(playerId) || room.skips.has(playerId)) return;
     room.skips.add(playerId);
@@ -491,6 +551,7 @@ export class GameManager {
 
   private setTimer(room: Room, ms: number, fn: () => void) {
     if (room.timer) clearTimeout(room.timer);
+    room.phaseEndsAt = Date.now() + ms;
     room.timer = setTimeout(fn, ms);
   }
 
@@ -522,6 +583,7 @@ export class GameManager {
       answeredIds: [...room.answers.keys()],
       skippedIds: [...room.skips],
       cluePoolRecycled: room.cluePoolRecycled,
+      isPaused: room.isPaused,
     };
   }
 

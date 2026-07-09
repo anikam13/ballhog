@@ -1,14 +1,9 @@
 import { useState } from "react";
-import type { DecadeMode, RoomState } from "../../shared/protocol";
+import type { RoomState } from "../../shared/protocol";
 import { MIN_PLAYERS, MAX_TARGET_SCORE, MIN_TARGET_SCORE } from "../../shared/protocol";
 import { socket } from "../socket";
 import { inviteUrl, share } from "../share";
-
-const DECADE_OPTIONS: { value: DecadeMode; label: string }[] = [
-  { value: "all", label: "ALL ERAS" },
-  { value: "pre-2000s", label: "PRE-2000S" },
-  { value: "post-2000s", label: "POST-2000S" },
-];
+import DecadeCycle, { DecadeLabel } from "./DecadeCycle";
 
 interface Props {
   state: RoomState;
@@ -101,24 +96,19 @@ export default function Lobby({ state, meId, onLeave }: Props) {
         </section>
 
         <section className="lobby-decade" aria-label="Decade mode">
-          <span className="lobby-target-label">DECADE MODE</span>
           {isHost ? (
-            <div className="lobby-decade-options" role="group" aria-label="Select decade filter">
-              {DECADE_OPTIONS.map((opt) => (
-                <button
-                  key={opt.value}
-                  type="button"
-                  className={`lobby-decade-btn ${state.decadeMode === opt.value ? "is-active" : ""}`}
-                  onClick={() => socket.emit("setDecadeMode", opt.value)}
-                >
-                  {opt.label}
-                </button>
-              ))}
-            </div>
+            <DecadeCycle
+              value={state.decadeMode}
+              onChange={(mode) => socket.emit("setDecadeMode", mode)}
+              label="ERA"
+            />
           ) : (
-            <span className="lobby-decade-readonly">
-              {DECADE_OPTIONS.find((o) => o.value === state.decadeMode)?.label ?? "ALL ERAS"}
-            </span>
+            <>
+              <span className="lobby-target-label">ERA</span>
+              <span className="lobby-decade-readonly">
+                <DecadeLabel mode={state.decadeMode} />
+              </span>
+            </>
           )}
         </section>
       </div>

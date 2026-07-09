@@ -160,6 +160,15 @@ io.on("connection", (socket) => {
     if (s) game.skipRound(s.code, s.playerId);
   });
 
+  socket.on("pause", () => {
+    const s = sessions.get(socket.id);
+    if (s) game.pause(s.code, s.playerId);
+  });
+
+  socket.on("resume", () => {
+    const s = sessions.get(socket.id);
+    if (s) game.resume(s.code, s.playerId);
+  });
 
   socket.on("rematch", () => {
     const s = sessions.get(socket.id);

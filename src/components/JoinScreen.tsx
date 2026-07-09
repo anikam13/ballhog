@@ -5,12 +5,7 @@ import { socket } from "../socket";
 import { getNickname, saveNickname } from "../session";
 import { invitedCode, sharedRating } from "../share";
 import BallMark from "./BallMark";
-
-const DECADE_OPTIONS: { value: DecadeMode; label: string }[] = [
-  { value: "all", label: "ALL ERAS" },
-  { value: "pre-2000s", label: "PRE-2000S" },
-  { value: "post-2000s", label: "POST-2000S" },
-];
+import DecadeCycle from "./DecadeCycle";
 
 interface Props {
   playerId: string;
@@ -48,6 +43,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
   const [busy, setBusy] = useState(false);
   const [showRules, setShowRules] = useState(false);
   const [joinOpen, setJoinOpen] = useState(inviteMode);
+  const [soloOpen, setSoloOpen] = useState(false);
   const [soloDecadeMode, setSoloDecadeMode] = useState<DecadeMode>("all");
   const codeRef = useRef<HTMLInputElement>(null);
 
@@ -57,6 +53,8 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
 
   const create = () => {
     if (!validNick || busy) return;
+    setJoinOpen(false);
+    setSoloOpen(false);
     setBusy(true);
     saveNickname(nickname.trim());
     socket.emit("create", { nickname: nickname.trim(), playerId }, (res) => {
@@ -85,11 +83,19 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
   // code is present (or immediately when arriving via an invite link).
   const onJoinCard = () => {
     if (!validNick || busy) return;
+    setSoloOpen(false);
     if (validCode) join();
     else {
       setJoinOpen(true);
       setTimeout(() => codeRef.current?.focus(), 0);
     }
+  };
+
+  // The SOLO card reveals era options; GO starts the game.
+  const onSoloCard = () => {
+    if (!validNick || busy) return;
+    setJoinOpen(false);
+    setSoloOpen(true);
   };
 
   const playSolo = () => {
@@ -173,7 +179,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
           <>
             <div className="card-grid">
               <button
-                className="card-btn card-btn-primary"
+                className={`card-btn${!soloOpen && !joinOpen ? " card-btn-primary" : ""}`}
                 disabled={!validNick || busy}
                 onClick={create}
               >
@@ -182,7 +188,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
               </button>
 
               <button
-                className="card-btn"
+                className={`card-btn${joinOpen ? " card-btn-primary" : ""}`}
                 disabled={!validNick || busy}
                 onClick={onJoinCard}
                 aria-expanded={joinOpen}
@@ -191,31 +197,36 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
                 <span className="card-btn-label">JOIN ROOM</span>
               </button>
 
-              <button
-                className="card-btn"
-                disabled={!validNick || busy}
-                onClick={playSolo}
-              >
-                <span className="card-btn-icon"><SoloIcon /></span>
-                <span className="card-btn-label">SINGLE PLAYER MODE</span>
-              </button>
-            </div>
+              <div className="solo-col">
+                <button
+                  className={`card-btn${soloOpen ? " card-btn-primary" : ""}`}
+                  disabled={!validNick || busy}
+                  onClick={onSoloCard}
+                  aria-expanded={soloOpen}
+                >
+                  <span className="card-btn-icon"><SoloIcon /></span>
+                  <span className="card-btn-label">SINGLE PLAYER MODE</span>
+                </button>
 
-            <section className="join-decade" aria-label="Solo decade mode">
-              <span className="field-label">SOLO ERA</span>
-              <div className="lobby-decade-options" role="group" aria-label="Select decade filter for solo">
-                {DECADE_OPTIONS.map((opt) => (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    className={`lobby-decade-btn ${soloDecadeMode === opt.value ? "is-active" : ""}`}
-                    onClick={() => setSoloDecadeMode(opt.value)}
-                  >
-                    {opt.label}
-                  </button>
-                ))}
+                {soloOpen && (
+                  <section className="join-decade" aria-label="Solo decade mode">
+                    <DecadeCycle
+                      value={soloDecadeMode}
+                      onChange={setSoloDecadeMode}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-go join-solo-go"
+                      disabled={!validNick || busy}
+                      onClick={playSolo}
+                      aria-label="Start single player game"
+                    >
+                      GO
+                    </button>
+                  </section>
+                )}
               </div>
-            </section>
+            </div>
 
             {joinOpen && (
               <div className="join-row">
