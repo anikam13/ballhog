@@ -147,7 +147,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
           <p className="join-tag">
             SEE THE FACE. <span className="join-tag-hi">NAME THE PLAYER.</span>
           </p>
-          <p className="join-sub">Free in your browser — no app, no account.</p>
+          <p className="join-sub">Free in your browser. No app, no account.</p>
         </div>
 
         {invited && (
