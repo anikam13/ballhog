@@ -43,14 +43,39 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
   const [joinOpen, setJoinOpen] = useState(inviteMode);
   const [soloOpen, setSoloOpen] = useState(false);
   const [soloDecadeMode, setSoloDecadeMode] = useState<DecadeMode>("all");
+  const [nickError, setNickError] = useState(false);
+  const [nickShake, setNickShake] = useState(false);
+  const nickRef = useRef<HTMLInputElement>(null);
   const codeRef = useRef<HTMLInputElement>(null);
+  const shakeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const validNick = nickname.trim().length >= 2;
   const validCode = code.trim().length === 4;
   const invited = inviteMode && invitedCode !== null && code === invitedCode;
 
+  /** Focus the name field and surface a clear requirement when nick is missing. */
+  const requireNick = (): boolean => {
+    if (validNick) {
+      setNickError(false);
+      return true;
+    }
+    setNickError(true);
+    setNickShake(false);
+    // Retrigger shake even on repeated clicks.
+    requestAnimationFrame(() => setNickShake(true));
+    if (shakeTimer.current) clearTimeout(shakeTimer.current);
+    shakeTimer.current = setTimeout(() => setNickShake(false), 400);
+    nickRef.current?.focus();
+    return false;
+  };
+
+  const onNicknameChange = (value: string) => {
+    setNickname(value);
+    if (value.trim().length >= 2) setNickError(false);
+  };
+
   const create = () => {
-    if (!validNick || busy) return;
+    if (busy || !requireNick()) return;
     setJoinOpen(false);
     setSoloOpen(false);
     setBusy(true);
@@ -63,7 +88,11 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
   };
 
   const join = () => {
-    if (!validNick || !validCode || busy) return;
+    if (busy || !requireNick()) return;
+    if (!validCode) {
+      codeRef.current?.focus();
+      return;
+    }
     setBusy(true);
     saveNickname(nickname.trim());
     socket.emit(
@@ -80,7 +109,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
   // The JOIN card reveals the code field on first tap, then joins once a valid
   // code is present (or immediately when arriving via an invite link).
   const onJoinCard = () => {
-    if (!validNick || busy) return;
+    if (busy || !requireNick()) return;
     setSoloOpen(false);
     if (validCode) join();
     else {
@@ -91,13 +120,13 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
 
   // The SOLO card reveals era options; GO starts the game.
   const onSoloCard = () => {
-    if (!validNick || busy) return;
+    if (busy || !requireNick()) return;
     setJoinOpen(false);
     setSoloOpen(true);
   };
 
   const playSolo = () => {
-    if (!validNick || busy) return;
+    if (busy || !requireNick()) return;
     setBusy(true);
     saveNickname(nickname.trim());
     socket.emit("create", { nickname: nickname.trim(), playerId, solo: true, decadeMode: soloDecadeMode }, (res) => {
@@ -133,18 +162,26 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
           </div>
         )}
 
-        <label className="field">
+        <label className={`field${nickShake ? " field-shake" : ""}`}>
           <span className="field-label">YOUR NAME</span>
           <input
-            className="input"
+            ref={nickRef}
+            className={`input${nickError ? " input-nick-error" : ""}`}
             value={nickname}
             maxLength={16}
             placeholder="e.g. LEBRON"
-            onChange={(e) => setNickname(e.target.value)}
+            onChange={(e) => onNicknameChange(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && (inviteMode ? join() : create())}
             autoComplete="off"
             autoFocus={!validNick}
+            aria-invalid={nickError}
+            aria-describedby={nickError ? "nick-error" : undefined}
           />
+          {nickError && (
+            <p id="nick-error" className="field-error" role="alert">
+              Enter a name to play
+            </p>
+          )}
         </label>
 
         {inviteMode ? (
@@ -166,7 +203,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
               />
               <button
                 className="btn btn-go"
-                disabled={!validNick || !validCode || busy}
+                disabled={busy || (validNick && !validCode)}
                 onClick={join}
               >
                 GO
@@ -178,7 +215,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
             <div className="card-grid">
               <button
                 className={`card-btn${!soloOpen && !joinOpen ? " card-btn-primary" : ""}`}
-                disabled={!validNick || busy}
+                disabled={busy}
                 onClick={create}
               >
                 <span className="card-btn-icon"><CreateIcon /></span>
@@ -187,7 +224,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
 
               <button
                 className={`card-btn${joinOpen ? " card-btn-primary" : ""}`}
-                disabled={!validNick || busy}
+                disabled={busy}
                 onClick={onJoinCard}
                 aria-expanded={joinOpen}
               >
@@ -198,7 +235,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
               <div className="solo-col">
                 <button
                   className={`card-btn${soloOpen ? " card-btn-primary" : ""}`}
-                  disabled={!validNick || busy}
+                  disabled={busy}
                   onClick={onSoloCard}
                   aria-expanded={soloOpen}
                 >
@@ -215,7 +252,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
                     <button
                       type="button"
                       className="btn btn-go join-solo-go"
-                      disabled={!validNick || busy}
+                      disabled={busy}
                       onClick={playSolo}
                       aria-label="Start single player game"
                     >
@@ -240,7 +277,7 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
                 />
                 <button
                   className="btn btn-go"
-                  disabled={!validNick || !validCode || busy}
+                  disabled={busy || (validNick && !validCode)}
                   onClick={join}
                 >
                   GO
