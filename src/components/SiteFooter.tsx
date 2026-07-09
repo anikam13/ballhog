@@ -8,9 +8,12 @@ interface Props {
 export default function SiteFooter({ onOpenTerms, onOpenPrivacy }: Props) {
   return (
     <footer className="home-footer">
-      <span className="home-footer-brand">
-        BALL<span className="logo-accent">HOG</span>
-      </span>
+      <div className="home-footer-brand-block">
+        <span className="home-footer-brand">
+          BALL<span className="logo-accent">HOG</span>
+        </span>
+        <span className="home-footer-meta">For players 13+</span>
+      </div>
       <nav className="home-footer-links" aria-label="Legal and support">
         <a
           href={FEEDBACK_FORM_URL}
