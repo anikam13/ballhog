@@ -43,12 +43,25 @@ export function knowledgeTier(score: number): KnowledgeTier {
 }
 
 /**
+ * Photo credit safe to show before reveal (must not identify the player —
+ * no file names / Commons URLs that contain the player's name).
+ */
+export interface ImageCreditPublic {
+  artist: string;
+  license: string;
+  /** Commons file page — only set after the round result. */
+  fileUrl?: string;
+}
+
+/**
  * What clients are allowed to see about the clue before the result.
  * Real data: a headshot served via an anonymous per-round URL (never keyed by
  * player id). Placeholder data: jersey number + color on a silhouette.
  */
 export interface CluePublic {
   imageUrl?: string;
+  /** Attribution for Wikimedia / licensed photos; omit for BR scrapes. */
+  imageCredit?: ImageCreditPublic;
   jersey?: number;
   color?: string;
   colorName?: string;

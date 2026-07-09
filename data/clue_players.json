@@ -1062,5 +1062,75 @@
   "source": "proxy",
   "firstYear": 2021,
   "lastYear": 2026
+ },
+ {
+  "id": "ginobma01",
+  "name": "Manu Ginóbili",
+  "source": "wiki",
+  "firstYear": 2002,
+  "lastYear": 2018,
+  "imageAttribution": {
+   "artist": "Mike",
+   "license": "CC BY-SA 2.0",
+   "file": "Manu_Ginobili_Spurs-Magic011_(cropped).jpg",
+   "fileUrl": "https://commons.wikimedia.org/wiki/File:Manu_Ginobili_Spurs-Magic011_(cropped).jpg",
+   "source": "Wikimedia Commons"
+  }
+ },
+ {
+  "id": "noahjo01",
+  "name": "Joakim Noah",
+  "source": "wiki",
+  "firstYear": 2007,
+  "lastYear": 2020,
+  "imageAttribution": {
+   "artist": "Keith Allison",
+   "license": "CC BY-SA 2.0",
+   "file": "Joakim_Noah_3.jpg",
+   "fileUrl": "https://commons.wikimedia.org/wiki/File:Joakim_Noah_3.jpg",
+   "source": "Wikimedia Commons"
+  }
+ },
+ {
+  "id": "iguodan01",
+  "name": "Andre Iguodala",
+  "source": "wiki",
+  "firstYear": 2004,
+  "lastYear": 2023,
+  "imageAttribution": {
+   "artist": "All-Pro Reels",
+   "license": "CC BY-SA 2.0",
+   "file": "Heat_Andre_Iguodala_(cropped).jpg",
+   "fileUrl": "https://commons.wikimedia.org/wiki/File:Heat_Andre_Iguodala_(cropped).jpg",
+   "source": "Wikimedia Commons"
+  }
+ },
+ {
+  "id": "randoza01",
+  "name": "Zach Randolph",
+  "source": "wiki",
+  "firstYear": 2001,
+  "lastYear": 2018,
+  "imageAttribution": {
+   "artist": "Verse Photography",
+   "license": "CC BY-SA 2.0",
+   "file": "Zach_Randolph_20131118_cropped.jpg",
+   "fileUrl": "https://commons.wikimedia.org/wiki/File:Zach_Randolph_20131118_cropped.jpg",
+   "source": "Wikimedia Commons"
+  }
+ },
+ {
+  "id": "reddmi01",
+  "name": "Michael Redd",
+  "source": "wiki",
+  "firstYear": 2000,
+  "lastYear": 2012,
+  "imageAttribution": {
+   "artist": "Keith Allison",
+   "license": "CC BY-SA 2.0",
+   "file": "ReddBucks.jpg",
+   "fileUrl": "https://commons.wikimedia.org/wiki/File:ReddBucks.jpg",
+   "source": "Wikimedia Commons"
+  }
  }
 ]

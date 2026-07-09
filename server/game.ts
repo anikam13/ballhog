@@ -485,7 +485,7 @@ export class GameManager {
       clueId: clue.id,
       clueName: clue.name,
       difficulty: clue.difficulty,
-      clue: this.cluePublic(room, clue),
+      clue: this.cluePublic(room, clue, { revealed: true }),
       revealedImageUrl: clue.hasImage ? `/headshots/${clue.id}.jpg` : undefined,
       winnerId: winner?.playerId ?? null,
       winnerNickname: winner ? room.players.get(winner.playerId)?.nickname ?? null : null,
@@ -531,10 +531,23 @@ export class GameManager {
   // ---- plumbing ------------------------------------------------------------
 
   /** Pre-reveal clue payload — must never identify the player. */
-  private cluePublic(room: Room, clue: CluePlayer): CluePublic {
-    return clue.hasImage
-      ? { imageUrl: `/api/clue/${room.code}/${room.clueSerial}.jpg` }
-      : { jersey: clue.jersey, color: clue.color, colorName: clue.colorName };
+  private cluePublic(room: Room, clue: CluePlayer, opts?: { revealed?: boolean }): CluePublic {
+    if (!clue.hasImage) {
+      return { jersey: clue.jersey, color: clue.color, colorName: clue.colorName };
+    }
+    const attr = clue.imageAttribution;
+    const imageCredit = attr
+      ? {
+          artist: attr.artist,
+          license: attr.license,
+          // File URLs often contain the player name — only after reveal.
+          ...(opts?.revealed ? { fileUrl: attr.fileUrl } : {}),
+        }
+      : undefined;
+    return {
+      imageUrl: `/api/clue/${room.code}/${room.clueSerial}.jpg`,
+      imageCredit,
+    };
   }
 
   /** Resolve the current clue's headshot file for the anonymous image route. */
