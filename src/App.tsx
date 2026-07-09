@@ -117,7 +117,6 @@ export default function App() {
 
   const me = state?.players.find((p) => p.id === playerId) ?? null;
   const inRoom = state !== null && me !== null;
-  const showBetaTag = !booting && !inRoom && page === null;
 
   useEffect(() => {
     if (!inRoom) document.title = "Ballhog: name the hooper";
@@ -204,11 +203,6 @@ export default function App() {
             <span className="logo-word">
               BALL<span className="logo-accent">HOG</span>
             </span>
-            {showBetaTag && (
-              <span className="beta-tag" aria-label="Beta version">
-                BETA
-              </span>
-            )}
           </span>
         </div>
         <nav className="topbar-right">

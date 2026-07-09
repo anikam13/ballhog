@@ -145,8 +145,9 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
             BALL<span className="join-title-hog">HOG</span>
           </h1>
           <p className="join-tag">
-            THINK YOU KNOW BALL? <span className="join-tag-hi">PROVE IT.</span>
+            SEE THE FACE. <span className="join-tag-hi">NAME THE PLAYER.</span>
           </p>
+          <p className="join-sub">Free in your browser — no app, no account.</p>
         </div>
 
         {invited && (
@@ -213,8 +214,38 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
         ) : (
           <>
             <div className="card-grid">
+              <div className="solo-col">
+                <button
+                  className={`card-btn${!joinOpen || soloOpen ? " card-btn-primary" : ""}`}
+                  disabled={busy}
+                  onClick={onSoloCard}
+                  aria-expanded={soloOpen}
+                >
+                  <span className="card-btn-icon"><SoloIcon /></span>
+                  <span className="card-btn-label">PLAY SOLO</span>
+                </button>
+
+                {soloOpen && (
+                  <section className="join-decade" aria-label="Solo decade mode">
+                    <DecadeCycle
+                      value={soloDecadeMode}
+                      onChange={setSoloDecadeMode}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-go join-solo-go"
+                      disabled={busy}
+                      onClick={playSolo}
+                      aria-label="Start solo game"
+                    >
+                      START
+                    </button>
+                  </section>
+                )}
+              </div>
+
               <button
-                className={`card-btn${!soloOpen && !joinOpen ? " card-btn-primary" : ""}`}
+                className="card-btn"
                 disabled={busy}
                 onClick={create}
               >
@@ -231,36 +262,6 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
                 <span className="card-btn-icon"><JoinIcon /></span>
                 <span className="card-btn-label">JOIN ROOM</span>
               </button>
-
-              <div className="solo-col">
-                <button
-                  className={`card-btn${soloOpen ? " card-btn-primary" : ""}`}
-                  disabled={busy}
-                  onClick={onSoloCard}
-                  aria-expanded={soloOpen}
-                >
-                  <span className="card-btn-icon"><SoloIcon /></span>
-                  <span className="card-btn-label">SINGLE PLAYER MODE</span>
-                </button>
-
-                {soloOpen && (
-                  <section className="join-decade" aria-label="Solo decade mode">
-                    <DecadeCycle
-                      value={soloDecadeMode}
-                      onChange={setSoloDecadeMode}
-                    />
-                    <button
-                      type="button"
-                      className="btn btn-go join-solo-go"
-                      disabled={busy}
-                      onClick={playSolo}
-                      aria-label="Start single player game"
-                    >
-                      GO
-                    </button>
-                  </section>
-                )}
-              </div>
             </div>
 
             {joinOpen && (
@@ -298,8 +299,8 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
                 instant. 20 seconds on the shot clock.
               </li>
               <li>
-                <strong>Name him.</strong> Type fast. First correct answer takes the round. Wrong
-                guesses lock you out. Not sure? Skip it.
+                <strong>Name the player.</strong> Type fast. First correct answer takes the round.
+                Wrong guesses lock you out. Not sure? Skip it.
               </li>
               <li>
                 <strong>First to X correct guesses wins.</strong> Host picks 3–10. Your knowledge
