@@ -26,8 +26,8 @@ export default function About({ onClose }: Props) {
         <div className="about-section">
           <div className="about-section-title">PLAYER POOL</div>
           <p className="about-section-text">
-            Every player who appeared in an NBA game from 1990 through 2026. All-time greats to
-            deep bench contributors.
+            Thousands of NBA names are searchable when you guess. Clue faces are a curated set
+            of headshots from modern eras (players active since 1990) — stars to deep bench.
           </p>
         </div>
 
@@ -36,6 +36,14 @@ export default function About({ onClose }: Props) {
           <p className="about-section-text">
             No login. No app download. Your nickname and room code stay in your browser so you
             can rejoin — we don&apos;t sell your data. Drop a name and ball out.
+          </p>
+        </div>
+
+        <div className="about-section">
+          <div className="about-section-title">NOT AFFILIATED</div>
+          <p className="about-section-text">
+            Ballhog is an independent fan project and is not affiliated with, endorsed by, or
+            sponsored by the NBA, its teams, or players.
           </p>
         </div>
     </Overlay>

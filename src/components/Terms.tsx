@@ -23,6 +23,15 @@ export default function Terms({ onClose }: Props) {
       </div>
 
       <div className="about-section">
+        <div className="about-section-title">ELIGIBILITY</div>
+        <p className="about-section-text">
+          Ballhog is for players 13 and older. If you are under 13, do not use the service. If
+          you are between 13 and the age of majority where you live, you should have a parent
+          or guardian&apos;s permission.
+        </p>
+      </div>
+
+      <div className="about-section">
         <div className="about-section-title">USE OF SERVICE</div>
         <p className="about-section-text">
           Ballhog is a free, browser-based NBA player identification game provided for

@@ -62,6 +62,17 @@ export default function Settings({ onClose, onOpenPrivacy, onOpenTerms }: Props)
         </span>
       </a>
 
+      <div className="settings-section-label">ABOUT THIS BUILD</div>
+
+      <div className="settings-row settings-row-static">
+        <div className="settings-row-text">
+          <div className="settings-row-label">
+            VERSION <span className="settings-beta-tag">BETA</span>
+          </div>
+          <div className="settings-row-desc">Early release — features may change</div>
+        </div>
+      </div>
+
       {(onOpenPrivacy || onOpenTerms) && (
         <>
           <div className="settings-section-label">LEGAL</div>
