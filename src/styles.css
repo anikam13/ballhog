@@ -457,6 +457,33 @@ body {
   color: var(--muted);
 }
 
+.input.input-nick-error {
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--orange) 28%, transparent);
+}
+
+.field-error {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--orange);
+  margin: 0;
+}
+
+@keyframes nick-shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+}
+
+.field-shake {
+  animation: nick-shake 0.35s ease;
+}
+
 /* ── join / home ──────────────────────────────────────────────── */
 
 .join {
