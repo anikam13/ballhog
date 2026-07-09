@@ -37,7 +37,7 @@ interface Props {
 }
 
 export default function GameView({ state, meId, onLeave }: Props) {
-  const { phase, revealAt, clue, lastResult, isPaused, isSolo } = state;
+  const { phase, revealAt, clue, lastResult, isPaused, hostId } = state;
 
   const [revealed, setRevealed] = useState(false);
   const [countdownNum, setCountdownNum] = useState<number | null>(null);
@@ -49,15 +49,17 @@ export default function GameView({ state, meId, onLeave }: Props) {
   const pauseStartedAt = useRef<number | null>(null);
   const wasPaused = useRef(false);
 
-  const canPause = isSolo && (phase === "countdown" || phase === "guessing");
+  const inPlayPhase = phase === "countdown" || phase === "guessing";
+  // Host controls pause for the whole room (solo players are always host).
+  const canControlPause = meId === hostId && inPlayPhase;
 
   const togglePause = () => {
-    if (!canPause) return;
+    if (!canControlPause) return;
     socket.emit(isPaused ? "resume" : "pause");
   };
 
   useEffect(() => {
-    if (!canPause) return;
+    if (!canControlPause) return;
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== "Escape") return;
       e.preventDefault();
@@ -65,7 +67,7 @@ export default function GameView({ state, meId, onLeave }: Props) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [canPause, isPaused]);
+  }, [canControlPause, isPaused]);
 
   // New round → wipe local round state.
   useEffect(() => {
@@ -146,15 +148,19 @@ export default function GameView({ state, meId, onLeave }: Props) {
     socket.emit("submitAnswer", { pickedId: p.id, elapsedMs });
   };
 
-  const pauseOverlay = isPaused && canPause && (
+  const pauseOverlay = isPaused && inPlayPhase && (
     <div className="pause-overlay" role="dialog" aria-modal="true" aria-label="Game paused">
       <div className="pause-card">
         <p className="pause-title">TIMEOUT</p>
-        <p className="pause-sub">Clock stopped. Take a breath.</p>
+        <p className="pause-sub">
+          {canControlPause ? "Clock stopped. Take a breath." : "Host called a timeout."}
+        </p>
         <div className="pause-actions">
-          <button className="btn btn-primary btn-pause-resume" onClick={() => socket.emit("resume")}>
-            RESUME
-          </button>
+          {canControlPause && (
+            <button className="btn btn-primary btn-pause-resume" onClick={() => socket.emit("resume")}>
+              RESUME
+            </button>
+          )}
           {onLeave && (
             <button className="btn btn-secondary btn-pause-quit" onClick={onLeave}>
               QUIT
@@ -165,7 +171,7 @@ export default function GameView({ state, meId, onLeave }: Props) {
     </div>
   );
 
-  const pauseBtn = canPause && !isPaused && (
+  const pauseBtn = canControlPause && !isPaused && (
     <button className="btn-icon btn-pause" onClick={togglePause} aria-label="Pause game">
       <PauseIcon />
     </button>
@@ -276,10 +282,10 @@ export default function GameView({ state, meId, onLeave }: Props) {
 
   return (
     <main className={`game game-playing game-guessing ${isPaused ? "is-paused" : ""}`}>
-      {pauseBtn}
       <div className="game-court">
         <div className="game-meta">
           <span className="round-label">ROUND {state.roundNumber}</span>
+          {pauseBtn}
         </div>
 
         {state.cluePoolRecycled && state.roundNumber > 0 && (

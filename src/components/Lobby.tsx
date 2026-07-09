@@ -46,70 +46,85 @@ export default function Lobby({ state, meId, onLeave }: Props) {
           {connected.length > 1 && <span className="code-card-hint">up to 5 players</span>}
         </section>
 
-        <ul className="roster">
-          {state.players.map((p, i) => (
-            <li
-              key={p.id}
-              className={`roster-card ${p.ready ? "is-ready" : ""} ${p.connected ? "" : "is-gone"}`}
-            >
-              <span className="roster-num">{i + 1}</span>
-              <span className="roster-name">
-                {p.nickname}
-                {p.id === state.hostId && <span className="tag tag-host">HOST</span>}
-                {p.id === meId && <span className="tag tag-you">YOU</span>}
-              </span>
-              <span className={`roster-status ${p.ready ? "ok" : ""}`}>
-                {!p.connected ? "GONE" : p.ready ? "READY" : "WARMING UP"}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <section className="lobby-target" aria-label={`First to ${state.targetScore} correct guesses`}>
-          <span className="lobby-target-label">FIRST TO</span>
-          {isHost ? (
-            <div className="lobby-target-stepper">
-              <button
-                type="button"
-                className="lobby-target-btn"
-                disabled={state.targetScore <= MIN_TARGET_SCORE}
-                onClick={() => socket.emit("setTargetScore", state.targetScore - 1)}
-                aria-label="Fewer correct guesses"
+        <section className="lobby-party" aria-label="Party">
+          <h2 className="lobby-section-label">PARTY</h2>
+          <ul className="roster">
+            {state.players.map((p, i) => (
+              <li
+                key={p.id}
+                className={`roster-card ${p.ready ? "is-ready" : ""} ${p.connected ? "" : "is-gone"}`}
               >
-                −
-              </button>
-              <span className="lobby-target-value">{state.targetScore}</span>
-              <button
-                type="button"
-                className="lobby-target-btn"
-                disabled={state.targetScore >= MAX_TARGET_SCORE}
-                onClick={() => socket.emit("setTargetScore", state.targetScore + 1)}
-                aria-label="More correct guesses"
-              >
-                +
-              </button>
-            </div>
-          ) : (
-            <span className="lobby-target-value lobby-target-value-readonly">{state.targetScore}</span>
+                <span className="roster-num">{i + 1}</span>
+                <span className="roster-name">
+                  {p.nickname}
+                  {p.id === state.hostId && <span className="tag tag-host">HOST</span>}
+                  {p.id === meId && <span className="tag tag-you">YOU</span>}
+                </span>
+                <span className={`roster-status ${p.ready ? "ok" : ""}`}>
+                  {!p.connected ? "GONE" : p.ready ? "READY" : "WARMING UP"}
+                </span>
+              </li>
+            ))}
+          </ul>
+          {!everyoneReady && (
+            <p className="lobby-wait lobby-wait-dots" aria-label="Waiting for players to ready up">
+              …
+            </p>
           )}
-          <span className="lobby-target-sublabel">correct guesses</span>
         </section>
 
-        <section className="lobby-decade" aria-label="Decade mode">
-          {isHost ? (
-            <DecadeCycle
-              value={state.decadeMode}
-              onChange={(mode) => socket.emit("setDecadeMode", mode)}
-              label="ERA"
-            />
-          ) : (
-            <>
-              <span className="lobby-target-label">ERA</span>
-              <span className="lobby-decade-readonly">
-                <DecadeLabel mode={state.decadeMode} />
-              </span>
-            </>
-          )}
+        <section className="lobby-rules" aria-label="Game rules">
+          <h2 className="lobby-section-label">RULES</h2>
+          <div className="lobby-rules-card">
+            <div className="lobby-rule" aria-label={`First to ${state.targetScore} correct guesses`}>
+              <span className="lobby-target-label">FIRST TO</span>
+              {isHost ? (
+                <div className="lobby-stepper">
+                  <button
+                    type="button"
+                    className="lobby-stepper-btn"
+                    disabled={state.targetScore <= MIN_TARGET_SCORE}
+                    onClick={() => socket.emit("setTargetScore", state.targetScore - 1)}
+                    aria-label="Fewer correct guesses"
+                  >
+                    −
+                  </button>
+                  <span className="lobby-target-value">{state.targetScore}</span>
+                  <button
+                    type="button"
+                    className="lobby-stepper-btn"
+                    disabled={state.targetScore >= MAX_TARGET_SCORE}
+                    onClick={() => socket.emit("setTargetScore", state.targetScore + 1)}
+                    aria-label="More correct guesses"
+                  >
+                    +
+                  </button>
+                </div>
+              ) : (
+                <span className="lobby-target-value lobby-target-value-readonly">{state.targetScore}</span>
+              )}
+              <span className="lobby-target-sublabel">correct guesses</span>
+            </div>
+
+            <div className="lobby-rules-divider" role="presentation" />
+
+            <div className="lobby-rule" aria-label="Decade mode">
+              {isHost ? (
+                <DecadeCycle
+                  value={state.decadeMode}
+                  onChange={(mode) => socket.emit("setDecadeMode", mode)}
+                  label="ERA"
+                />
+              ) : (
+                <>
+                  <span className="lobby-target-label">ERA</span>
+                  <span className="lobby-decade-readonly">
+                    <DecadeLabel mode={state.decadeMode} />
+                  </span>
+                </>
+              )}
+            </div>
+          </div>
         </section>
       </div>
 
@@ -120,11 +135,7 @@ export default function Lobby({ state, meId, onLeave }: Props) {
           </button>
         ) : everyoneReady ? (
           <p className="lobby-wait">waiting for the host…</p>
-        ) : (
-          <p className="lobby-wait lobby-wait-dots" aria-label="Waiting for players to ready up">
-            …
-          </p>
-        )}
+        ) : null}
 
         <button
           className={`btn ${me.ready ? "btn-ghost" : "btn-primary"}`}

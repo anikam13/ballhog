@@ -101,7 +101,7 @@ export interface RoomState {
   cluePoolRecycled: boolean;
   /** Test-only: current clue id, present only when BALLHOG_EXPOSE_ANSWER=1. */
   debugClueId?: string;
-  /** Solo only — timers and input are frozen while paused. */
+  /** Timers and input are frozen while paused (host-controlled). */
   isPaused: boolean;
 }
 
@@ -130,9 +130,9 @@ export interface ClientToServerEvents {
   skipRound: () => void;
   rematch: () => void;
   leave: () => void;
-  /** Solo only — freeze round timers and block input. */
+  /** Host only — freeze round timers and block input for the room. */
   pause: () => void;
-  /** Solo only — resume from remaining time. */
+  /** Host only — resume from remaining time. */
   resume: () => void;
   timesync: (clientTime: number, ack: (serverTime: number) => void) => void;
 }

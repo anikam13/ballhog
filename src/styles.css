@@ -912,6 +912,22 @@ body {
   opacity: 0.7;
 }
 
+.lobby-section-label {
+  margin: 0 0 8px;
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.lobby-party,
+.lobby-rules {
+  display: flex;
+  flex-direction: column;
+}
+
 .roster {
   list-style: none;
   margin: 0;
@@ -919,16 +935,6 @@ body {
   display: flex;
   flex-direction: column;
   gap: 8px;
-}
-
-.roster-label {
-  font-family: var(--sans);
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--muted);
-  margin-bottom: 10px;
 }
 
 .roster-card {
@@ -1011,17 +1017,29 @@ body {
   color: var(--on-accent);
 }
 
-.lobby-target {
+.lobby-rules-card {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 3px;
-  padding: 6px 12px 5px;
+  gap: 0;
   background: var(--white);
   border: 3px solid var(--ink);
   border-radius: var(--radius);
   box-shadow: 4px 4px 0 var(--ink-shadow);
+  overflow: hidden;
+}
+
+.lobby-rule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 14px 14px;
   text-align: center;
+}
+
+.lobby-rules-divider {
+  height: 3px;
+  background: var(--cream-deep);
 }
 
 .lobby-target-label {
@@ -1043,17 +1061,24 @@ body {
   line-height: 1.2;
 }
 
-.lobby-target-stepper {
+.lobby-stepper,
+.decade-cycle-stepper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 10px;
+  width: 100%;
 }
 
-.lobby-target-btn {
+.lobby-stepper-btn,
+.decade-cycle-btn {
+  flex-shrink: 0;
   width: 38px;
   height: 38px;
+  display: grid;
+  place-items: center;
   font-family: var(--sans);
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 800;
   line-height: 1;
   color: var(--ink);
@@ -1064,11 +1089,13 @@ body {
   transition: background 120ms ease;
 }
 
-.lobby-target-btn:hover:not(:disabled) {
+.lobby-stepper-btn:hover:not(:disabled),
+.decade-cycle-btn:hover:not(:disabled) {
   background: var(--cream-dark);
 }
 
-.lobby-target-btn:disabled {
+.lobby-stepper-btn:disabled,
+.decade-cycle-btn:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }
@@ -1087,19 +1114,6 @@ body {
   font-size: 32px;
 }
 
-.lobby-decade {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px 10px;
-  background: var(--white);
-  border: 3px solid var(--ink);
-  border-radius: var(--radius);
-  box-shadow: 4px 4px 0 var(--ink-shadow);
-  text-align: center;
-}
-
 .decade-cycle {
   display: flex;
   flex-direction: column;
@@ -1108,39 +1122,8 @@ body {
   width: 100%;
 }
 
-.decade-cycle-stepper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  width: 100%;
-}
-
 .decade-cycle-btn {
-  flex-shrink: 0;
-  width: 38px;
-  height: 38px;
-  display: grid;
-  place-items: center;
-  font-family: var(--sans);
   font-size: 26px;
-  font-weight: 800;
-  line-height: 1;
-  color: var(--ink);
-  background: var(--cream);
-  border: 3px solid var(--black);
-  border-radius: var(--radius);
-  cursor: pointer;
-  transition: background 120ms ease;
-}
-
-.decade-cycle-btn:hover:not(:disabled) {
-  background: var(--cream-dark);
-}
-
-.decade-cycle-btn:disabled {
-  opacity: 0.35;
-  cursor: not-allowed;
 }
 
 .decade-cycle-value {
@@ -1154,6 +1137,11 @@ body {
   text-align: center;
   text-transform: uppercase;
   color: var(--ink);
+}
+
+.lobby-stepper .lobby-target-value {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .decade-plural-s {
@@ -1235,6 +1223,10 @@ body {
   line-height: 1;
   margin: 0;
   animation: lobby-wait-pulse 1.6s ease-in-out infinite;
+}
+
+.lobby-party .lobby-wait-dots {
+  margin: 10px 0 0;
 }
 
 @keyframes lobby-wait-pulse {
@@ -1405,7 +1397,8 @@ body {
 .game-meta {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .round-label {
@@ -1997,7 +1990,7 @@ body {
   text-align: center;
 }
 
-/* ── solo pause ───────────────────────────────────────────────── */
+/* ── pause ────────────────────────────────────────────────────── */
 
 .game-countdown,
 .game-playing {
@@ -2005,23 +1998,40 @@ body {
 }
 
 .btn-pause {
-  position: absolute;
-  top: 12px;
-  right: 12px;
   z-index: 20;
   background: var(--white);
   border: 3px solid var(--ink);
   box-shadow: 4px 4px 0 var(--ink-shadow);
+  color: var(--ink);
+}
+
+/* Countdown is full-bleed — pin the control to the corner of that stage. */
+.game-countdown > .btn-pause {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+/* Guessing: sit opposite the round label in the court meta row (not over the rail). */
+.game-meta .btn-pause {
+  position: static;
 }
 
 .btn-pause:hover {
   background: var(--cream);
+  color: var(--ink);
 }
 
 [data-theme="dark"] .btn-pause {
   background: var(--surface-ink);
   border-color: var(--edge-on-surface);
   box-shadow: 4px 4px 0 rgba(0, 0, 0, 0.45);
+  color: var(--on-accent);
+}
+
+[data-theme="dark"] .btn-pause:hover {
+  background: var(--surface-ink);
+  color: var(--on-accent);
 }
 
 .game-countdown.is-paused .countdown-num,
