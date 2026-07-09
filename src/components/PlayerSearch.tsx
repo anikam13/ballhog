@@ -20,6 +20,7 @@ const SCROLL_THRESHOLD_PX = 8;
 // Fuzzy fallback only when strict matching is sparse (avoids noise on "James", "Smith", etc.).
 const FUZZY_STRICT_THRESHOLD = 5;
 const FUZZY_MIN_QUERY_LEN = 6;
+const FUZZY_MAX_DIST = 2;
 
 // accent-insensitive matching: "doncic" finds "Dončić"
 const fold = (s: string) =>
@@ -60,10 +61,6 @@ function levenshtein(a: string, b: string, maxDist: number): number {
     [prev, curr] = [curr, prev];
   }
   return prev[n];
-}
-
-function maxFuzzyDist(queryLen: number): number {
-  return queryLen <= 5 ? 1 : 2;
 }
 
 type FoldedPlayer = { p: SearchablePlayer; f: string };
@@ -117,7 +114,7 @@ function fuzzyFallback(
   const tight = fuzzySearch(folded, q, maxDist, exclude, 2);
   if (tight.length > 0) return tight;
   // Looser single-char prefix for longer queries (e.g. "shrempf" → "schrempf").
-  if (q.length < 6) return [];
+  if (q.length < FUZZY_MIN_QUERY_LEN) return [];
   return fuzzySearch(folded, q, Math.min(maxDist, 1), exclude, 1);
 }
 
@@ -130,7 +127,7 @@ function searchPlayers(folded: FoldedPlayer[], rawQuery: string): SearchablePlay
     return strict.slice(0, MAX_RESULTS);
   }
 
-  const fuzzy = fuzzyFallback(folded, q, maxFuzzyDist(q.length), new Set(strict.map((p) => p.id)));
+  const fuzzy = fuzzyFallback(folded, q, FUZZY_MAX_DIST, new Set(strict.map((p) => p.id)));
   return [...strict, ...fuzzy].slice(0, MAX_RESULTS);
 }
 
