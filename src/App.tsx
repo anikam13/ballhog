@@ -204,10 +204,12 @@ export default function App() {
               <span className="logo-word">
                 BALL<span className="logo-accent">HOG</span>
               </span>
-              <span className="logo-tagline">See the face. Name the player.</span>
             </span>
           </span>
         </div>
+        <span className="logo-tagline" aria-hidden="true">
+          See the face. Name the player.
+        </span>
         <nav className="topbar-right">
           <button
             className="navlink"
