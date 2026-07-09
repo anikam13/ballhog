@@ -145,9 +145,8 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
             BALL<span className="join-title-hog">HOG</span>
           </h1>
           <p className="join-tag">
-            SEE THE FACE. <span className="join-tag-hi">NAME THE PLAYER.</span>
+            THINK YOU KNOW BALL? <span className="join-tag-hi">PROVE IT.</span>
           </p>
-          <p className="join-sub">Free in your browser. No app, no account.</p>
         </div>
 
         {invited && (
