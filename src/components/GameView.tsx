@@ -8,10 +8,22 @@ import Silhouette from "./Silhouette";
 
 function ClueCard({ clue, imageUrl, revealed }: { clue: CluePublic; imageUrl?: string; revealed?: boolean }) {
   const src = imageUrl ?? clue.imageUrl;
+  const credit = clue.imageCredit;
   if (src) {
     return (
       <div className={`clue-card clue-card-photo ${revealed ? "is-revealed" : ""}`}>
         <img className="clue-photo" src={src} alt="mystery player" draggable={false} />
+        {credit && (
+          <p className="clue-credit">
+            {credit.fileUrl && revealed ? (
+              <a href={credit.fileUrl} target="_blank" rel="noreferrer">
+                Photo: {credit.artist} · {credit.license}
+              </a>
+            ) : (
+              <>Photo: {credit.artist} · {credit.license}</>
+            )}
+          </p>
+        )}
       </div>
     );
   }

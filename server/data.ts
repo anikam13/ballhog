@@ -18,12 +18,22 @@ export function classifyPlayerDecade(firstYear: number, lastYear: number): Playe
   return (firstYear + lastYear) / 2 < 2000 ? "pre-2000s" : "post-2000s";
 }
 
+export interface ImageAttribution {
+  artist: string;
+  license: string;
+  file: string;
+  fileUrl: string;
+  source: string;
+}
+
 export interface CluePlayer {
   id: string;
   name: string;
   difficulty: number; // 0-100; higher = harder; never sent to clients pre-reveal
   /** Real data: a verified headshot exists at public/headshots/{id}.jpg. */
   hasImage?: boolean;
+  /** Optional credit for licensed photos (e.g. Wikimedia Commons). */
+  imageAttribution?: ImageAttribution;
   /** Placeholder data: silhouette dressing. */
   jersey?: number;
   color?: string;
@@ -38,6 +48,7 @@ export interface CluePlayerRaw {
   source: string;
   firstYear: number;
   lastYear: number;
+  imageAttribution?: ImageAttribution;
 }
 
 export interface PlayerOverride {
@@ -62,8 +73,9 @@ export interface ReviewPlayer {
 export function computeDifficulty(c: { firstYear: number; lastYear: number; source: string }): number {
   const era = Math.max(0, (2020 - c.firstYear) / 30) * 60;
   const recency = Math.max(0, (2020 - c.lastYear) / 10) * 25;
-  const src = c.source === "proxy" ? 15 : 0;
-  return Math.round(Math.min(100, era + recency + src));
+  // wiki / curated adds are easier faces than obscure proxy rotation players
+  const src = c.source === "proxy" ? 15 : c.source === "wiki" ? -10 : 0;
+  return Math.round(Math.min(100, Math.max(0, era + recency + src)));
 }
 
 // mulberry32 — tiny seeded PRNG, good enough for deterministic placeholder data
@@ -183,6 +195,7 @@ function buildCluesFromRaw(raw: CluePlayerRaw[], overrides: PlayerOverrides): Cl
         id: c.id,
         name: c.name,
         hasImage: true,
+        imageAttribution: c.imageAttribution,
         difficulty: o?.difficulty ?? computed,
         decade: classifyPlayerDecade(c.firstYear, c.lastYear),
       };
