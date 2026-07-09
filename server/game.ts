@@ -72,6 +72,37 @@ interface Room {
 const CODE_ALPHABET = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"; // no 0/O/1/I/L
 const EMPTY_ROOM_TTL_MS = 5 * 60 * 1000;
 
+// Light denylist for create/join nicknames. Match on letters-only lowercase so
+// "f.u.c.k" / "FuCk" still trip. Keep short — not a full moderation system.
+const BLOCKED_NICK_STEMS = [
+  "nigger",
+  "nigga",
+  "faggot",
+  "retard",
+  "kike",
+  "chink",
+  "spic",
+  "tranny",
+  "fuck",
+  "shit",
+  "cunt",
+  "bitch",
+  "asshole",
+  "whore",
+  "slut",
+];
+
+/** Trim/cap length; reject blocked nicknames. Preserves caller casing. */
+function sanitizeNickname(raw: string): string {
+  const nickname = raw.trim().slice(0, 16);
+  if (!nickname) return "BALLER";
+  const stem = nickname.toLowerCase().replace(/[^a-z0-9]/g, "");
+  if (BLOCKED_NICK_STEMS.some((w) => stem.includes(w))) {
+    throw new Error("Pick a different nickname.");
+  }
+  return nickname;
+}
+
 export type Broadcast = (code: string, state: RoomState) => void;
 
 export class GameManager {
@@ -148,7 +179,7 @@ export class GameManager {
       // Reconnect: reattach the socket, keep score/ready.
       existing.connected = true;
       existing.socketId = socketId;
-      if (nickname) existing.nickname = nickname;
+      if (nickname) existing.nickname = sanitizeNickname(nickname);
       room.emptySince = null;
       this.push(room);
       return room;
@@ -165,7 +196,7 @@ export class GameManager {
   private addPlayer(room: Room, nickname: string, playerId: string, socketId: string) {
     room.players.set(playerId, {
       id: playerId,
-      nickname: nickname.trim().slice(0, 16) || "BALLER",
+      nickname: sanitizeNickname(nickname),
       score: 0,
       knowledgeScore: KNOWLEDGE_START,
       ready: false,
