@@ -354,7 +354,8 @@ export class GameManager {
   pause(code: string, playerId: string) {
     const room = this.rooms.get(code);
     const player = room?.players.get(playerId);
-    if (!room || !player || !room.isSolo || room.isPaused) return;
+    // Host-only (solo players are always host). Freezes room timers for everyone.
+    if (!room || !player || playerId !== room.hostId || room.isPaused) return;
     if (room.phase !== "countdown" && room.phase !== "guessing") return;
 
     const remaining = room.phaseEndsAt ? Math.max(0, room.phaseEndsAt - Date.now()) : 0;
@@ -369,7 +370,7 @@ export class GameManager {
   resume(code: string, playerId: string) {
     const room = this.rooms.get(code);
     const player = room?.players.get(playerId);
-    if (!room || !player || !room.isSolo || !room.isPaused) return;
+    if (!room || !player || playerId !== room.hostId || !room.isPaused) return;
 
     const remaining = room.pauseRemainingMs ?? 0;
     room.isPaused = false;

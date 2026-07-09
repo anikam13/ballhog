@@ -13,6 +13,7 @@ import Terms from "./components/Terms";
 import Settings, { initDarkMode } from "./components/Settings";
 import DevReview from "./components/DevReview";
 import BallMark from "./components/BallMark";
+import SiteFooter from "./components/SiteFooter";
 
 const playerId = getPlayerId();
 
@@ -167,7 +168,6 @@ export default function App() {
         inviteMode={inviteMode}
         onEntered={handleEntered}
         onError={setToast}
-        onOpenTerms={() => setPage("terms")}
       />
     );
   } else if (state.phase === "lobby" && state.isSolo) {
@@ -241,6 +241,7 @@ export default function App() {
         </nav>
       </header>
       {screen}
+      {!booting && <SiteFooter onOpenTerms={() => setPage("terms")} />}
       {page === "howto" && <HowToPlay onClose={() => setPage(null)} />}
       {page === "about" && <About onClose={() => setPage(null)} />}
       {page === "settings" && <Settings onClose={() => setPage(null)} />}

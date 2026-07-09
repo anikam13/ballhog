@@ -1,6 +1,5 @@
 import { useRef, useState } from "react";
 import type { DecadeMode } from "../../shared/protocol";
-import { FEEDBACK_FORM_URL } from "../config";
 import { socket } from "../socket";
 import { getNickname, saveNickname } from "../session";
 import { invitedCode, sharedRating } from "../share";
@@ -12,7 +11,6 @@ interface Props {
   inviteMode: boolean;
   onEntered: (code: string) => void;
   onError: (msg: string) => void;
-  onOpenTerms: () => void;
 }
 
 const CreateIcon = () => (
@@ -37,7 +35,7 @@ const SoloIcon = () => (
   </svg>
 );
 
-export default function JoinScreen({ playerId, inviteMode, onEntered, onError, onOpenTerms }: Props) {
+export default function JoinScreen({ playerId, inviteMode, onEntered, onError }: Props) {
   const [nickname, setNickname] = useState(getNickname());
   const [code, setCode] = useState(inviteMode ? (invitedCode ?? "") : "");
   const [busy, setBusy] = useState(false);
@@ -278,25 +276,6 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError, o
           )}
         </section>
       </div>
-
-      <footer className="home-footer">
-        <span className="home-footer-brand">
-          BALL<span className="logo-accent">HOG</span>
-        </span>
-        <nav className="home-footer-links" aria-label="Legal and support">
-          <a
-            href={FEEDBACK_FORM_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="home-footer-link"
-          >
-            FEEDBACK
-          </a>
-          <button type="button" className="home-footer-link" onClick={onOpenTerms}>
-            TERMS & CONDITIONS
-          </button>
-        </nav>
-      </footer>
     </main>
   );
 }
