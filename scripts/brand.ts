@@ -45,7 +45,7 @@ function tileSvg(size: number): string {
 </svg>`;
 }
 
-/** 1200x630 OG card — court stripes, wordmark, tagline, baseline bar. */
+/** 1200x630 OG card — court stripes, wordmark, tagline. */
 function ogSvg(): string {
   const stripes = Array.from({ length: 24 }, (_, i) => {
     const x = i * 52;
@@ -58,8 +58,6 @@ function ogSvg(): string {
   <g transform="translate(95 150) scale(${ballScale})">${ballMarkInner()}</g>
   <text x="330" y="300" font-family="Impact, Arial Narrow, sans-serif" font-weight="900" font-size="140" letter-spacing="2" fill="${INK_OG}">BALL<tspan fill="${ORANGE}">HOG</tspan></text>
   <text x="335" y="380" font-family="Impact, Arial Narrow, sans-serif" font-weight="700" font-size="34" fill="#9b958a" textLength="760" lengthAdjust="spacingAndGlyphs">NAME THE HOOPER. FASTEST BUCKET WINS.</text>
-  <rect x="0" y="570" width="1200" height="60" fill="${RED}"/>
-  <text x="600" y="610" text-anchor="middle" font-family="Impact, Arial Narrow, sans-serif" font-weight="700" font-size="26" fill="${INK_OG}" textLength="640" lengthAdjust="spacingAndGlyphs">FIRST TO 5 · UP TO 5 PLAYERS · OR GO SOLO</text>
 </svg>`;
 }
 
