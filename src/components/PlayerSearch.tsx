@@ -13,7 +13,7 @@ function fetchPool(): Promise<SearchablePlayer[]> {
   return poolPromise;
 }
 
-const MAX_RESULTS = 8;
+const MAX_RESULTS = 100;
 const DEBOUNCE_MS = 120;
 // Ignore taps after the finger moves enough to count as a scroll gesture.
 const SCROLL_THRESHOLD_PX = 8;
@@ -65,7 +65,6 @@ export default function PlayerSearch({ disabled, onPick }: Props) {
       } else if (f.includes(q)) {
         includes.push(p);
       }
-      if (starts.length >= MAX_RESULTS) break;
     }
     return [...starts, ...includes].slice(0, MAX_RESULTS);
   }, [folded, debounced]);
