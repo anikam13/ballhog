@@ -16,7 +16,7 @@ export default function Terms({ onClose }: Props) {
       <div className="about-section">
         <div className="about-section-title">ACCEPTANCE</div>
         <p className="about-section-text">
-          By playing Ballhog — creating a room, joining one, or using solo mode — you agree to
+          By playing Ballhog (creating a room, joining one, or using solo mode), you agree to
           these terms and our Privacy Policy. If you do not agree, please do not use the
           service.
         </p>

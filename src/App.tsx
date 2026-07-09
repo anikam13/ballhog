@@ -200,8 +200,10 @@ export default function App() {
           ) : null}
           <span className="logo">
             <BallMark size={28} className="logo-mark" />
-            <span className="logo-word">
-              BALL<span className="logo-accent">HOG</span>
+            <span className="logo-brand">
+              <span className="logo-word">
+                BALL<span className="logo-accent">HOG</span>
+              </span>
             </span>
           </span>
         </div>

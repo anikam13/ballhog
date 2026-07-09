@@ -10,7 +10,7 @@ export default function Privacy({ onClose }: Props) {
     <Overlay title="PRIVACY POLICY" onClose={onClose}>
       <p className="terms-disclaimer">
         This policy explains what Ballhog stores, what third parties may see when you use the
-        game, and how to reach us. It is written in plain language for a casual browser game —
+        game, and how to reach us. It is written in plain language for a casual browser game,
         not a substitute for legal advice.
       </p>
 
@@ -30,7 +30,7 @@ export default function Privacy({ onClose }: Props) {
       <div className="about-section">
         <div className="about-section-title">COOKIES &amp; LOCAL STORAGE</div>
         <p className="about-section-text">
-          We use localStorage (and occasionally sessionStorage) for gameplay continuity — not
+          We use localStorage (and occasionally sessionStorage) for gameplay continuity, not
           advertising cookies. Clearing site data in your browser removes this information.
           We do not sell your personal information.
         </p>

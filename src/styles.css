@@ -146,6 +146,7 @@ body {
 /* ── nav / topbar ─────────────────────────────────────────────── */
 
 .topbar {
+  position: relative;
   background: var(--cream);
   padding: 0 clamp(16px, 4vw, 44px);
   height: 60px;
@@ -279,10 +280,16 @@ body {
   font-size: 24px;
   letter-spacing: 0.04em;
   color: var(--orange);
+  min-width: 0;
 }
 
 .logo-mark {
   flex-shrink: 0;
+}
+
+.logo-brand {
+  min-width: 0;
+  line-height: 1;
 }
 
 .logo-word {
@@ -292,6 +299,8 @@ body {
 .logo-accent {
   color: var(--orange);
 }
+
+
 
 /* Price-tag accent on the landing topbar only */
 .beta-tag {
@@ -574,17 +583,6 @@ body {
   padding: 1px 8px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
-}
-
-.join-sub {
-  font-family: var(--sans);
-  font-weight: 600;
-  font-size: clamp(12px, 1.8vw, 15px);
-  letter-spacing: 0.02em;
-  line-height: 1.35;
-  color: var(--muted);
-  margin: 8px 0 0;
-  max-width: 28em;
 }
 
 .join-inner .field {
