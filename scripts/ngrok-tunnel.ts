@@ -1,33 +1,50 @@
 import { existsSync, readFileSync } from "node:fs";
 import ngrok from "ngrok";
 
-// Load NGROK_AUTHTOKEN from .env (not loaded automatically outside Vite).
-if (!process.env.NGROK_AUTHTOKEN && existsSync(".env")) {
+// Load ngrok vars from .env (not loaded automatically outside Vite).
+if (existsSync(".env")) {
   for (const line of readFileSync(".env", "utf8").split("\n")) {
-    const match = line.match(/^NGROK_AUTHTOKEN=(.*)$/);
-    if (match) process.env.NGROK_AUTHTOKEN = match[1].trim();
+    const match = line.match(/^(NGROK_AUTHTOKEN|NGROK_DOMAIN)=(.*)$/);
+    if (match && !process.env[match[1]]) {
+      process.env[match[1]] = match[2].trim();
+    }
   }
 }
 
 const port = Number(process.env.NGROK_PORT ?? 5173);
 const token = process.env.NGROK_AUTHTOKEN;
+const domain = process.env.NGROK_DOMAIN;
 
-if (!token) {
+const connectOpts: {
+  addr: number;
+  authtoken?: string;
+  hostname?: string;
+} = { addr: port };
+
+if (token) connectOpts.authtoken = token;
+if (domain) connectOpts.hostname = domain;
+
+let url: string;
+try {
+  url = await ngrok.connect(connectOpts);
+} catch (err) {
   console.error(`
-Missing NGROK_AUTHTOKEN.
+Tunnel failed to start.
 
-1. Sign up: https://dashboard.ngrok.com/signup
-2. Copy token: https://dashboard.ngrok.com/get-started/your-authtoken
-3. Add to .env in the project root:
+If you have not saved your authtoken yet, run (use single quotes if the token contains $):
 
-   NGROK_AUTHTOKEN=your_token_here
+  ngrok config add-authtoken 'YOUR_TOKEN'
 
-Then run: npm run dev:mobile
+Or export it for this terminal session:
+
+  export NGROK_AUTHTOKEN='YOUR_TOKEN'
+
+Optional fixed domain (from ngrok dashboard):
+
+  export NGROK_DOMAIN=your-name.ngrok-free.dev
 `);
-  process.exit(1);
+  throw err;
 }
-
-const url = await ngrok.connect({ addr: port, authtoken: token });
 
 console.log(`
   Mobile URL: ${url}

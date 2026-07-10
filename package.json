@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently -n server,client -c magenta,cyan \"npm:dev:server\" \"npm:dev:client\"",
-    "dev:mobile": "concurrently -n server,client,tunnel -c magenta,cyan,green \"npm:dev:server\" \"NGROK=1 npm:dev:client\" \"tsx scripts/ngrok-tunnel.ts\"",
+    "dev:mobile": "concurrently -n server,client,tunnel -c magenta,cyan,green \"npm:dev:server\" \"npm:dev:client:ngrok\" \"npm:tunnel\"",
+    "dev:client:ngrok": "NGROK=1 vite",
     "tunnel": "tsx scripts/ngrok-tunnel.ts",
     "dev:server": "PORT=3001 tsx watch server/index.ts",
     "dev:client": "vite",
