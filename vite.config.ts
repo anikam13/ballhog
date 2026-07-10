@@ -6,6 +6,8 @@ export default defineConfig({
   server: {
     host: true, // listen on LAN so phones can join
     port: 5173,
+    // Vite blocks foreign Host headers; ngrok forwards with *.ngrok-free.dev etc.
+    allowedHosts: [".ngrok-free.dev", ".ngrok-free.app", ".ngrok.app", ".ngrok.io"],
     // ngrok terminates TLS; HMR needs wss on 443 when using the tunnel URL
     hmr: process.env.NGROK
       ? { clientPort: 443, protocol: "wss" }
