@@ -70,8 +70,9 @@ export default function JoinScreen({ playerId, inviteMode, onEntered, onError }:
   };
 
   const onNicknameChange = (value: string) => {
-    setNickname(value);
-    if (value.trim().length >= 2) setNickError(false);
+    const upper = value.toUpperCase();
+    setNickname(upper);
+    if (upper.trim().length >= 2) setNickError(false);
   };
 
   const create = () => {

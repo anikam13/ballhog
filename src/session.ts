@@ -26,11 +26,11 @@ export function getPlayerId(): string {
 }
 
 export function getNickname(): string {
-  return localStorage.getItem(NICK_KEY) ?? "";
+  return (localStorage.getItem(NICK_KEY) ?? "").toUpperCase();
 }
 
 export function saveNickname(nickname: string) {
-  localStorage.setItem(NICK_KEY, nickname);
+  localStorage.setItem(NICK_KEY, nickname.trim().toUpperCase());
 }
 
 export function saveRoom(code: string) {

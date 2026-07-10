@@ -92,9 +92,9 @@ const BLOCKED_NICK_STEMS = [
   "slut",
 ];
 
-/** Trim/cap length; reject blocked nicknames. Preserves caller casing. */
+/** Trim/cap length; reject blocked nicknames. Stored/displayed in uppercase. */
 function sanitizeNickname(raw: string): string {
-  const nickname = raw.trim().slice(0, 16);
+  const nickname = raw.trim().slice(0, 16).toUpperCase();
   if (!nickname) return "BALLER";
   const stem = nickname.toLowerCase().replace(/[^a-z0-9]/g, "");
   if (BLOCKED_NICK_STEMS.some((w) => stem.includes(w))) {
