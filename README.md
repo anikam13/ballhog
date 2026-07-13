@@ -2,7 +2,7 @@
 
 **Think you know ball? Prove it.**
 
-Ballhog is a free, browser-based NBA player identification game. See the face, name the hooper — the fastest correct answer wins the round. Play with friends in a shared room or go solo for a knowledge rating from Casual to Savant.
+Ballhog is a free, browser-based NBA player identification game. See the face, name the hooper - the fastest correct answer wins the round. Play with friends in a shared room or go solo for a knowledge rating from Casual to Savant.
 
 **Live:** [ballhog.app](https://ballhog.app/)
 
@@ -12,12 +12,12 @@ Ballhog is a free, browser-based NBA player identification game. See the face, n
 
 ## Features
 
-- **Multiplayer rooms** — Create or join with a 4-character code (up to 5 players)
-- **Synchronized rounds** — Everyone sees the same clue at the same time with a 20-second shot clock
-- **Solo mode** — Ten rounds and a 0–1000 knowledge rating (Casual → Highlights Only → Hooper → Elite → Savant)
-- **Era filters** — All eras, pre-2000s, or post-2000s
-- **Fuzzy player search** — Autocomplete across thousands of NBA names
-- **No accounts** — Nickname + room code in the browser; nothing to download
+- **Multiplayer rooms** - Create or join with a 4-character code (up to 5 players)
+- **Synchronized rounds** - Everyone sees the same clue at the same time with a 20-second shot clock
+- **Solo mode** - Ten rounds and a 0-1000 knowledge rating (Casual → Highlights Only → Hooper → Elite → Savant)
+- **Era filters** - All eras, pre-2000s, or post-2000s
+- **Fuzzy player search** - Autocomplete across thousands of NBA names
+- **No accounts** - Nickname + room code in the browser; nothing to download
 
 ---
 
@@ -93,9 +93,9 @@ ballhog/
 ## How to play
 
 1. Enter a nickname and create or join a room (or start solo).
-2. When a face drops, type the player's name — first correct answer takes the round.
+2. When a face drops, type the player's name - first correct answer takes the round.
 3. Wrong guesses lock you out for that round; skip if you're unsure.
-4. First to the host's win target (3–10 correct) wins. Solo mode ends after 10 rounds with a rating.
+4. First to the host's win target (3-10 correct) wins. Solo mode ends after 10 rounds with a rating.
 
 Feedback: [Tally form](https://tally.so/r/VLqdDg)
 
