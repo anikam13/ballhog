@@ -5,6 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "concurrently -n server,client -c magenta,cyan \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:mobile": "concurrently -n server,client,tunnel -c magenta,cyan,green \"npm:dev:server\" \"npm:dev:client:ngrok\" \"npm:tunnel\"",
+    "dev:client:ngrok": "NGROK=1 vite",
+    "tunnel": "tsx scripts/ngrok-tunnel.ts",
     "dev:server": "PORT=3001 tsx watch server/index.ts",
     "dev:client": "vite",
     "build": "vite build",
@@ -24,6 +27,7 @@
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.1",
     "concurrently": "^8.2.2",
+    "ngrok": "^5.0.0-beta.2",
     "sharp": "^0.35.1",
     "tsx": "^4.16.2",
     "typescript": "^5.5.3",
